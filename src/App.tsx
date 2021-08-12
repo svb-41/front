@@ -1,23 +1,49 @@
 import { useState, useEffect } from 'react'
 import './App.css'
-import { step, typeState } from './engine'
+import { step, typeState, INSTRUCTION } from './engine'
 import { BASIC_SHIP } from './engine/config'
-import { position } from './engine/ship'
 
 const App = () => {
   const defaultState: typeState = {
-    ships: [BASIC_SHIP],
+    ships: [
+      BASIC_SHIP,
+      {
+        ...BASIC_SHIP,
+        id: 'fire',
+        position: { ...BASIC_SHIP.position, pos: { x: 1000, y: 0 } },
+      },
+    ],
     size: { height: 2000, width: 2000 },
+    bullets: [],
   }
   const [state, setState] = useState(defaultState)
 
-  const refresh = (): Promise<any> =>
-    new Promise((resolve, reject) =>
-      setTimeout(() => {
-        setState(state => step(state, []))
-        resolve(null)
-      }, 1000)
-    ).then(refresh)
+  let instructions = [
+    ...new Array(12000)
+      .fill(1)
+      .map(_ => ({ id: BASIC_SHIP.id, instruction: INSTRUCTION.IDLE })),
+    { id: BASIC_SHIP.id, instruction: INSTRUCTION.FIRE },
+    ...new Array(10)
+      .fill(1)
+      .map(_ => ({ id: BASIC_SHIP.id, instruction: INSTRUCTION.IDLE })),
+  ]
+  let instructionsFire = [
+    ...new Array(12000)
+      .fill(1)
+      .map(_ => ({ id: 'fire', instruction: INSTRUCTION.IDLE })),
+    { id: 'fire', instruction: INSTRUCTION.FIRE },
+    ...new Array(10)
+      .fill(1)
+      .map(_ => ({ id: 'fire', instruction: INSTRUCTION.TURN_LEFT })),
+  ]
+
+  const refresh = () =>
+    setTimeout(() => {
+      setState(state =>
+        step(state, [instructions.pop()!!, instructionsFire.pop()!!])
+      )
+      refresh()
+    }, 1000)
 
   useEffect(() => {
     refresh()

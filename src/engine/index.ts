@@ -1,8 +1,10 @@
-import { ship, step as shipStep } from './ship'
+import { ship, step as shipStep, bullet, bulletStep, collide } from './ship'
+import { BASIC_BULLET } from './config'
 
 export type typeState = {
   ships: Array<ship>
   size: { height: number; width: number }
+  bullets: Array<bullet>
 }
 
 export type typeEngine = {
@@ -20,7 +22,7 @@ export enum INSTRUCTION {
   BACK_THRUST = 'BACK_THRUST',
 }
 
-const applyInstruction = ({
+const applyInstruction = (newBullets: Array<bullet>) => ({
   ship,
   instruction,
 }: {
@@ -60,10 +62,34 @@ const applyInstruction = ({
           speed: ship.position.speed - ship.stats.acceleration,
         },
       }
-
+    case INSTRUCTION.FIRE:
+      const bullet: bullet = {
+        ...BASIC_BULLET,
+        position: {
+          speed: BASIC_BULLET.position.speed + ship.position.speed,
+          direction: ship.position.direction,
+          pos: {
+            x: ship.position.pos.x + Math.cos(ship.stats.size) + 1,
+            y: ship.position.pos.y + Math.sin(ship.stats.size) + 1,
+          },
+        },
+      }
+      newBullets.push(bullet)
+      return ship
     default:
       return ship
   }
+}
+
+const checkCollisions = (ships: Array<ship>) => (
+  b: bullet
+): bullet | undefined => {
+  const destroyed = ships.find(collide(b))
+  if (destroyed) {
+    if (b.armed) destroyed.destroyed = true
+    return undefined
+  }
+  return b
 }
 
 export type typeInstruction = { instruction: INSTRUCTION; id: string }
@@ -72,6 +98,7 @@ export const step = (
   state: typeState,
   instructions: Array<typeInstruction>
 ): typeState => {
+  const newBullets: Array<bullet> = []
   state.ships = state.ships
     .map(ship => ({
       ship,
@@ -84,11 +111,19 @@ export const step = (
       ship,
       instruction: instruction.instruction,
     }))
-    .map(applyInstruction)
+    .map(applyInstruction(newBullets))
     .map(shipStep)
 
-  console.log(state.ships[0].position.pos.x)
-  console.log(state.ships[0].position.pos.y)
+  //@ts-ignore
+  state.bullets = [
+    ...state.bullets
+      .filter((b: bullet) => b.distance < b.range)
+      .map(bulletStep)
+      .map(checkCollisions(state.ships))
+      .filter((b: bullet | undefined) => b !== undefined),
+    ...newBullets,
+  ]
+
   return state
 }
 

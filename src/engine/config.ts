@@ -8,6 +8,7 @@ export const BASIC_SHIP: ship = {
     speed: 0,
   },
   stats: { size: 20, acceleration: 10, turn: Math.PI / 10 },
+  destroyed: false,
 }
 
 export const BASIC_BULLET: bullet = {
