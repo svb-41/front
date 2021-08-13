@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import * as PIXI from 'pixi.js'
-import * as Controller from '@/canvas/Controller'
+import * as Controller from '@/renderer/controller'
 import styles from '@/App.module.css'
 
 const log = (...args: any[]) => {

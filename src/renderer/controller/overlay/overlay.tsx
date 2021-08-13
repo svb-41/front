@@ -1,7 +1,7 @@
 import { useState, useEffect, Fragment } from 'react'
-import * as Gamepad from '@/canvas/Controller/Gamepad'
-import * as Dpad from '@/canvas/Controller/Overlay/Dpad'
-import styles from '@/canvas/Controller/Overlay/Overlay.module.css'
+import * as Gamepad from '@/renderer/controller/gamepad'
+import * as Dpad from '@/renderer/controller/overlay/dpad'
+import styles from '@/renderer/controller/overlay/overlay.module.css'
 
 type ABXYButtonProps = {
   gamepad: Gamepad | undefined
