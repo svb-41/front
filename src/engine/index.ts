@@ -13,6 +13,7 @@ export type State = {
   ships: Array<Ship>
   size: { height: number; width: number }
   bullets: Array<Bullet>
+  step: () => State
 }
 
 export enum INSTRUCTION {
@@ -29,6 +30,7 @@ export type Instruction = { instruction: INSTRUCTION; id: string }
 const applyInstruction =
   (newBullets: Array<Bullet>) =>
   ({ ship, instruction }: { ship: Ship; instruction: INSTRUCTION }): Ship => {
+    if (ship.destroyed) return ship
     switch (instruction) {
       case INSTRUCTION.TURN_LEFT:
         return {
@@ -118,7 +120,6 @@ export const step = (state: State, instructions: Array<Instruction>): State => {
       .filter((b: Bullet | undefined) => b !== undefined),
     ...newBullets,
   ]
-
   return state
 }
 
@@ -141,3 +142,12 @@ export const getInstructions = (
         getRadarResults(context.ship!!, state)
       ),
     }))
+
+export const buildState = (
+  state: State,
+  controllers: Array<Controller>
+): State => ({
+  ...state,
+  step: () =>
+    buildState(step(state, getInstructions(state, controllers)), controllers),
+})

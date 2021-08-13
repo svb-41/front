@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import './App.css'
-import { step, State, INSTRUCTION, getInstructions } from './engine'
+import { step, State, INSTRUCTION, getInstructions, buildState } from './engine'
 import { BASIC_SHIP } from './engine/config'
 import { Controller } from './engine/control'
 import { Ship, RadarResult } from './engine/ship'
@@ -38,12 +38,14 @@ const App = () => {
     ],
     size: { height: 2000, width: 2000 },
     bullets: [],
+    step: () => defaultState,
   }
-  const [state, setState] = useState(defaultState)
+
+  const [state, setState] = useState(buildState(defaultState, shipControllers))
 
   const refresh = () =>
     setTimeout(() => {
-      setState(state => step(state, getInstructions(state, shipControllers)))
+      setState(state => state.step())
       refresh()
     }, 1000)
 
