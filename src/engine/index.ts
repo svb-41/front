@@ -9,11 +9,26 @@ import {
 import { BASIC_BULLET } from './config'
 import { Controller } from './control'
 
+export class Engine {
+  state: State
+  step: (nb: number | undefined) => State
+  controllers: Array<Controller>
+  history: Array<State> = []
+
+  constructor(initialState: State, controllers: Array<Controller>) {
+    this.state = initialState
+    this.controllers = controllers
+    this.step = (nb: number | undefined) =>
+      nb !== undefined && nb > 1
+        ? this.step(nb - 1)
+        : step(this.state, getInstructions(this.state, this.controllers))
+  }
+}
+
 export type State = {
   ships: Array<Ship>
   size: { height: number; width: number }
   bullets: Array<Bullet>
-  step: () => State
 }
 
 export enum INSTRUCTION {
@@ -120,7 +135,7 @@ export const step = (state: State, instructions: Array<Instruction>): State => {
       .filter((b: Bullet | undefined) => b !== undefined),
     ...newBullets,
   ]
-  return state
+  return { ...state }
 }
 
 const getRadarResults = (ship: Ship, state: State): Array<RadarResult> => []
@@ -142,12 +157,3 @@ export const getInstructions = (
         getRadarResults(context.ship!!, state)
       ),
     }))
-
-export const buildState = (
-  state: State,
-  controllers: Array<Controller>
-): State => ({
-  ...state,
-  step: () =>
-    buildState(step(state, getInstructions(state, controllers)), controllers),
-})
