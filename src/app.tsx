@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { v4 as uuid } from 'uuid'
 import './app.css'
-import { State } from './engine'
+import { State, INSTRUCTION } from './engine'
 import { BASIC_SHIP } from './engine/config'
 import { Renderer } from '@/renderer'
+import { Engine } from '@/engine'
 
 const defaultState: State = {
   ships: new Array(100).fill(0).map(() => {
@@ -16,14 +17,19 @@ const defaultState: State = {
   }),
   size: { height: window.innerHeight, width: window.innerWidth },
   bullets: [],
-  step: function () {
-    return this
-  },
 }
 
+const controllers = defaultState.ships.map(ship => {
+  const num = Math.random()
+  const inst = num < 0.5 ? INSTRUCTION.TURN_RIGHT : INSTRUCTION.TURN_LEFT
+  const shipId = ship.id
+  const getInstruction = () => inst
+  return { shipId, getInstruction }
+})
+
 const App = () => {
-  const [state] = useState(defaultState)
-  return <Renderer state={state} />
+  const [engine] = useState(new Engine(defaultState, controllers))
+  return <Renderer engine={engine} />
 }
 
 export default App

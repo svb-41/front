@@ -7,7 +7,7 @@ export const BASIC_SHIP: Ship = {
     direction: 0,
     speed: 0,
   },
-  stats: { size: 20, acceleration: 10, turn: Math.PI / 10 },
+  stats: { size: 20, acceleration: 1, turn: Math.PI / 20 },
   destroyed: false,
 }
 
