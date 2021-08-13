@@ -145,7 +145,17 @@ export const step = (state: State, instructions: Array<Instruction>): State => {
   return { ...state }
 }
 
-const getRadarResults = (ship: Ship, state: State): Array<RadarResult> => []
+const getRadarResults = (ship: Ship, state: State): Array<RadarResult> =>
+  ship.stats.detection
+    ? state.ships
+        .filter(
+          collide({
+            position: ship.position,
+            stats: { ...ship.stats, size: ship.stats.detection },
+          })
+        )
+        .map((s: Ship) => ({ size: s.stats.size, position: s.position }))
+    : []
 
 export const getInstructions = (
   state: State,
