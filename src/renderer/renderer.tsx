@@ -5,7 +5,7 @@ import styles from '@/renderer/renderer.module.css'
 import * as helpers from '@/helpers'
 import { State } from '@/engine'
 
-class GameEngine {
+class RendererEngine {
   #app: PIXI.Application
   #state: State
   #ships: { [id: string]: PIXI.Sprite }
@@ -15,7 +15,7 @@ class GameEngine {
   }
 
   constructor(canvas: HTMLCanvasElement, state: State) {
-    helpers.console.log('=> [GameEngine] Start Engine')
+    helpers.console.log('=> [RendererEngine] Start Engine')
     const view = canvas
     const antialias = true
     this.#ships = {}
@@ -29,7 +29,7 @@ class GameEngine {
   run(_deltaTime: number) {}
 
   async preload() {
-    helpers.console.log('=> [GameEngine] Preload assets')
+    helpers.console.log('=> [RendererEngine] Preload assets')
     const url = '/assets/Ships/ship_0000.png'
     await new Promise(r => this.#app.loader.add('ship', url).load(r))
     this.#state.ships.forEach(ship => {
@@ -43,7 +43,7 @@ class GameEngine {
   }
 
   unmount() {
-    helpers.console.log('=> [GameEngine] Unmount and clear')
+    helpers.console.log('=> [RendererEngine] Unmount and clear')
     for (const resource of Object.values(this.#app.loader.resources)) {
       resource.texture?.destroy()
       PIXI.BaseTexture.removeFromCache(resource.name)
@@ -60,7 +60,7 @@ export const Renderer = ({ state }: Props) => {
   useEffect(() => {
     helpers.console.log('run')
     if (canvas.current) {
-      const engine = new GameEngine(canvas.current, state)
+      const engine = new RendererEngine(canvas.current, state)
       return () => engine.unmount()
     }
   }, [state])
