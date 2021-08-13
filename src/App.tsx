@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import './App.css'
+import './app.css'
 import { step, State, INSTRUCTION, getInstructions } from './engine'
 import { BASIC_SHIP } from './engine/config'
 import { Controller } from './engine/control'
