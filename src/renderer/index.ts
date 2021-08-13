@@ -1,1 +1,1 @@
-export { Renderer } from './renderer'
+export { Renderer } from '@/renderer/react'

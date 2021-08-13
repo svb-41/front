@@ -3,7 +3,7 @@ import { State } from '@/engine'
 import * as helpers from '@/helpers'
 import * as Controller from '@/renderer/controller'
 import { Engine } from '@/renderer/engine'
-import styles from '@/renderer/renderer.module.css'
+import styles from '@/renderer/react/renderer.module.css'
 
 export type Props = { state: State }
 export const Renderer = ({ state }: Props) => {
