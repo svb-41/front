@@ -1,65 +1,29 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
+import { v4 as uuid } from 'uuid'
 import './app.css'
-import { step, State, INSTRUCTION, getInstructions, buildState } from './engine'
+import { State } from './engine'
 import { BASIC_SHIP } from './engine/config'
-import { Controller } from './engine/control'
-import { Ship, RadarResult } from './engine/ship'
+import { Renderer } from '@/renderer'
 
-let instructions = [
-  INSTRUCTION.FIRE,
-  ...new Array(10).fill(1).map(_ => INSTRUCTION.IDLE),
-]
-let instructionsFire = [
-  INSTRUCTION.FIRE,
-  ...new Array(10).fill(1).map(_ => INSTRUCTION.TURN_LEFT),
-]
+const defaultState: State = {
+  ships: new Array(100).fill(0).map(() => {
+    const id = uuid()
+    const x = Math.round(Math.random() * window.innerWidth)
+    const y = Math.round(Math.random() * window.innerHeight)
+    const pos = { x, y }
+    const position = { ...BASIC_SHIP.position, pos }
+    return { ...BASIC_SHIP, id, position }
+  }),
+  size: { height: window.innerHeight, width: window.innerWidth },
+  bullets: [],
+  step: function () {
+    return this
+  },
+}
 
 const App = () => {
-  const shipControllers: Array<Controller> = [
-    {
-      shipId: BASIC_SHIP.id,
-      getInstruction: (ship: Ship, radar: Array<RadarResult>) =>
-        instructions.pop() || INSTRUCTION.IDLE,
-    },
-    {
-      shipId: 'fire',
-      getInstruction: (ship: Ship, radar: Array<RadarResult>) =>
-        instructionsFire.pop() || INSTRUCTION.IDLE,
-    },
-  ]
-  const defaultState: State = {
-    ships: [
-      BASIC_SHIP,
-      {
-        ...BASIC_SHIP,
-        id: 'fire',
-        position: { ...BASIC_SHIP.position, pos: { x: 1000, y: 0 } },
-      },
-    ],
-    size: { height: 2000, width: 2000 },
-    bullets: [],
-    step: () => defaultState,
-  }
-
-  const [state, setState] = useState(buildState(defaultState, shipControllers))
-
-  const refresh = () =>
-    setTimeout(() => {
-      setState(state => state.step())
-      refresh()
-    }, 1000)
-
-  useEffect(() => {
-    refresh()
-  }, [])
-  return (
-    <div>
-      <div>X: {state.ships[0].position.pos.x}</div>
-      <div>Y: {state.ships[0].position.pos.y}</div>
-      <div>D: {state.ships[0].position.direction}</div>
-      <div>S: {state.ships[0].position.speed}</div>
-    </div>
-  )
+  const [state] = useState(defaultState)
+  return <Renderer state={state} />
 }
 
 export default App
