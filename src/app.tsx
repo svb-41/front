@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import './app.css'
-import { step, State, INSTRUCTION, getInstructions } from './engine'
+import { step, State, INSTRUCTION, getInstructions, buildState } from './engine'
 import { BASIC_SHIP } from './engine/config'
 import { Controller } from './engine/control'
 import { Ship, RadarResult } from './engine/ship'
