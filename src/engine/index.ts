@@ -18,10 +18,17 @@ export class Engine {
   constructor(initialState: State, controllers: Array<Controller>) {
     this.state = initialState
     this.controllers = controllers
-    this.step = (nb?: number) =>
-      nb !== undefined && nb > 1
-        ? this.step(nb - 1)
-        : step(this.state, getInstructions(this.state, this.controllers))
+    this.step = (nb?: number) => {
+      if (nb && nb > 1) {
+        return this.step(nb - 1)
+      }
+      this.history.push(JSON.parse(JSON.stringify(this.state)))
+      this.state = step(
+        this.state,
+        getInstructions(this.state, this.controllers)
+      )
+      return this.state
+    }
   }
 }
 
