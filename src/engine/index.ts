@@ -11,14 +11,14 @@ import { Controller } from './control'
 
 export class Engine {
   state: State
-  step: (nb: number | undefined) => State
+  step: (nb?: number) => State
   controllers: Array<Controller>
   history: Array<State> = []
 
   constructor(initialState: State, controllers: Array<Controller>) {
     this.state = initialState
     this.controllers = controllers
-    this.step = (nb: number | undefined) =>
+    this.step = (nb?: number) =>
       nb !== undefined && nb > 1
         ? this.step(nb - 1)
         : step(this.state, getInstructions(this.state, this.controllers))
