@@ -1,9 +1,32 @@
 import { useState, useEffect } from 'react'
 import './App.css'
-import { step, typeState, INSTRUCTION } from './engine'
+import { step, typeState, INSTRUCTION, getInstructions } from './engine'
 import { BASIC_SHIP } from './engine/config'
+import { controller } from './engine/control'
+import { ship, radarResult } from './engine/ship'
+
+let instructions = [
+  INSTRUCTION.FIRE,
+  ...new Array(10).fill(1).map(_ => INSTRUCTION.IDLE),
+]
+let instructionsFire = [
+  INSTRUCTION.FIRE,
+  ...new Array(10).fill(1).map(_ => INSTRUCTION.TURN_LEFT),
+]
 
 const App = () => {
+  const shipControllers: Array<controller> = [
+    {
+      shipId: BASIC_SHIP.id,
+      getInstruction: (ship: ship, radar: Array<radarResult>) =>
+        instructions.pop() || INSTRUCTION.IDLE,
+    },
+    {
+      shipId: 'fire',
+      getInstruction: (ship: ship, radar: Array<radarResult>) =>
+        instructionsFire.pop() || INSTRUCTION.IDLE,
+    },
+  ]
   const defaultState: typeState = {
     ships: [
       BASIC_SHIP,
@@ -18,30 +41,9 @@ const App = () => {
   }
   const [state, setState] = useState(defaultState)
 
-  let instructions = [
-    ...new Array(12000)
-      .fill(1)
-      .map(_ => ({ id: BASIC_SHIP.id, instruction: INSTRUCTION.IDLE })),
-    { id: BASIC_SHIP.id, instruction: INSTRUCTION.FIRE },
-    ...new Array(10)
-      .fill(1)
-      .map(_ => ({ id: BASIC_SHIP.id, instruction: INSTRUCTION.IDLE })),
-  ]
-  let instructionsFire = [
-    ...new Array(12000)
-      .fill(1)
-      .map(_ => ({ id: 'fire', instruction: INSTRUCTION.IDLE })),
-    { id: 'fire', instruction: INSTRUCTION.FIRE },
-    ...new Array(10)
-      .fill(1)
-      .map(_ => ({ id: 'fire', instruction: INSTRUCTION.TURN_LEFT })),
-  ]
-
   const refresh = () =>
     setTimeout(() => {
-      setState(state =>
-        step(state, [instructions.pop()!!, instructionsFire.pop()!!])
-      )
+      setState(state => step(state, getInstructions(state, shipControllers)))
       refresh()
     }, 1000)
 

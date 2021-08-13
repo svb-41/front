@@ -15,6 +15,7 @@ export type stats = {
   acceleration: number
   turn: number
   size: number
+  detection?: number
 }
 
 export type bullet = {
@@ -23,6 +24,11 @@ export type bullet = {
   distance: number
   armed: boolean
   range: number
+}
+
+export type radarResult = {
+  position: position
+  size: number
 }
 
 const position = (position: position) => ({

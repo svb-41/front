@@ -1,5 +1,13 @@
-import { ship, step as shipStep, bullet, bulletStep, collide } from './ship'
+import {
+  ship,
+  step as shipStep,
+  bullet,
+  bulletStep,
+  collide,
+  radarResult,
+} from './ship'
 import { BASIC_BULLET } from './config'
+import { controller } from './control'
 
 export type typeState = {
   ships: Array<ship>
@@ -132,3 +140,23 @@ export const buildEngine = (state: typeState): typeEngine => ({
   step,
   timeElapsed: 0,
 })
+
+const getRadarResults = (ship: ship, state: typeState): Array<radarResult> => []
+
+export const getInstructions = (
+  state: typeState,
+  controllers: Array<controller>
+): Array<typeInstruction> =>
+  controllers
+    .map((c: controller) => ({
+      c,
+      ship: state.ships.find(s => s.id === c.shipId),
+    }))
+    .filter(val => val.ship !== undefined)
+    .map(context => ({
+      id: context.ship!.id,
+      instruction: context.c.getInstruction(
+        context.ship!!,
+        getRadarResults(context.ship!!, state)
+      ),
+    }))
