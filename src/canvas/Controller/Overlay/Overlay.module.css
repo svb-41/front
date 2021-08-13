@@ -1,0 +1,134 @@
+.toggler {
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  right: 0;
+  margin: 12px;
+  padding: 12px;
+  border-radius: 10px;
+  appearance: none;
+  border: 1px solid white;
+  background: rgb(0, 39, 157);
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  font-family: Menlo;
+  cursor: pointer;
+}
+
+.controller {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  bottom: 24px;
+  left: 24px;
+  right: 24px;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  background: #eee;
+  border-radius: 200px;
+  padding: 24px;
+}
+
+.dpad {
+}
+
+.abxy,
+.dpad {
+  display: inline-grid;
+  grid-template-areas:
+    'n1  x   n2'
+    'y   n3  a'
+    'n4  b   n5';
+  /* grid-gap: 12px; */
+  background: #ddd;
+  border-radius: 600px;
+  padding: 12px;
+}
+
+.abxyButton {
+  width: 40px;
+  height: 40px;
+  border-radius: 30px;
+}
+
+.abxyX {
+  composes: abxyButton;
+  background: blue;
+  grid-area: x;
+}
+
+.abxyA {
+  composes: abxyButton;
+  background: red;
+  grid-area: a;
+}
+
+.abxyB {
+  composes: abxyButton;
+  background: yellow;
+  grid-area: b;
+}
+
+.abxyY {
+  composes: abxyButton;
+  background: rgb(11, 210, 84);
+  grid-area: y;
+}
+
+.dpadButton {
+  width: 40px;
+  height: 40px;
+}
+
+.dpadUp {
+  composes: dpadButton;
+  grid-area: x;
+}
+
+.dpadRight {
+  composes: dpadButton;
+  grid-area: a;
+}
+
+.dpadDown {
+  composes: dpadButton;
+  grid-area: b;
+}
+
+.dpadLeft {
+  composes: dpadButton;
+  grid-area: y;
+}
+
+.start,
+.select {
+  width: 50px;
+  height: 15px;
+  background: #aaa;
+  border-radius: 300px;
+  margin-bottom: 3px;
+}
+
+.startWrapper,
+.selectWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Menlo';
+  font-size: 0.6rem;
+  font-weight: bold;
+  transform: rotate(-50deg);
+  margin-left: 0;
+  margin-right: 24px;
+}
+
+.selectWrapper {
+  margin-left: 30px;
+}
