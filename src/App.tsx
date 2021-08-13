@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import './App.css'
-import { step, typeState, INSTRUCTION, getInstructions } from './engine'
+import { step, State, INSTRUCTION, getInstructions } from './engine'
 import { BASIC_SHIP } from './engine/config'
-import { controller } from './engine/control'
-import { ship, radarResult } from './engine/ship'
+import { Controller } from './engine/control'
+import { Ship, RadarResult } from './engine/ship'
 
 let instructions = [
   INSTRUCTION.FIRE,
@@ -15,19 +15,19 @@ let instructionsFire = [
 ]
 
 const App = () => {
-  const shipControllers: Array<controller> = [
+  const shipControllers: Array<Controller> = [
     {
       shipId: BASIC_SHIP.id,
-      getInstruction: (ship: ship, radar: Array<radarResult>) =>
+      getInstruction: (ship: Ship, radar: Array<RadarResult>) =>
         instructions.pop() || INSTRUCTION.IDLE,
     },
     {
       shipId: 'fire',
-      getInstruction: (ship: ship, radar: Array<radarResult>) =>
+      getInstruction: (ship: Ship, radar: Array<RadarResult>) =>
         instructionsFire.pop() || INSTRUCTION.IDLE,
     },
   ]
-  const defaultState: typeState = {
+  const defaultState: State = {
     ships: [
       BASIC_SHIP,
       {

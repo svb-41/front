@@ -1,37 +1,37 @@
-export type ship = {
+export type Ship = {
   id: string
-  position: position
-  stats: stats
+  position: Position
+  stats: Stats
   destroyed: boolean
 }
 
-export type position = {
+export type Position = {
   pos: { x: number; y: number }
   direction: number
   speed: number
 }
 
-export type stats = {
+export type Stats = {
   acceleration: number
   turn: number
   size: number
   detection?: number
 }
 
-export type bullet = {
-  position: position
-  stats: stats
+export type Bullet = {
+  position: Position
+  stats: Stats
   distance: number
   armed: boolean
   range: number
 }
 
-export type radarResult = {
-  position: position
+export type RadarResult = {
+  position: Position
   size: number
 }
 
-const position = (position: position) => ({
+const position = (position: Position) => ({
   ...position,
   pos: {
     x: Math.cos(position.direction) * position.speed + position.pos.x,
@@ -39,23 +39,22 @@ const position = (position: position) => ({
   },
 })
 
-export const step = (ship: ship): ship => ({
+export const step = (ship: Ship): Ship => ({
   ...ship,
   position: position(ship.position),
 })
 
-export const bulletStep = (bullet: bullet): bullet => ({
+export const bulletStep = (bullet: Bullet): Bullet => ({
   ...bullet,
   armed: true,
   position: position(bullet.position),
 })
 
-const dist2 = (pos1: position, pos2: position) =>
+const dist2 = (pos1: Position, pos2: Position) =>
   Math.pow(pos1.pos.x - pos2.pos.x, 2) + Math.pow(pos1.pos.y - pos2.pos.y, 2)
 
-export const collide = (obj1: { position: position; stats: stats }) => (obj2: {
-  position: position
-  stats: stats
-}): boolean =>
-  dist2(obj1.position, obj2.position) <
-  Math.pow(obj1.stats.size + obj2.stats.size, 2)
+export const collide =
+  (obj1: { position: Position; stats: Stats }) =>
+  (obj2: { position: Position; stats: Stats }): boolean =>
+    dist2(obj1.position, obj2.position) <
+    Math.pow(obj1.stats.size + obj2.stats.size, 2)

@@ -1,6 +1,6 @@
-import { ship, bullet } from './ship'
+import { Ship, Bullet } from './ship'
 
-export const BASIC_SHIP: ship = {
+export const BASIC_SHIP: Ship = {
   id: 'basic',
   position: {
     pos: { x: 0, y: 0 },
@@ -11,7 +11,7 @@ export const BASIC_SHIP: ship = {
   destroyed: false,
 }
 
-export const BASIC_BULLET: bullet = {
+export const BASIC_BULLET: Bullet = {
   position: {
     pos: { x: 0, y: 0 },
     direction: 0,

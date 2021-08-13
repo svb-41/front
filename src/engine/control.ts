@@ -1,7 +1,7 @@
 import { INSTRUCTION } from '.'
-import { ship, radarResult } from './ship'
+import { Ship, RadarResult } from './ship'
 
-export type controller = {
+export type Controller = {
   shipId: string
-  getInstruction: (ship: ship, radar: Array<radarResult>) => INSTRUCTION
+  getInstruction: (ship: Ship, radar: Array<RadarResult>) => INSTRUCTION
 }
