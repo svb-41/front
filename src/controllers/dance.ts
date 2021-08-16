@@ -5,7 +5,7 @@ import { Ship, RadarResult } from '../engine/ship'
 const dance = (ship: Ship) => {
   const shipId = ship.id
   const getInstruction = (ship: Ship, radar: Array<RadarResult>, data: any) => {
-    return INSTRUCTION.IDLE
+    // return INSTRUCTION.IDLE
     if (data.wait < 0) {
       const target = radar.find(
         (res: RadarResult) =>
