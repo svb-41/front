@@ -169,7 +169,7 @@ export const getInstructions = (
     .filter(val => val.ship !== undefined)
     .map(context => ({
       id: context.ship!.id,
-      instruction: context.c.getInstruction(
+      instruction: context.c.next(
         context.ship!!,
         getRadarResults(context.ship!!, state)
       ),
