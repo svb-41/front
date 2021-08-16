@@ -46,6 +46,7 @@ export const step = (ship: Ship): Ship => ({
 
 export const bulletStep = (bullet: Bullet): Bullet => ({
   ...bullet,
+  distance: bullet.distance + bullet.position.speed,
   armed: true,
   position: position(bullet.position),
 })
