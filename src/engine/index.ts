@@ -28,7 +28,7 @@ export class Engine {
         this.state,
         getInstructions(this.state, this.controllers)
       )
-      if (this.history.length > 200) {
+      if (this.history.length > 2000) {
         if (!this.state.endOfGame) helpers.console.log('END')
         this.state.endOfGame = true
       }
@@ -113,6 +113,7 @@ const applyInstruction =
       case INSTRUCTION.FIRE:
         const bullet: Bullet = {
           ...BASIC_BULLET,
+          id: ship.id + ship.bulletsFired,
           position: {
             speed: BASIC_BULLET.position.speed + ship.position.speed,
             direction: ship.position.direction,
@@ -123,6 +124,7 @@ const applyInstruction =
           },
         }
         newBullets.push(bullet)
+        ship.bulletsFired = ship.bulletsFired + 1
         return ship
       default:
         return ship

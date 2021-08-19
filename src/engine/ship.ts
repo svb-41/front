@@ -4,6 +4,7 @@ export type Ship = {
   stats: Stats
   destroyed: boolean
   team: string
+  bulletsFired: number
 }
 
 export type Position = {
@@ -25,6 +26,7 @@ export type Bullet = {
   distance: number
   armed: boolean
   range: number
+  id: string
 }
 
 export type RadarResult = {

@@ -13,7 +13,7 @@ const dance = (ship: Ship) => {
           Math.abs(
             Math.atan2(res.position.pos.x, res.position.pos.y) -
               ship.position.direction
-          ) < 1
+          ) < 0.2
       )
       if (target) {
         return INSTRUCTION.FIRE

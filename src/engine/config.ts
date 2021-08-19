@@ -7,12 +7,14 @@ export const BASIC_SHIP: Ship = {
     direction: 0,
     speed: 0,
   },
-  stats: { size: 20, acceleration: 1, turn: Math.PI / 30, detection: 100 },
+  stats: { size: 16, acceleration: 1, turn: Math.PI / 30, detection: 30 },
   destroyed: false,
   team: 'none',
+  bulletsFired: 0,
 }
 
 export const BASIC_BULLET: Bullet = {
+  id: 'bullet',
   position: {
     pos: { x: 0, y: 0 },
     direction: 0,
@@ -31,9 +33,10 @@ export const BASIC_BASE: Ship = {
     direction: 0,
     speed: 0,
   },
-  stats: { size: 100, acceleration: 1, turn: Math.PI / 30, detection: 40 },
+  stats: { size: 32, acceleration: 1, turn: Math.PI / 30, detection: 10 },
   destroyed: false,
   team: 'none',
+  bulletsFired: 0,
 }
 
 type BuildShipProps = {

@@ -3,6 +3,7 @@ import { v4 as uuid } from 'uuid'
 import './app.css'
 import { State } from './engine'
 import danceController from './controllers/dance'
+import holdTheLineController from './controllers/dance'
 import { buildBasicShip } from './engine/config'
 import { Renderer } from '@/renderer'
 import { Engine } from '@/engine'
@@ -34,7 +35,9 @@ const defaultState: State = {
   maxSpeed: 100,
 }
 
-const controllers = defaultState.ships.map(danceController)
+const controllers = defaultState.ships.map(ship =>
+  Math.random() > 0.5 ? danceController(ship) : holdTheLineController(ship)
+)
 
 const App = () => {
   const [engine] = useState(new Engine(defaultState, controllers))
