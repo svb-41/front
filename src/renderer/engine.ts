@@ -48,10 +48,17 @@ export class Engine {
 
   private async preload() {
     helpers.console.log('=> [RendererEngine] Preload assets')
-    const url = '/assets/Ships/ship_0000.png'
-    await new Promise(r => this.#app.loader.add('ship', url).load(r))
+    const urlBlue = '/assets/Ships/ship_0000.png'
+    const urlRed = '/assets/Ships/ship_0001.png'
+    await new Promise(r => this.#app.loader.add('shipBlue', urlBlue).load(r))
+    await new Promise(r => this.#app.loader.add('shipRed', urlRed).load(r))
     this.#engine.state.ships.forEach(ship => {
-      const sprite = new PIXI.Sprite(this.#app.loader.resources.ship.texture)
+      const sprite = new PIXI.Sprite(
+        ship.team === 'red'
+          ? this.#app.loader.resources.shipRed.texture
+          : this.#app.loader.resources.shipBlue.texture
+      )
+
       sprite.position.set(ship.position.pos.x, ship.position.pos.y)
       sprite.anchor.set(0.5, 0.5)
       sprite.rotation = computeRotation(ship.position.direction)

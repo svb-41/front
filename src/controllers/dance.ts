@@ -9,10 +9,11 @@ const dance = (ship: Ship) => {
     if (data.wait < 0) {
       const target = radar.find(
         (res: RadarResult) =>
+          res.team !== ship.team &&
           Math.abs(
             Math.atan2(res.position.pos.x, res.position.pos.y) -
               ship.position.direction
-          ) < 0.1
+          ) < 1
       )
       if (target) {
         return INSTRUCTION.FIRE
@@ -42,10 +43,10 @@ const dance = (ship: Ship) => {
 
   return new Controller(shipId, getInstruction, {
     inst: Math.random() > 0.5 ? INSTRUCTION.TURN_RIGHT : INSTRUCTION.TURN_LEFT,
-    num: Math.random() * 100,
+    num: Math.random() * 100 * 0,
     cptDist: 20 + Math.random() * 100,
     cptTurn: 20 + Math.random() * 20,
-    wait: 30,
+    wait: 0,
   })
 }
 

@@ -3,6 +3,7 @@ export type Ship = {
   position: Position
   stats: Stats
   destroyed: boolean
+  team: string
 }
 
 export type Position = {
@@ -29,6 +30,7 @@ export type Bullet = {
 export type RadarResult = {
   position: Position
   size: number
+  team: string
 }
 
 const position = (position: Position) => ({

@@ -36,6 +36,9 @@ export type State = {
   ships: Array<Ship>
   size: { height: number; width: number }
   bullets: Array<Bullet>
+  maxSpeed?: number
+  teams: Array<string>
+  endOfGame?: boolean
 }
 
 export enum INSTRUCTION {
@@ -50,7 +53,13 @@ export enum INSTRUCTION {
 export type Instruction = { instruction: INSTRUCTION; id: string }
 
 const applyInstruction =
-  (newBullets: Array<Bullet>) =>
+  ({
+    newBullets,
+    maxSpeed,
+  }: {
+    newBullets: Array<Bullet>
+    maxSpeed?: number
+  }) =>
   ({ ship, instruction }: { ship: Ship; instruction: INSTRUCTION }): Ship => {
     if (ship.destroyed) return ship
     switch (instruction) {
@@ -75,7 +84,12 @@ const applyInstruction =
           ...ship,
           position: {
             ...ship.position,
-            speed: ship.position.speed + ship.stats.acceleration,
+            speed: maxSpeed
+              ? Math.min(
+                  ship.position.speed + ship.stats.acceleration,
+                  maxSpeed
+                )
+              : ship.position.speed + ship.stats.acceleration,
           },
         }
       case INSTRUCTION.BACK_THRUST:
@@ -83,10 +97,16 @@ const applyInstruction =
           ...ship,
           position: {
             ...ship.position,
-            speed: ship.position.speed - ship.stats.acceleration,
+            speed: maxSpeed
+              ? Math.max(
+                  ship.position.speed - ship.stats.acceleration,
+                  -maxSpeed
+                )
+              : ship.position.speed - ship.stats.acceleration,
           },
         }
       case INSTRUCTION.FIRE:
+        console.log('piou')
         const bullet: Bullet = {
           ...BASIC_BULLET,
           position: {
@@ -130,7 +150,7 @@ export const step = (state: State, instructions: Array<Instruction>): State => {
       ship,
       instruction: instruction.instruction,
     }))
-    .map(applyInstruction(newBullets))
+    .map(applyInstruction({ newBullets, maxSpeed: state.maxSpeed }))
     .map(shipStep)
 
   //@ts-ignore
@@ -154,7 +174,11 @@ const getRadarResults = (ship: Ship, state: State): Array<RadarResult> =>
             stats: { ...ship.stats, size: ship.stats.detection },
           })
         )
-        .map((s: Ship) => ({ size: s.stats.size, position: s.position }))
+        .map((s: Ship) => ({
+          size: s.stats.size,
+          position: s.position,
+          team: s.team,
+        }))
     : []
 
 export const getInstructions = (
