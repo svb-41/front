@@ -8,6 +8,7 @@ import {
 } from './ship'
 import { BASIC_BULLET } from './config'
 import { Controller } from './control'
+import * as helpers from '@/helpers'
 
 export class Engine {
   state: State
@@ -27,6 +28,10 @@ export class Engine {
         this.state,
         getInstructions(this.state, this.controllers)
       )
+      if (this.history.length > 200) {
+        if (!this.state.endOfGame) helpers.console.log('END')
+        this.state.endOfGame = true
+      }
       return this.state
     }
   }
@@ -106,7 +111,6 @@ const applyInstruction =
           },
         }
       case INSTRUCTION.FIRE:
-        console.log('piou')
         const bullet: Bullet = {
           ...BASIC_BULLET,
           position: {
@@ -137,6 +141,7 @@ const checkCollisions =
   }
 
 export const step = (state: State, instructions: Array<Instruction>): State => {
+  if (state.endOfGame) return state
   const newBullets: Array<Bullet> = []
   state.ships = state.ships
     .map(ship => ({
