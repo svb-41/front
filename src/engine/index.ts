@@ -28,10 +28,10 @@ export class Engine {
         this.state,
         getInstructions(this.state, this.controllers)
       )
-      if (this.history.length > 2000) {
-        if (!this.state.endOfGame) helpers.console.log('END')
-        this.state.endOfGame = true
-      }
+      // if (this.history.length > 200) {
+      //   if (!this.state.endOfGame) helpers.console.log('END')
+      //   this.state.endOfGame = true
+      // }
       return this.state
     }
   }
@@ -66,6 +66,7 @@ const applyInstruction =
     maxSpeed?: number
   }) =>
   ({ ship, instruction }: { ship: Ship; instruction: INSTRUCTION }): Ship => {
+    // helpers.console.log(ship.destroyed)
     if (ship.destroyed) return ship
     switch (instruction) {
       case INSTRUCTION.TURN_LEFT:
@@ -73,7 +74,8 @@ const applyInstruction =
           ...ship,
           position: {
             ...ship.position,
-            direction: ship.position.direction + ship.stats.turn,
+            direction:
+              (ship.position.direction + ship.stats.turn) % (Math.PI * 2),
           },
         }
       case INSTRUCTION.TURN_RIGHT:
@@ -81,7 +83,9 @@ const applyInstruction =
           ...ship,
           position: {
             ...ship.position,
-            direction: ship.position.direction - ship.stats.turn,
+            direction:
+              (ship.position.direction - ship.stats.turn + Math.PI * 2) %
+              (Math.PI * 2),
           },
         }
       case INSTRUCTION.THRUST:
@@ -111,6 +115,7 @@ const applyInstruction =
           },
         }
       case INSTRUCTION.FIRE:
+        if (ship.coolDown > 0) return ship
         const bullet: Bullet = {
           ...BASIC_BULLET,
           id: ship.id + ship.bulletsFired,
@@ -118,13 +123,20 @@ const applyInstruction =
             speed: BASIC_BULLET.position.speed + ship.position.speed,
             direction: ship.position.direction,
             pos: {
-              x: ship.position.pos.x + Math.cos(ship.stats.size) + 1,
-              y: ship.position.pos.y + Math.sin(ship.stats.size) + 1,
+              x:
+                ship.position.pos.x +
+                (ship.stats.size + BASIC_BULLET.stats.size) *
+                  Math.cos(ship.position.direction),
+              y:
+                ship.position.pos.y +
+                (ship.stats.size + BASIC_BULLET.stats.size) *
+                  Math.sin(ship.position.direction),
             },
           },
         }
         newBullets.push(bullet)
         ship.bulletsFired = ship.bulletsFired + 1
+        ship.coolDown = bullet.coolDown
         return ship
       default:
         return ship
@@ -136,6 +148,7 @@ const checkCollisions =
   (b: Bullet): Bullet | undefined => {
     const destroyed = ships.find(collide(b))
     if (destroyed) {
+      helpers.console.log('boum ', destroyed?.id)
       if (b.armed) destroyed.destroyed = true
       return undefined
     }
@@ -158,23 +171,36 @@ export const step = (state: State, instructions: Array<Instruction>): State => {
       instruction: instruction.instruction,
     }))
     .map(applyInstruction({ newBullets, maxSpeed: state.maxSpeed }))
-    .map(shipStep)
 
+  state.bullets = [...state.bullets, ...newBullets]
+
+  const newState: State = new Array(10)
+    .fill(1)
+    .reduce((acc, _val) => allSteps(acc), state)
+  return { ...newState }
+}
+
+const allSteps = (state: State): State => {
+  const ships = state.ships.map(shipStep)
   //@ts-ignore
-  state.bullets = [
+  const bullets: Array<Bullet> = [
     ...state.bullets
       .filter((b: Bullet) => b.distance < b.range)
       .map(bulletStep)
-      .map(checkCollisions(state.ships))
+      .map(checkCollisions(ships))
       .filter((b: Bullet | undefined) => b !== undefined),
-    ...newBullets,
   ]
-  return { ...state }
+  return {
+    ...state,
+    ships,
+    bullets,
+  }
 }
 
 const getRadarResults = (ship: Ship, state: State): Array<RadarResult> =>
   ship.stats.detection
     ? state.ships
+        .filter(s => s.id !== ship.id)
         .filter(
           collide({
             position: ship.position,

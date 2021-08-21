@@ -5,6 +5,7 @@ export type Ship = {
   destroyed: boolean
   team: string
   bulletsFired: number
+  coolDown: number
 }
 
 export type Position = {
@@ -27,6 +28,7 @@ export type Bullet = {
   armed: boolean
   range: number
   id: string
+  coolDown: number
 }
 
 export type RadarResult = {
@@ -45,6 +47,7 @@ const position = (position: Position) => ({
 
 export const step = (ship: Ship): Ship => ({
   ...ship,
+  coolDown: ship.coolDown > 0 ? ship.coolDown - 1 : 0,
   position: position(ship.position),
 })
 

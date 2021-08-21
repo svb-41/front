@@ -1,6 +1,7 @@
 import { INSTRUCTION } from '../engine'
 import { Controller } from '../engine/control'
 import { Ship, RadarResult } from '../engine/ship'
+import * as helpers from '@/helpers'
 
 const hold = (ship: Ship) => {
   const shipId = ship.id
@@ -13,16 +14,17 @@ const hold = (ship: Ship) => {
       (res: RadarResult) =>
         res.team !== ship.team &&
         Math.abs(
-          Math.atan2(res.position.pos.x, res.position.pos.y) -
+          helpers.trigo.angle({ source: ship.position, target: res.position }) -
             ship.position.direction
-        ) < 1
+        ) < 0.1
     )
+
     if (target) {
       return INSTRUCTION.FIRE
     }
+
     return INSTRUCTION.IDLE
   }
-
   return new Controller(shipId, getInstruction, {})
 }
 

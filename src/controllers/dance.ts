@@ -1,6 +1,7 @@
 import { INSTRUCTION } from '../engine'
 import { Controller } from '../engine/control'
 import { Ship, RadarResult } from '../engine/ship'
+import * as helpers from '@/helpers'
 
 const dance = (ship: Ship) => {
   const shipId = ship.id
@@ -11,9 +12,11 @@ const dance = (ship: Ship) => {
         (res: RadarResult) =>
           res.team !== ship.team &&
           Math.abs(
-            Math.atan2(res.position.pos.x, res.position.pos.y) -
-              ship.position.direction
-          ) < 0.2
+            helpers.trigo.angle({
+              source: ship.position,
+              target: res.position,
+            }) - ship.position.direction
+          ) < 0.01
       )
       if (target) {
         return INSTRUCTION.FIRE
@@ -43,8 +46,8 @@ const dance = (ship: Ship) => {
 
   return new Controller(shipId, getInstruction, {
     inst: Math.random() > 0.5 ? INSTRUCTION.TURN_RIGHT : INSTRUCTION.TURN_LEFT,
-    num: Math.random() * 100 * 0,
-    cptDist: 20 + Math.random() * 100,
+    num: Math.random() * 100,
+    cptDist: 40 + Math.random() * 40,
     cptTurn: 20 + Math.random() * 20,
     wait: 0,
   })
