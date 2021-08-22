@@ -35,9 +35,10 @@ export type RadarResult = {
   position: Position
   size: number
   team: string
+  destroyed: boolean
 }
 
-const position = (position: Position) => ({
+export const position = (position: Position) => ({
   ...position,
   pos: {
     x: Math.cos(position.direction) * position.speed + position.pos.x,
@@ -58,7 +59,7 @@ export const bulletStep = (bullet: Bullet): Bullet => ({
   position: position(bullet.position),
 })
 
-const dist2 = (pos1: Position, pos2: Position) =>
+export const dist2 = (pos1: Position, pos2: Position) =>
   Math.pow(pos1.pos.x - pos2.pos.x, 2) + Math.pow(pos1.pos.y - pos2.pos.y, 2)
 
 export const collide =

@@ -15,7 +15,7 @@ export const BASIC_SHIP: Ship = {
   coolDown: 0,
 }
 export const MOTHER_SHIP: Ship = {
-  id: 'basic',
+  id: 'mother',
   position: {
     pos: { x: 0, y: 0 },
     direction: 0,
@@ -38,7 +38,7 @@ export const BASIC_BULLET: Bullet = {
   stats: { size: 4, acceleration: 0, turn: 0 },
   distance: 0,
   armed: false,
-  range: 1000,
+  range: 600,
   coolDown: 100,
 }
 

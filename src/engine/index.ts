@@ -80,7 +80,8 @@ const applyInstruction =
           position: {
             ...ship.position,
             direction:
-              (ship.position.direction + ship.stats.turn) % (Math.PI * 2),
+              (ship.position.direction + ship.stats.turn + Math.PI * 2) %
+              (Math.PI * 2),
           },
         }
       case INSTRUCTION.TURN_RIGHT:
@@ -216,6 +217,7 @@ const getRadarResults = (ship: Ship, state: State): Array<RadarResult> =>
           size: s.stats.size,
           position: s.position,
           team: s.team,
+          destroyed: s.destroyed,
         }))
     : []
 

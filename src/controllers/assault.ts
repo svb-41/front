@@ -3,13 +3,24 @@ import { Controller } from '../engine/control'
 import { Ship, RadarResult, dist2 } from '../engine/ship'
 import * as helpers from '@/helpers'
 
-const hold = (ship: Ship) => {
+const assault = (ship: Ship) => {
   const shipId = ship.id
-  const getInstruction = (
-    ship: Ship,
-    radar: Array<RadarResult>,
-    _data: any
-  ) => {
+  const getInstruction = (ship: Ship, radar: Array<RadarResult>, data: any) => {
+    if (ship.stats.size === 8) {
+      if (data.turn) {
+        data.turn = false
+        return Math.random() > 0.5
+          ? INSTRUCTION.TURN_LEFT
+          : INSTRUCTION.TURN_RIGHT
+      }
+      if (ship.position.speed < 0.1) {
+        return INSTRUCTION.THRUST
+      }
+    } else {
+      if (ship.position.speed < 0.1) {
+        return INSTRUCTION.THRUST
+      }
+    }
     const ally = radar.find(
       (res: RadarResult) =>
         res.team === ship.team &&
@@ -35,7 +46,7 @@ const hold = (ship: Ship) => {
       const resAim = helpers.trigo.aim({
         source: ship.position,
         target: nearestEnemy.position,
-        threshold: 0.1,
+        threshold: 0.02,
         delay: 200,
       })
       if (resAim === INSTRUCTION.FIRE && ally) return INSTRUCTION.IDLE
@@ -44,7 +55,7 @@ const hold = (ship: Ship) => {
 
     return INSTRUCTION.IDLE
   }
-  return new Controller(shipId, getInstruction, {})
+  return new Controller(shipId, getInstruction, { turn: false })
 }
 
-export default hold
+export default assault
