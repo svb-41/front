@@ -1,27 +1,50 @@
 import * as PIXI from 'pixi.js'
-import { Engine as GameEngine, State } from '@/engine'
+import { Engine as GameEngine } from '@/engine'
 import * as helpers from '@/helpers'
 import { sprites, getSprite } from '@/renderer/sprites'
+import * as ship from '@/engine/ship'
+
+type SpriteInfo = {
+  team: string
+  size: number
+}
 
 const computeRotation = (rotation: number) => -rotation + Math.PI / 2
+
+enum SpriteType {
+  SHIP,
+  BULLET,
+}
+
+const selectTexture = (
+  app: PIXI.Application,
+  type: SpriteType,
+  sprite?: SpriteInfo
+) => {
+  if (type === SpriteType.SHIP && sprite) {
+    const spriteId = getSprite(sprite.team, sprite.size)
+    return app.loader.resources[spriteId].texture
+  } else {
+    return app.loader.resources.bullet.texture
+  }
+}
 
 export class Engine {
   #app: PIXI.Application
   #engine: GameEngine
-  #ships: { [id: string]: PIXI.Sprite }
-  #bullets: { [id: string]: PIXI.Sprite }
+  #sprites: { [id: string]: PIXI.Sprite }
   #ended: boolean
 
   constructor(canvas: HTMLCanvasElement, engine: GameEngine) {
     helpers.console.log('=> [RendererEngine] Start Engine')
     const view = canvas
     const antialias = true
-    this.#ships = {}
-    this.#bullets = {}
+    this.#sprites = {}
     this.#engine = engine
     this.#ended = false
     this.#app = new PIXI.Application({ view, antialias, resizeTo: window })
     this.#engine.addEventListener('end', this.onEnd)
+    this.#engine.addEventListener('onSpriteRemove', this.onSpriteRemove)
     this.preload().then(async () => {
       this.#app.ticker.add(this.run)
     })
@@ -47,84 +70,67 @@ export class Engine {
     console.log('=> [RendererEngine] End the game')
   }
 
-  private updateDisplay(state: State) {
-    state.ships.forEach(ship => {
-      const { id, position } = ship
-      this.#ships[id].x = position.pos.x
-      this.#ships[id].y = this.computeY(position.pos.y)
-      this.#ships[id].rotation = computeRotation(position.direction)
+  private updateSprite(
+    type: SpriteType,
+    id: string,
+    position: ship.Position,
+    sprite?: SpriteInfo
+  ) {
+    if (this.#sprites[id]) {
+      this.#sprites[id].x = position.pos.x
+      this.#sprites[id].y = this.computeY(position.pos.y)
+      this.#sprites[id].rotation = computeRotation(position.direction)
+    } else {
+      const texture = selectTexture(this.#app, type, sprite)
+      const sprite_ = new PIXI.Sprite(texture)
+      const y = this.computeY(position.pos.y)
+      sprite_.position.set(position.pos.x, y)
+      sprite_.anchor.set(0.5, 0.5)
+      sprite_.rotation = computeRotation(position.direction)
+      this.#app.stage.addChild(sprite_)
+      this.#sprites[id] = sprite_
+    }
+  }
+
+  private onSpriteRemove = (event: Event) => {
+    const evt = event as CustomEvent
+    const ids: string[] = evt.detail
+    ids.forEach(id => {
+      this.#sprites[id]?.destroy()
+      delete this.#sprites[id]
     })
+  }
 
-    Object.entries(this.#bullets)
-      .filter(([id, _value]) => !state.bullets.find(b => b.id === id))
-      .forEach(([id, sprite]) => {
-        sprite.destroy()
-        delete this.#bullets[id]
-      })
-
-    state.bullets.forEach(bullet => {
+  private updateDisplay() {
+    this.#engine.state.ships.forEach(ship => {
+      const { id, position, team, stats } = ship
+      const size = stats.size
+      this.updateSprite(SpriteType.SHIP, id, position, { team, size })
+    })
+    this.#engine.state.bullets.forEach(bullet => {
       const { id, position } = bullet
-      if (this.#bullets[id]) {
-        this.#bullets[id].x = position.pos.x
-        this.#bullets[id].y = this.computeY(position.pos.y)
-        this.#bullets[id].rotation = computeRotation(position.direction)
-      } else {
-        const sprite = new PIXI.Sprite(
-          this.#app.loader.resources.bullet.texture
-        )
-        sprite.position.set(
-          bullet.position.pos.x,
-          this.computeY(bullet.position.pos.y)
-        )
-        sprite.anchor.set(0.5, 0.5)
-        sprite.rotation = computeRotation(bullet.position.direction)
-        this.#app.stage.addChild(sprite)
-        this.#bullets[bullet.id] = sprite
-      }
+      this.updateSprite(SpriteType.BULLET, id, position)
     })
   }
 
   private run = (deltaTime: number) => {
     if (!this.#ended) {
-      const state = this.#engine.step(deltaTime)
-      this.updateDisplay(state)
+      this.#engine.step(deltaTime)
+      this.updateDisplay()
     } else {
       this.#app.ticker.remove(this.run)
     }
   }
 
-  private async preload() {
-    helpers.console.log('=> [RendererEngine] Preload assets')
-
+  private async loadSprites() {
     for (const { url, name } of sprites) {
       await new Promise(r => this.#app.loader.add(name, url).load(r))
     }
+  }
 
-    this.#engine.state.ships.forEach(ship => {
-      const sprite = new PIXI.Sprite(
-        this.#app.loader.resources[getSprite(ship)].texture
-      )
-
-      sprite.position.set(
-        ship.position.pos.x,
-        this.computeY(ship.position.pos.y)
-      )
-      sprite.anchor.set(0.5, 0.5)
-      sprite.rotation = computeRotation(ship.position.direction)
-      this.#app.stage.addChild(sprite)
-      this.#ships[ship.id] = sprite
-    })
-
-    this.#engine.state.bullets.forEach(bullet => {
-      const sprite = new PIXI.Sprite(this.#app.loader.resources.bullet.texture)
-      sprite.position.set(
-        bullet.position.pos.x,
-        this.computeY(bullet.position.pos.y)
-      )
-      sprite.anchor.set(0.5, 0.5)
-      sprite.rotation = computeRotation(bullet.position.direction)
-      this.#app.stage.addChild(sprite)
-      this.#bullets[bullet.id] = sprite
-    })
+  private async preload() {
+    helpers.console.log('=> [RendererEngine] Preload assets')
+    await this.loadSprites()
+    this.updateDisplay()
   }
 }

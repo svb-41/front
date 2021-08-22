@@ -14,16 +14,16 @@ export const sprites: Array<{ name: string; url: string }> = [
   { name: 'explosion', url: '/assets/Tiles/tile_0005.png' },
 ]
 
-export const getSprite = (ship: Ship): string => {
-  switch (ship.team) {
+export const getSprite = (team: string, size: number): string => {
+  switch (team) {
     case 'red':
-      return ship.stats.size === 16 ? 'motherShipRed' : 'shipRed'
+      return size === 16 ? 'motherShipRed' : 'shipRed'
     case 'green':
-      return ship.stats.size === 16 ? 'motherShipGreen' : 'shipGreen'
+      return size === 16 ? 'motherShipGreen' : 'shipGreen'
     case 'yellow':
-      return ship.stats.size === 16 ? 'motherShipYellow' : 'shipYellow'
+      return size === 16 ? 'motherShipYellow' : 'shipYellow'
     case 'blue':
-      return ship.stats.size === 16 ? 'motherShipBlue' : 'shipBlue'
+      return size === 16 ? 'motherShipBlue' : 'shipBlue'
   }
   return 'torpedo'
 }
