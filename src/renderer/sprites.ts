@@ -11,6 +11,7 @@ export const sprites: Array<{ name: string; url: string }> = [
   { name: 'shipYellow', url: '/assets/Ships/ship_0007.png' },
   { name: 'bullet', url: '/assets/Tiles/tile_0000.png' },
   { name: 'torpedo', url: '/assets/Tiles/tile_0012.png' },
+  { name: 'explosion', url: '/assets/Tiles/tile_0005.png' },
 ]
 
 export const getSprite = (ship: Ship): string => {
