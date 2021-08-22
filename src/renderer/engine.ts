@@ -44,7 +44,7 @@ export class Engine extends EventTarget {
     this.#engine = engine
     this.#ended = false
     this.#app = new PIXI.Application({ view, antialias, resizeTo: window })
-    this.#engine.addEventListener('onSpriteRemove', this.onSpriteRemove)
+    this.#engine.addEventListener('sprite.remove', this.onSpriteRemove)
     this.#engine.addEventListener('boum', this.onBoum)
     this.#engine.addEventListener('log.add', this.onLog)
     this.#engine.addEventListener('log.clear', this.onClear)
@@ -62,7 +62,7 @@ export class Engine extends EventTarget {
       PIXI.BaseTexture.removeFromCache(resource.name)
       PIXI.BaseTexture.removeFromCache(resource.url)
     }
-    this.#engine.removeEventListener('onSpriteRemove', this.onSpriteRemove)
+    this.#engine.removeEventListener('sprite.remove', this.onSpriteRemove)
     this.#engine.removeEventListener('boum', this.onBoum)
     this.#engine.removeEventListener('log.add', this.onLog)
     this.#engine.removeEventListener('log.clear', this.onClear)

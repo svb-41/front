@@ -47,7 +47,7 @@ export const Renderer = ({ engine }: Props) => {
     const newState = pausedState === 'paused' ? 'resumed' : 'paused'
     setPausedState(newState)
     const detail = { paused: newState === 'paused' }
-    renderer.current?.dispatchEvent(new CustomEvent('pauseState', { detail }))
+    renderer.current?.dispatchEvent(new CustomEvent('state.pause', { detail }))
   }
   const canvas = useRef<HTMLCanvasElement>(null)
   useEffect(() => {

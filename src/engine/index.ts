@@ -203,7 +203,7 @@ const allSteps = (state: State, engine: Engine): State => {
   const bullets: Array<Bullet> = stepBullets.filter((b: Bullet) => !b.destroyed)
 
   engine.dispatchEvent(
-    new CustomEvent('onSpriteRemove', {
+    new CustomEvent('sprite.remove', {
       detail: stepBullets.filter(b => b.destroyed).map(b => b.id),
     })
   )
