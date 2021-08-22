@@ -10,9 +10,7 @@ export class Engine {
   #engine: GameEngine
   #ships: { [id: string]: PIXI.Sprite }
   #bullets: { [id: string]: PIXI.Sprite }
-  private computeY(y: number) {
-    return -y + this.#app.screen.height
-  }
+  #ended: boolean
 
   constructor(canvas: HTMLCanvasElement, engine: GameEngine) {
     helpers.console.log('=> [RendererEngine] Start Engine')
@@ -21,7 +19,9 @@ export class Engine {
     this.#ships = {}
     this.#bullets = {}
     this.#engine = engine
+    this.#ended = false
     this.#app = new PIXI.Application({ view, antialias, resizeTo: window })
+    this.#engine.addEventListener('end', this.onEnd)
     this.preload().then(async () => {
       this.#app.ticker.add(this.run)
     })
@@ -36,6 +36,15 @@ export class Engine {
     }
     this.#app.ticker.remove(this.run)
     this.#app.destroy()
+  }
+
+  private computeY(y: number) {
+    return -y + this.#app.screen.height
+  }
+
+  private onEnd = (_event: Event) => {
+    this.#ended = true
+    console.log('=> [RendererEngine] End the game')
   }
 
   private updateDisplay(state: State) {
@@ -76,8 +85,12 @@ export class Engine {
   }
 
   private run = (deltaTime: number) => {
-    const state = this.#engine.step(deltaTime)
-    this.updateDisplay(state)
+    if (!this.#ended) {
+      const state = this.#engine.step(deltaTime)
+      this.updateDisplay(state)
+    } else {
+      this.#app.ticker.remove(this.run)
+    }
   }
 
   private async preload() {

@@ -10,7 +10,7 @@ import { BASIC_BULLET } from './config'
 import { Controller } from './control'
 import * as helpers from '@/helpers'
 
-export class Engine {
+export class Engine extends EventTarget {
   state: State
   step: (nb?: number) => State
   controllers: Array<Controller>
@@ -22,6 +22,7 @@ export class Engine {
     controllers: Array<Controller>,
     gameEnder: (state: State) => boolean
   ) {
+    super()
     this.state = initialState
     this.gameEnder = gameEnder
     this.controllers = controllers
@@ -36,7 +37,9 @@ export class Engine {
       )
       const previousEnd = this.state.endOfGame
       this.state.endOfGame = gameEnder(this.state)
-      if (!previousEnd && this.state.endOfGame) helpers.console.log('END')
+      if (!previousEnd && this.state.endOfGame) {
+        this.dispatchEvent(new Event('end'))
+      }
       return this.state
     }
   }
@@ -162,7 +165,6 @@ const checkCollisions =
   }
 
 export const step = (state: State, instructions: Array<Instruction>): State => {
-  if (state.endOfGame) return state
   const newBullets: Array<Bullet> = []
   state.ships = state.ships
     .map(ship => ({
