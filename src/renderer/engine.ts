@@ -1,8 +1,9 @@
 import * as PIXI from 'pixi.js'
 import { Engine as GameEngine, State } from '@/engine'
 import * as helpers from '@/helpers'
+import { sprites, getSprite } from '@/renderer/sprites'
 
-const computeRotation = (rotation: number) => rotation - Math.PI / 2
+const computeRotation = (rotation: number) => rotation + Math.PI / 2
 
 export class Engine {
   #app: PIXI.Application
@@ -75,17 +76,14 @@ export class Engine {
 
   private async preload() {
     helpers.console.log('=> [RendererEngine] Preload assets')
-    const urlBlue = '/assets/Ships/ship_0000.png'
-    const urlRed = '/assets/Ships/ship_0001.png'
-    const urlBullet = '/assets/Tiles/tile_0000.png'
-    await new Promise(r => this.#app.loader.add('shipBlue', urlBlue).load(r))
-    await new Promise(r => this.#app.loader.add('shipRed', urlRed).load(r))
-    await new Promise(r => this.#app.loader.add('bullet', urlBullet).load(r))
+
+    for (const { url, name } of sprites) {
+      await new Promise(r => this.#app.loader.add(name, url).load(r))
+    }
+
     this.#engine.state.ships.forEach(ship => {
       const sprite = new PIXI.Sprite(
-        ship.team === 'red'
-          ? this.#app.loader.resources.shipRed.texture
-          : this.#app.loader.resources.shipBlue.texture
+        this.#app.loader.resources[getSprite(ship)].texture
       )
 
       sprite.position.set(ship.position.pos.x, ship.position.pos.y)

@@ -8,7 +8,20 @@ export const BASIC_SHIP: Ship = {
     direction: 0,
     speed: 0,
   },
-  stats: { size: 16, acceleration: 0.01, turn: Math.PI / 30, detection: 200 },
+  stats: { size: 8, acceleration: 0.01, turn: Math.PI / 30, detection: 200 },
+  destroyed: false,
+  team: 'none',
+  bulletsFired: 0,
+  coolDown: 0,
+}
+export const MOTHER_SHIP: Ship = {
+  id: 'basic',
+  position: {
+    pos: { x: 0, y: 0 },
+    direction: 0,
+    speed: 0,
+  },
+  stats: { size: 16, acceleration: 0.001, turn: Math.PI / 120, detection: 400 },
   destroyed: false,
   team: 'none',
   bulletsFired: 0,
@@ -58,6 +71,16 @@ export const buildBasicShip = ({
   ...BASIC_SHIP,
   id: uuid(),
   position: { ...BASIC_SHIP.position, ...position },
+  team,
+})
+
+export const buildMotherShip = ({
+  position = { pos: { x: 0, y: 0 }, direction: 0 },
+  team = 'none',
+}: BuildShipProps): Ship => ({
+  ...MOTHER_SHIP,
+  id: uuid(),
+  position: { ...MOTHER_SHIP.position, ...position },
   team,
 })
 

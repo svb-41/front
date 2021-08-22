@@ -23,7 +23,7 @@ const hold = (ship: Ship) => {
       return INSTRUCTION.FIRE
     }
 
-    return INSTRUCTION.IDLE
+    return INSTRUCTION.THRUST
   }
   return new Controller(shipId, getInstruction, {})
 }

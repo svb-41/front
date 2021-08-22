@@ -15,9 +15,15 @@ export class Engine {
   step: (nb?: number) => State
   controllers: Array<Controller>
   history: Array<State> = []
+  gameEnder: (state: State) => boolean
 
-  constructor(initialState: State, controllers: Array<Controller>) {
+  constructor(
+    initialState: State,
+    controllers: Array<Controller>,
+    gameEnder: (state: State) => boolean
+  ) {
     this.state = initialState
+    this.gameEnder = gameEnder
     this.controllers = controllers
     this.step = (nb?: number) => {
       if (nb && nb > 1) {
@@ -28,10 +34,9 @@ export class Engine {
         this.state,
         getInstructions(this.state, this.controllers)
       )
-      // if (this.history.length > 200) {
-      //   if (!this.state.endOfGame) helpers.console.log('END')
-      //   this.state.endOfGame = true
-      // }
+      const previousEnd = this.state.endOfGame
+      this.state.endOfGame = gameEnder(this.state)
+      if (!previousEnd && this.state.endOfGame) helpers.console.log('END')
       return this.state
     }
   }
