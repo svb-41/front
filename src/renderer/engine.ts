@@ -29,13 +29,14 @@ const selectTexture = (
   }
 }
 
-export class Engine {
+export class Engine extends EventTarget {
   #app: PIXI.Application
   #engine: GameEngine
   #sprites: { [id: string]: PIXI.Sprite }
   #ended: boolean
 
   constructor(canvas: HTMLCanvasElement, engine: GameEngine) {
+    super()
     helpers.console.log('=> [RendererEngine] Start Engine')
     const view = canvas
     const antialias = true
@@ -46,6 +47,7 @@ export class Engine {
     this.#engine.addEventListener('end', this.onEnd)
     this.#engine.addEventListener('onSpriteRemove', this.onSpriteRemove)
     this.#engine.addEventListener('boum', this.onBoum)
+    this.addEventListener('pauseState', this.onStatePause)
     this.preload().then(async () => {
       this.#app.ticker.add(this.run)
     })
@@ -58,17 +60,16 @@ export class Engine {
       PIXI.BaseTexture.removeFromCache(resource.name)
       PIXI.BaseTexture.removeFromCache(resource.url)
     }
+    this.#engine.removeEventListener('end', this.onEnd)
+    this.#engine.removeEventListener('onSpriteRemove', this.onSpriteRemove)
+    this.#engine.removeEventListener('boum', this.onBoum)
+    this.removeEventListener('pauseState', this.onStatePause)
     this.#app.ticker.remove(this.run)
     this.#app.destroy()
   }
 
   private computeY(y: number) {
     return -y + this.#app.screen.height
-  }
-
-  private onEnd = (_event: Event) => {
-    this.#ended = true
-    console.log('=> [RendererEngine] End the game')
   }
 
   private updateSprite(
@@ -93,22 +94,6 @@ export class Engine {
     }
   }
 
-  private onSpriteRemove = (event: Event) => {
-    const evt = event as CustomEvent
-    const ids: string[] = evt.detail
-    ids.forEach(id => {
-      this.#sprites[id]?.destroy()
-      delete this.#sprites[id]
-    })
-  }
-
-  private onBoum = (event: Event) => {
-    const evt = event as CustomEvent
-    const { ship, bullet }: { ship: ship.Ship; bullet: ship.Bullet } =
-      evt.detail
-    console.log('boum ', ship.id)
-  }
-
   private updateDisplay() {
     this.#engine.state.ships.forEach(ship => {
       const { id, position, team, stats } = ship
@@ -130,8 +115,47 @@ export class Engine {
     }
   }
 
+  // Event Listeners
+
+  private onSpriteRemove = (event: Event) => {
+    const evt = event as CustomEvent
+    const ids: string[] = evt.detail
+    ids.forEach(id => {
+      this.#sprites[id]?.destroy()
+      delete this.#sprites[id]
+    })
+  }
+
+  private onBoum = (event: Event) => {
+    type OnBoum = { ship: ship.Ship; bullet: ship.Bullet }
+    const evt = event as CustomEvent<OnBoum>
+    const { ship, bullet } = evt.detail
+    console.log('boum ', ship.id)
+    console.log('bullet ', bullet.id)
+  }
+
+  private onEnd = (_event: Event) => {
+    helpers.console.log('=> [RendererEngine] End the game')
+    this.#ended = true
+    this.dispatchEvent(new Event('end'))
+  }
+
+  private onStatePause = (event: Event) => {
+    const evt = event as CustomEvent
+    if (evt.detail.paused) {
+      helpers.console.log('=> [RendererEngine] Pause the game')
+      this.#app.ticker.stop()
+    } else {
+      helpers.console.log('=> [RendererEngine] Resume the game')
+      this.#app.ticker.start()
+    }
+  }
+
+  // Sprites
+
   private async loadSprites() {
     for (const { url, name } of sprites) {
+      console.log(this.#app.loader)
       await new Promise(r => this.#app.loader.add(name, url).load(r))
     }
   }
