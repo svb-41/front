@@ -45,6 +45,7 @@ export class Engine {
     this.#app = new PIXI.Application({ view, antialias, resizeTo: window })
     this.#engine.addEventListener('end', this.onEnd)
     this.#engine.addEventListener('onSpriteRemove', this.onSpriteRemove)
+    this.#engine.addEventListener('boum', this.onBoum)
     this.preload().then(async () => {
       this.#app.ticker.add(this.run)
     })
@@ -99,6 +100,13 @@ export class Engine {
       this.#sprites[id]?.destroy()
       delete this.#sprites[id]
     })
+  }
+
+  private onBoum = (event: Event) => {
+    const evt = event as CustomEvent
+    const { ship, bullet }: { ship: ship.Ship; bullet: ship.Bullet } =
+      evt.detail
+    console.log('boum ', ship.id)
   }
 
   private updateDisplay() {
