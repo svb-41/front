@@ -29,6 +29,7 @@ export type Bullet = {
   range: number
   id: string
   coolDown: number
+  destroyed: boolean
 }
 
 export type RadarResult = {
@@ -55,6 +56,7 @@ export const step = (ship: Ship): Ship => ({
 export const bulletStep = (bullet: Bullet): Bullet => ({
   ...bullet,
   distance: bullet.distance + bullet.position.speed,
+  destroyed: bullet.distance > bullet.range,
   armed: true,
   position: position(bullet.position),
 })

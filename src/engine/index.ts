@@ -33,7 +33,8 @@ export class Engine extends EventTarget {
       this.history.push(JSON.parse(JSON.stringify(this.state)))
       this.state = step(
         this.state,
-        getInstructions(this.state, this.controllers)
+        getInstructions(this.state, this.controllers),
+        this
       )
       const previousEnd = this.state.endOfGame
       this.state.endOfGame = gameEnder(this.state)
@@ -74,7 +75,6 @@ const applyInstruction =
     maxSpeed?: number
   }) =>
   ({ ship, instruction }: { ship: Ship; instruction: INSTRUCTION }): Ship => {
-    // helpers.console.log(ship.destroyed)
     if (ship.destroyed) return ship
     switch (instruction) {
       case INSTRUCTION.TURN_LEFT:
@@ -153,18 +153,24 @@ const applyInstruction =
   }
 
 const checkCollisions =
-  (ships: Array<Ship>) =>
-  (b: Bullet): Bullet | undefined => {
+  ({ ships, engine }: { ships: Array<Ship>; engine: Engine }) =>
+  (b: Bullet): Bullet => {
     const destroyed = ships.find(collide(b))
     if (destroyed) {
-      helpers.console.log('boum ', destroyed?.id)
+      engine.dispatchEvent(
+        new CustomEvent('boum', { detail: { ship: destroyed, bullet: b } })
+      )
       if (b.armed) destroyed.destroyed = true
-      return undefined
+      b.destroyed = true
     }
     return b
   }
 
-export const step = (state: State, instructions: Array<Instruction>): State => {
+export const step = (
+  state: State,
+  instructions: Array<Instruction>,
+  engine: Engine
+): State => {
   const newBullets: Array<Bullet> = []
   state.ships = state.ships
     .map(ship => ({
@@ -184,20 +190,24 @@ export const step = (state: State, instructions: Array<Instruction>): State => {
 
   const newState: State = new Array(10)
     .fill(1)
-    .reduce((acc, _val) => allSteps(acc), state)
+    .reduce((acc, _val) => allSteps(acc, engine), state)
   return { ...newState }
 }
 
-const allSteps = (state: State): State => {
+const allSteps = (state: State, engine: Engine): State => {
   const ships = state.ships.map(shipStep)
-  //@ts-ignore
-  const bullets: Array<Bullet> = [
-    ...state.bullets
-      .filter((b: Bullet) => b.distance < b.range)
-      .map(bulletStep)
-      .map(checkCollisions(ships))
-      .filter((b: Bullet | undefined) => b !== undefined),
-  ]
+  const stepBullets = state.bullets
+    .map(bulletStep)
+    .map(checkCollisions({ ships, engine }))
+
+  const bullets: Array<Bullet> = stepBullets.filter((b: Bullet) => !b.destroyed)
+
+  engine.dispatchEvent(
+    new CustomEvent('onSpriteRemove', {
+      detail: stepBullets.filter(b => b.destroyed).map(b => b.id),
+    })
+  )
+
   return {
     ...state,
     ships,

@@ -40,6 +40,7 @@ export const BASIC_BULLET: Bullet = {
   armed: false,
   range: 600,
   coolDown: 100,
+  destroyed: false,
 }
 
 export const BASIC_BASE: Ship = {
