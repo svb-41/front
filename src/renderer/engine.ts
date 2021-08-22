@@ -3,13 +3,16 @@ import { Engine as GameEngine, State } from '@/engine'
 import * as helpers from '@/helpers'
 import { sprites, getSprite } from '@/renderer/sprites'
 
-const computeRotation = (rotation: number) => rotation + Math.PI / 2
+const computeRotation = (rotation: number) => -rotation + Math.PI / 2
 
 export class Engine {
   #app: PIXI.Application
   #engine: GameEngine
   #ships: { [id: string]: PIXI.Sprite }
   #bullets: { [id: string]: PIXI.Sprite }
+  private computeY(y: number) {
+    return -y + this.#app.screen.height
+  }
 
   constructor(canvas: HTMLCanvasElement, engine: GameEngine) {
     helpers.console.log('=> [RendererEngine] Start Engine')
@@ -39,7 +42,7 @@ export class Engine {
     state.ships.forEach(ship => {
       const { id, position } = ship
       this.#ships[id].x = position.pos.x
-      this.#ships[id].y = position.pos.y
+      this.#ships[id].y = this.computeY(position.pos.y)
       this.#ships[id].rotation = computeRotation(position.direction)
     })
 
@@ -54,13 +57,16 @@ export class Engine {
       const { id, position } = bullet
       if (this.#bullets[id]) {
         this.#bullets[id].x = position.pos.x
-        this.#bullets[id].y = position.pos.y
+        this.#bullets[id].y = this.computeY(position.pos.y)
         this.#bullets[id].rotation = computeRotation(position.direction)
       } else {
         const sprite = new PIXI.Sprite(
           this.#app.loader.resources.bullet.texture
         )
-        sprite.position.set(bullet.position.pos.x, bullet.position.pos.y)
+        sprite.position.set(
+          bullet.position.pos.x,
+          this.computeY(bullet.position.pos.y)
+        )
         sprite.anchor.set(0.5, 0.5)
         sprite.rotation = computeRotation(bullet.position.direction)
         this.#app.stage.addChild(sprite)
@@ -86,7 +92,10 @@ export class Engine {
         this.#app.loader.resources[getSprite(ship)].texture
       )
 
-      sprite.position.set(ship.position.pos.x, ship.position.pos.y)
+      sprite.position.set(
+        ship.position.pos.x,
+        this.computeY(ship.position.pos.y)
+      )
       sprite.anchor.set(0.5, 0.5)
       sprite.rotation = computeRotation(ship.position.direction)
       this.#app.stage.addChild(sprite)
@@ -95,7 +104,10 @@ export class Engine {
 
     this.#engine.state.bullets.forEach(bullet => {
       const sprite = new PIXI.Sprite(this.#app.loader.resources.bullet.texture)
-      sprite.position.set(bullet.position.pos.x, bullet.position.pos.y)
+      sprite.position.set(
+        bullet.position.pos.x,
+        this.computeY(bullet.position.pos.y)
+      )
       sprite.anchor.set(0.5, 0.5)
       sprite.rotation = computeRotation(bullet.position.direction)
       this.#app.stage.addChild(sprite)
