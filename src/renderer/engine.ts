@@ -181,6 +181,13 @@ export class Engine extends EventTarget {
   private async preload() {
     helpers.console.log('=> [RendererEngine] Preload assets')
     await this.loadSprites()
+    const background = this.#app.loader?.resources?.background?.texture
+    if (background) {
+      const width = window.innerWidth
+      const height = window.innerHeight
+      const back = new PIXI.TilingSprite(background, width, height)
+      this.#app.stage.addChild(back)
+    }
     this.updateDisplay()
   }
 }

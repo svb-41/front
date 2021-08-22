@@ -1,6 +1,6 @@
-import { Ship } from '@/engine/ship'
+export type Sprite = { name: string; url: string }
 
-export const sprites: Array<{ name: string; url: string }> = [
+export const sprites: Array<Sprite> = [
   { name: 'motherShipBlue', url: '/assets/Ships/ship_0000.png' },
   { name: 'motherShipRed', url: '/assets/Ships/ship_0001.png' },
   { name: 'motherShipGreen', url: '/assets/Ships/ship_0002.png' },
@@ -12,6 +12,7 @@ export const sprites: Array<{ name: string; url: string }> = [
   { name: 'bullet', url: '/assets/Tiles/tile_0000.png' },
   { name: 'torpedo', url: '/assets/Tiles/tile_0012.png' },
   { name: 'explosion', url: '/assets/Tiles/tile_0005.png' },
+  { name: 'background', url: '/assets/Backgrounds/blue.png' },
 ]
 
 export const getSprite = (team: string, size: number): string => {
