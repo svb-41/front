@@ -1,0 +1,31 @@
+.wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  margin: 12px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 6px;
+}
+
+.speed {
+  border: 2px solid white;
+  appearance: none;
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--monospace);
+  font-weight: bold;
+  font-size: 1rem;
+  background: orange;
+  color: white;
+}
+
+.button {
+  composes: speed;
+  cursor: pointer;
+  background: coral;
+}

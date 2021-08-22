@@ -3,6 +3,7 @@ import { Engine as GameEngine } from '@/engine'
 import * as helpers from '@/helpers'
 import * as Controller from '@/renderer/controller'
 import * as Logger from '@/renderer/logger'
+import * as Speed from '@/renderer/speed'
 import { Engine } from '@/renderer/engine'
 import styles from '@/renderer/react/renderer.module.css'
 
@@ -42,12 +43,18 @@ export const Renderer = ({ engine }: Props) => {
   const [pausedState, setPausedState] = useState<PausedState>('resumed')
   const [running, setRunning] = useState(false)
   const [logs, setLogs] = useState<string[]>([])
+  const [speed, setSpeed] = useState(helpers.settings.getInitialSpeed())
   const renderer = useRef<Engine | null>(null)
   const updater = () => {
     const newState = pausedState === 'paused' ? 'resumed' : 'paused'
     setPausedState(newState)
     const detail = { paused: newState === 'paused' }
     renderer.current?.dispatchEvent(new CustomEvent('state.pause', { detail }))
+  }
+  const onSetSpeed = (value: number) => {
+    setSpeed(value)
+    const detail = value
+    renderer.current?.dispatchEvent(new CustomEvent('state.speed', { detail }))
   }
   const canvas = useRef<HTMLCanvasElement>(null)
   useEffect(() => {
@@ -73,6 +80,7 @@ export const Renderer = ({ engine }: Props) => {
     <Fragment>
       <Controller.Overlay.Render />
       <Logger.Render logs={logs} />
+      <Speed.Render speed={speed} onSetSpeed={onSetSpeed} />
       {running && <Pause state={pausedState} onClick={updater} />}
       <canvas ref={canvas} className={styles.canvas} />
     </Fragment>

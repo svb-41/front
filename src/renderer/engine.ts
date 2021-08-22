@@ -4,24 +4,16 @@ import * as helpers from '@/helpers'
 import { sprites, getSprite } from '@/renderer/sprites'
 import * as ship from '@/engine/ship'
 
-type SpriteInfo = {
-  team: string
-  size: number
-}
-
 const computeRotation = (rotation: number) => -rotation + Math.PI / 2
 
-enum SpriteType {
+type Info = { team: string; size: number }
+enum Type {
   SHIP,
   BULLET,
 }
 
-const selectTexture = (
-  app: PIXI.Application,
-  type: SpriteType,
-  sprite?: SpriteInfo
-) => {
-  if (type === SpriteType.SHIP && sprite) {
+const selectTexture = (app: PIXI.Application, type: Type, sprite?: Info) => {
+  if (type === Type.SHIP && sprite) {
     const spriteId = getSprite(sprite.team, sprite.size)
     return app.loader.resources[spriteId].texture
   } else {
@@ -34,6 +26,7 @@ export class Engine extends EventTarget {
   #engine: GameEngine
   #sprites: { [id: string]: PIXI.Sprite }
   #ended: boolean
+  #speed: number
 
   constructor(canvas: HTMLCanvasElement, engine: GameEngine) {
     super()
@@ -43,6 +36,7 @@ export class Engine extends EventTarget {
     this.#sprites = {}
     this.#engine = engine
     this.#ended = false
+    this.#speed = helpers.settings.getInitialSpeed()
     this.#app = new PIXI.Application({ view, antialias, resizeTo: window })
     this.#engine.addEventListener('sprite.remove', this.onSpriteRemove)
     this.#engine.addEventListener('boum', this.onBoum)
@@ -50,6 +44,7 @@ export class Engine extends EventTarget {
     this.#engine.addEventListener('log.clear', this.onClear)
     this.#engine.addEventListener('state.end', this.onEnd)
     this.addEventListener('state.pause', this.onStatePause)
+    this.addEventListener('state.speed', this.onSpeed)
     this.preload().then(async () => {
       this.#app.ticker.add(this.run)
     })
@@ -68,6 +63,7 @@ export class Engine extends EventTarget {
     this.#engine.removeEventListener('log.clear', this.onClear)
     this.#engine.removeEventListener('state.end', this.onEnd)
     this.removeEventListener('state.pause', this.onStatePause)
+    this.removeEventListener('state.speed', this.onSpeed)
     this.#app.ticker.remove(this.run)
     this.#app.destroy()
   }
@@ -77,10 +73,10 @@ export class Engine extends EventTarget {
   }
 
   private updateSprite(
-    type: SpriteType,
+    type: Type,
     id: string,
     position: ship.Position,
-    sprite?: SpriteInfo
+    sprite?: Info
   ) {
     if (this.#sprites[id]) {
       this.#sprites[id].x = position.pos.x
@@ -102,17 +98,19 @@ export class Engine extends EventTarget {
     this.#engine.state.ships.forEach(ship => {
       const { id, position, team, stats } = ship
       const size = stats.size
-      this.updateSprite(SpriteType.SHIP, id, position, { team, size })
+      this.updateSprite(Type.SHIP, id, position, { team, size })
     })
     this.#engine.state.bullets.forEach(bullet => {
       const { id, position } = bullet
-      this.updateSprite(SpriteType.BULLET, id, position)
+      this.updateSprite(Type.BULLET, id, position)
     })
   }
 
   private run = (deltaTime: number) => {
     if (!this.#ended) {
-      this.#engine.step(deltaTime)
+      for (let i = 0; i < this.#speed; i++) {
+        this.#engine.step(deltaTime)
+      }
       this.updateDisplay()
     } else {
       this.#app.ticker.remove(this.run)
@@ -164,6 +162,12 @@ export class Engine extends EventTarget {
 
   private onClear = (_event: Event) => {
     this.dispatchEvent(new Event('log.clear'))
+  }
+
+  private onSpeed = (event: Event) => {
+    const evt = event as CustomEvent<number>
+    helpers.settings.setInitialSpeed(evt.detail)
+    this.#speed = evt.detail
   }
 
   // Sprites
