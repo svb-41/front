@@ -44,10 +44,12 @@ export class Engine extends EventTarget {
     this.#engine = engine
     this.#ended = false
     this.#app = new PIXI.Application({ view, antialias, resizeTo: window })
-    this.#engine.addEventListener('end', this.onEnd)
     this.#engine.addEventListener('onSpriteRemove', this.onSpriteRemove)
     this.#engine.addEventListener('boum', this.onBoum)
-    this.addEventListener('pauseState', this.onStatePause)
+    this.#engine.addEventListener('log.add', this.onLog)
+    this.#engine.addEventListener('log.clear', this.onClear)
+    this.#engine.addEventListener('state.end', this.onEnd)
+    this.addEventListener('state.pause', this.onStatePause)
     this.preload().then(async () => {
       this.#app.ticker.add(this.run)
     })
@@ -60,10 +62,12 @@ export class Engine extends EventTarget {
       PIXI.BaseTexture.removeFromCache(resource.name)
       PIXI.BaseTexture.removeFromCache(resource.url)
     }
-    this.#engine.removeEventListener('end', this.onEnd)
     this.#engine.removeEventListener('onSpriteRemove', this.onSpriteRemove)
     this.#engine.removeEventListener('boum', this.onBoum)
-    this.removeEventListener('pauseState', this.onStatePause)
+    this.#engine.removeEventListener('log.add', this.onLog)
+    this.#engine.removeEventListener('log.clear', this.onClear)
+    this.#engine.removeEventListener('state.end', this.onEnd)
+    this.removeEventListener('state.pause', this.onStatePause)
     this.#app.ticker.remove(this.run)
     this.#app.destroy()
   }
@@ -130,14 +134,14 @@ export class Engine extends EventTarget {
     type OnBoum = { ship: ship.Ship; bullet: ship.Bullet }
     const evt = event as CustomEvent<OnBoum>
     const { ship, bullet } = evt.detail
-    console.log('boum ', ship.id)
-    console.log('bullet ', bullet.id)
+    helpers.events.log(this, `boum ${ship.id}`)
+    helpers.events.log(this, `bullet ${bullet.id}`)
   }
 
   private onEnd = (_event: Event) => {
     helpers.console.log('=> [RendererEngine] End the game')
     this.#ended = true
-    this.dispatchEvent(new Event('end'))
+    this.dispatchEvent(new Event('state.end'))
   }
 
   private onStatePause = (event: Event) => {
@@ -151,12 +155,22 @@ export class Engine extends EventTarget {
     }
   }
 
+  private onLog = (event: Event) => {
+    console.log(event)
+    const evt = event as CustomEvent
+    const { detail } = evt
+    this.dispatchEvent(new CustomEvent('log.add', { detail }))
+  }
+
+  private onClear = (_event: Event) => {
+    this.dispatchEvent(new Event('log.clear'))
+  }
+
   // Sprites
 
   private async loadSprites() {
     for (const { url, name } of sprites) {
-      console.log(this.#app.loader)
-      await new Promise(r => this.#app.loader.add(name, url).load(r))
+      await new Promise(r => this.#app.loader?.add(name, url).load(r))
     }
   }
 

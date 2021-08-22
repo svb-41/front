@@ -8,7 +8,7 @@ import {
 } from './ship'
 import { BASIC_BULLET } from './config'
 import { Controller } from './control'
-import * as helpers from '@/helpers'
+// import * as helpers from '@/helpers'
 
 export class Engine extends EventTarget {
   state: State
@@ -39,7 +39,7 @@ export class Engine extends EventTarget {
       const previousEnd = this.state.endOfGame
       this.state.endOfGame = gameEnder(this.state)
       if (!previousEnd && this.state.endOfGame) {
-        this.dispatchEvent(new Event('end'))
+        this.dispatchEvent(new Event('state.end'))
       }
       return this.state
     }

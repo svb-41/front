@@ -12,7 +12,7 @@
   color: white;
   font-size: 1rem;
   font-weight: bold;
-  font-family: Menlo;
+  font-family: var(--monospace);
   cursor: pointer;
 }
 
@@ -121,7 +121,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-family: 'Menlo';
+  font-family: var(--monospace);
   font-size: 0.6rem;
   font-weight: bold;
   transform: rotate(-50deg);

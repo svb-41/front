@@ -2,12 +2,22 @@ import { useEffect, useRef, useState, Fragment } from 'react'
 import { Engine as GameEngine } from '@/engine'
 import * as helpers from '@/helpers'
 import * as Controller from '@/renderer/controller'
+import * as Logger from '@/renderer/logger'
 import { Engine } from '@/renderer/engine'
 import styles from '@/renderer/react/renderer.module.css'
 
 const handleSpacebar = (onClick: () => void) => {
   return (event: KeyboardEvent) => {
     if (event.code === 'Space') onClick()
+  }
+}
+
+const handleLog = (setLogs: (cb: (value: string[]) => string[]) => void) => {
+  return (event: Event) => {
+    type OnLog = { args: any[] }
+    const evt = event as CustomEvent<OnLog>
+    const now = Math.round(Date.now() / 1000)
+    setLogs(logs => [...evt.detail.args.map(arg => `[${now}] ${arg}`), ...logs])
   }
 }
 
@@ -31,6 +41,7 @@ export type Props = { engine: GameEngine }
 export const Renderer = ({ engine }: Props) => {
   const [pausedState, setPausedState] = useState<PausedState>('resumed')
   const [running, setRunning] = useState(false)
+  const [logs, setLogs] = useState<string[]>([])
   const renderer = useRef<Engine | null>(null)
   const updater = () => {
     const newState = pausedState === 'paused' ? 'resumed' : 'paused'
@@ -43,11 +54,17 @@ export const Renderer = ({ engine }: Props) => {
     helpers.console.log('=> [RendererReact] Run')
     if (canvas.current) {
       const updater = () => setRunning(false)
+      const handler = handleLog(setLogs)
+      const clearHandler = () => setLogs([])
       renderer.current = new Engine(canvas.current, engine)
       setRunning(true)
-      renderer.current.addEventListener('end', updater)
+      renderer.current.addEventListener('state.end', updater)
+      renderer.current.addEventListener('log.add', handler)
+      renderer.current.addEventListener('log.clear', clearHandler)
       return () => {
-        renderer.current?.removeEventListener('end', updater)
+        renderer.current?.removeEventListener('state.end', updater)
+        renderer.current?.removeEventListener('log.add', handler)
+        renderer.current?.removeEventListener('log.clear', clearHandler)
         renderer.current?.unmount()
       }
     }
@@ -55,6 +72,7 @@ export const Renderer = ({ engine }: Props) => {
   return (
     <Fragment>
       <Controller.Overlay.Render />
+      <Logger.Render logs={logs} />
       {running && <Pause state={pausedState} onClick={updater} />}
       <canvas ref={canvas} className={styles.canvas} />
     </Fragment>
