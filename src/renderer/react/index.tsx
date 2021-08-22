@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, Fragment } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Engine as GameEngine } from '@/engine'
 import * as helpers from '@/helpers'
 import * as Controller from '@/renderer/controller'
@@ -45,6 +45,7 @@ export const Renderer = ({ engine }: Props) => {
   const [logs, setLogs] = useState<string[]>([])
   const [speed, setSpeed] = useState(helpers.settings.getInitialSpeed())
   const renderer = useRef<Engine | null>(null)
+  const div = useRef<HTMLDivElement | null>(null)
   const updater = () => {
     const newState = pausedState === 'paused' ? 'resumed' : 'paused'
     setPausedState(newState)
@@ -59,11 +60,11 @@ export const Renderer = ({ engine }: Props) => {
   const canvas = useRef<HTMLCanvasElement>(null)
   useEffect(() => {
     helpers.console.log('=> [RendererReact] Run')
-    if (canvas.current) {
+    if (canvas.current && div.current) {
       const updater = () => setRunning(false)
       const handler = handleLog(setLogs)
       const clearHandler = () => setLogs([])
-      renderer.current = new Engine(canvas.current, engine)
+      renderer.current = new Engine(canvas.current, div.current, engine)
       setRunning(true)
       renderer.current.addEventListener('state.end', updater)
       renderer.current.addEventListener('log.add', handler)
@@ -77,12 +78,12 @@ export const Renderer = ({ engine }: Props) => {
     }
   }, [engine])
   return (
-    <Fragment>
+    <div className={styles.fullHeight} ref={div}>
       <Controller.Overlay.Render />
       <Logger.Render logs={logs} />
       <Speed.Render speed={speed} onSetSpeed={onSetSpeed} />
       {running && <Pause state={pausedState} onClick={updater} />}
       <canvas ref={canvas} className={styles.canvas} />
-    </Fragment>
+    </div>
   )
 }

@@ -22,3 +22,8 @@
   font-size: 1rem;
   font-weight: bold;
 }
+
+.fullHeight {
+  position: relative;
+  grid-area: 'game';
+}

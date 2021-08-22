@@ -28,7 +28,7 @@ export class Engine extends EventTarget {
   #ended: boolean
   #speed: number
 
-  constructor(canvas: HTMLCanvasElement, engine: GameEngine) {
+  constructor(canvas: HTMLCanvasElement, div: HTMLElement, engine: GameEngine) {
     super()
     helpers.console.log('=> [RendererEngine] Start Engine')
     const view = canvas
@@ -37,7 +37,7 @@ export class Engine extends EventTarget {
     this.#engine = engine
     this.#ended = false
     this.#speed = helpers.settings.getInitialSpeed()
-    this.#app = new PIXI.Application({ view, antialias, resizeTo: window })
+    this.#app = new PIXI.Application({ view, antialias, resizeTo: div })
     this.#engine.addEventListener('sprite.remove', this.onSpriteRemove)
     this.#engine.addEventListener('boum', this.onBoum)
     this.#engine.addEventListener('log.add', this.onLog)

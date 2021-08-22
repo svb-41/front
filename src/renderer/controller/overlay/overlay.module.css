@@ -1,5 +1,5 @@
 .toggler {
-  position: fixed;
+  position: absolute;
   z-index: 100;
   top: 0;
   right: 0;
@@ -17,7 +17,7 @@
 }
 
 .controller {
-  position: fixed;
+  position: absolute;
   display: flex;
   justify-content: center;
   align-items: center;
