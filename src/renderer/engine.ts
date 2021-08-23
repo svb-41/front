@@ -4,6 +4,8 @@ import * as helpers from '@/helpers'
 import { sprites, getSprite } from '@/renderer/sprites'
 import * as ship from '@/engine/ship'
 
+const CHANGE_EPHEMERAL_TEXTURE = 80
+
 const computeRotation = (rotation: number) => -rotation + Math.PI / 2
 
 type Info = { team: string; size: number }
@@ -21,10 +23,17 @@ const selectTexture = (app: PIXI.Application, type: Type, sprite?: Info) => {
   }
 }
 
+type Ephemeral = {
+  sprite: PIXI.Sprite
+  textures: Array<PIXI.Texture | undefined>
+  ttl: number
+}
+
 export class Engine extends EventTarget {
   #app: PIXI.Application
   #engine: GameEngine
   #sprites: { [id: string]: PIXI.Sprite }
+  #ephemerals: { [id: string]: Ephemeral }
   #ended: boolean
   #speed: number
 
@@ -34,12 +43,13 @@ export class Engine extends EventTarget {
     const view = canvas
     const antialias = true
     this.#sprites = {}
+    this.#ephemerals = {}
     this.#engine = engine
     this.#ended = false
     this.#speed = helpers.settings.getInitialSpeed()
     this.#app = new PIXI.Application({ view, antialias, resizeTo: div })
     this.#engine.addEventListener('sprite.remove', this.onSpriteRemove)
-    this.#engine.addEventListener('boum', this.onBoum)
+    this.#engine.addEventListener('sprite.explosion', this.onSpriteExplosion)
     this.#engine.addEventListener('log.add', this.onLog)
     this.#engine.addEventListener('log.clear', this.onClear)
     this.#engine.addEventListener('state.end', this.onEnd)
@@ -58,7 +68,7 @@ export class Engine extends EventTarget {
       PIXI.BaseTexture.removeFromCache(resource.url)
     }
     this.#engine.removeEventListener('sprite.remove', this.onSpriteRemove)
-    this.#engine.removeEventListener('boum', this.onBoum)
+    this.#engine.removeEventListener('sprite.explosion', this.onSpriteExplosion)
     this.#engine.removeEventListener('log.add', this.onLog)
     this.#engine.removeEventListener('log.clear', this.onClear)
     this.#engine.removeEventListener('state.end', this.onEnd)
@@ -106,12 +116,32 @@ export class Engine extends EventTarget {
     })
   }
 
+  private updateEphemerals() {
+    const ms = this.#app.ticker.elapsedMS * this.#speed
+    Object.keys(this.#ephemerals).forEach(id => {
+      const ephemeral = this.#ephemerals[id]
+      ephemeral.ttl -= ms
+      if (ephemeral.ttl < 0) {
+        if (ephemeral.textures.length > 0) {
+          const [texture, ...others] = ephemeral.textures
+          if (texture) ephemeral.sprite.texture = texture
+          ephemeral.textures = others
+          ephemeral.ttl = CHANGE_EPHEMERAL_TEXTURE
+        } else {
+          ephemeral.sprite.destroy()
+          delete this.#ephemerals[id]
+        }
+      }
+    })
+  }
+
   private run = (deltaTime: number) => {
     if (!this.#ended) {
       for (let i = 0; i < this.#speed; i++) {
         this.#engine.step(deltaTime)
       }
       this.updateDisplay()
+      this.updateEphemerals()
     } else {
       this.#app.ticker.remove(this.run)
     }
@@ -128,12 +158,25 @@ export class Engine extends EventTarget {
     })
   }
 
-  private onBoum = (event: Event) => {
+  private onSpriteExplosion = (event: Event) => {
     type OnBoum = { ship: ship.Ship; bullet: ship.Bullet }
     const evt = event as CustomEvent<OnBoum>
-    const { ship, bullet } = evt.detail
-    helpers.events.log(this, `boum ${ship.id}`)
-    helpers.events.log(this, `bullet ${bullet.id}`)
+    const texture = this.#app.loader.resources.explosion1.texture
+    const textures = [
+      this.#app.loader.resources.explosion2.texture,
+      this.#app.loader.resources.explosion3.texture,
+      this.#app.loader.resources.explosion4.texture,
+      this.#app.loader.resources.explosion5.texture,
+    ]
+    const id = `${evt.detail.ship.id}/${evt.detail.bullet.id}`
+    const sprite = new PIXI.Sprite(texture)
+    if (texture) sprite.texture = texture
+    sprite.anchor.set(0.5, 0.5)
+    const ship = this.#sprites[evt.detail.ship.id]
+    sprite.x = ship.x
+    sprite.y = ship.y
+    this.#ephemerals[id] = { sprite, textures, ttl: CHANGE_EPHEMERAL_TEXTURE }
+    this.#app.stage.addChild(sprite)
   }
 
   private onEnd = (_event: Event) => {

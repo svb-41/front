@@ -11,7 +11,11 @@ export const sprites: Array<Sprite> = [
   { name: 'shipYellow', url: '/assets/Ships/ship_0007.png' },
   { name: 'bullet', url: '/assets/Tiles/tile_0000.png' },
   { name: 'torpedo', url: '/assets/Tiles/tile_0012.png' },
-  { name: 'explosion', url: '/assets/Tiles/tile_0005.png' },
+  { name: 'explosion1', url: '/assets/Tiles/tile_0004.png' },
+  { name: 'explosion2', url: '/assets/Tiles/tile_0005.png' },
+  { name: 'explosion3', url: '/assets/Tiles/tile_0006.png' },
+  { name: 'explosion4', url: '/assets/Tiles/tile_0007.png' },
+  { name: 'explosion5', url: '/assets/Tiles/tile_0008.png' },
   { name: 'background', url: '/assets/Backgrounds/blue.png' },
 ]
 
