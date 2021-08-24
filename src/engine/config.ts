@@ -12,7 +12,7 @@ export const BASIC_BULLET: Bullet = {
   distance: 0,
   armed: false,
   range: 600,
-  coolDown: 200,
+  coolDown: 400,
   destroyed: false,
 }
 
