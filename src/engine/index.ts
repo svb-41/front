@@ -163,10 +163,10 @@ const checkCollisions =
   (b: Bullet): Bullet => {
     const destroyed = ships.find(collide(b))
     if (destroyed) {
-      const detail = { ship: destroyed, bullet: b }
-      engine.dispatchEvent(new CustomEvent('sprite.explosion', { detail }))
       if (b.armed) destroyed.destroyed = true
       b.destroyed = true
+      const detail = { ship: destroyed, bullet: b }
+      engine.dispatchEvent(new CustomEvent('sprite.explosion', { detail }))
     }
     return b
   }
