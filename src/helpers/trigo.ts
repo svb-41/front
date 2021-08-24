@@ -66,5 +66,5 @@ export const aim = ({
       Math.PI * 2) %
     (Math.PI * 2)
   if (deltaAngle < threshold) return ship.fire()
-  return deltaAngle < Math.PI ? ship.turnLeft() : ship.turnRight()
+  return ship.turn(-deltaAngle + Math.PI)
 }

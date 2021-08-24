@@ -37,16 +37,16 @@ const assault = (ship: Ship) => {
         dist: dist2(res.position, stats.position),
       }))
     if (closeEnemy.length > 0) {
-      const nearestEnemy: RadarResult = closeEnemy.reduce((acc, val) =>
+      const nearestEnemy = closeEnemy.reduce((acc, val) =>
         acc.dist > val.dist ? val : acc
-      ).res
+      )
 
       const resAim = helpers.trigo.aim({
         ship,
         source: stats.position,
-        target: nearestEnemy.position,
+        target: nearestEnemy.res.position,
         threshold: 0.02,
-        delay: 200,
+        delay: Math.sqrt(nearestEnemy.dist),
       })
       if (resAim.constructor.name === 'Fire' && ally) return ship.idle()
       return resAim
