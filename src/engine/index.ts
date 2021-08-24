@@ -6,9 +6,7 @@ import {
   collide,
   RadarResult,
 } from './ship'
-import { BASIC_BULLET } from './config'
-import { Controller } from './control'
-// import * as helpers from '@/helpers'
+import { Controller, Instruction, Idle, Turn, Thrust, Fire } from './control'
 
 export class Engine extends EventTarget {
   state: State
@@ -56,16 +54,7 @@ export type State = {
   endOfGame?: boolean
 }
 
-export enum INSTRUCTION {
-  IDLE = 'IDLE',
-  TURN_LEFT = 'TURN_LEFT',
-  TURN_RIGHT = 'TURN_RIGHT',
-  FIRE = 'FIRE',
-  THRUST = 'THRUST',
-  BACK_THRUST = 'BACK_THRUST',
-}
-
-export type Instruction = { instruction: INSTRUCTION; id: string }
+export type InstructionShip = { instruction: Instruction; id: string }
 
 const applyInstruction =
   ({
@@ -75,79 +64,95 @@ const applyInstruction =
     newBullets: Array<Bullet>
     maxSpeed?: number
   }) =>
-  ({ ship, instruction }: { ship: Ship; instruction: INSTRUCTION }): Ship => {
+  ({ ship, instruction }: { ship: Ship; instruction: Instruction }): Ship => {
     if (ship.destroyed) return ship
-    switch (instruction) {
-      case INSTRUCTION.TURN_LEFT:
-        return {
-          ...ship,
-          position: {
-            ...ship.position,
-            direction:
-              (ship.position.direction + ship.stats.turn + Math.PI * 2) %
-              (Math.PI * 2),
-          },
+    switch (instruction.constructor.name) {
+      case 'Turn':
+        const turn = instruction as Turn
+        if (turn.arg > 0) {
+          return {
+            ...ship,
+            position: {
+              ...ship.position,
+              direction:
+                (ship.position.direction +
+                  Math.min(turn.arg, ship.stats.turn) +
+                  Math.PI * 2) %
+                (Math.PI * 2),
+            },
+          }
+        } else {
+          return {
+            ...ship,
+            position: {
+              ...ship.position,
+              direction:
+                (ship.position.direction +
+                  Math.max(turn.arg, -ship.stats.turn) +
+                  Math.PI * 2) %
+                (Math.PI * 2),
+            },
+          }
         }
-      case INSTRUCTION.TURN_RIGHT:
-        return {
-          ...ship,
-          position: {
-            ...ship.position,
-            direction:
-              (ship.position.direction - ship.stats.turn + Math.PI * 2) %
-              (Math.PI * 2),
-          },
+      case 'Thrust':
+        const thrust = instruction as Thrust
+        if (thrust.arg) {
+          const acceleration = Math.min(thrust.arg, ship.stats.acceleration)
+          return {
+            ...ship,
+            position: {
+              ...ship.position,
+              speed: maxSpeed
+                ? Math.min(ship.position.speed + acceleration, maxSpeed)
+                : ship.position.speed + acceleration,
+            },
+          }
+        } else {
+          const acceleration = Math.max(thrust.arg, -ship.stats.acceleration)
+          return {
+            ...ship,
+            position: {
+              ...ship.position,
+              speed: maxSpeed
+                ? Math.max(ship.position.speed + acceleration, -maxSpeed)
+                : ship.position.speed + acceleration,
+            },
+          }
         }
-      case INSTRUCTION.THRUST:
-        return {
-          ...ship,
-          position: {
-            ...ship.position,
-            speed: maxSpeed
-              ? Math.min(
-                  ship.position.speed + ship.stats.acceleration,
-                  maxSpeed
-                )
-              : ship.position.speed + ship.stats.acceleration,
-          },
-        }
-      case INSTRUCTION.BACK_THRUST:
-        return {
-          ...ship,
-          position: {
-            ...ship.position,
-            speed: maxSpeed
-              ? Math.max(
-                  ship.position.speed - ship.stats.acceleration,
-                  -maxSpeed
-                )
-              : ship.position.speed - ship.stats.acceleration,
-          },
-        }
-      case INSTRUCTION.FIRE:
-        if (ship.coolDown > 0) return ship
+      case 'Fire':
+        const fire = instruction as Fire
+        if (fire.arg < 0 || ship.weapons.length === 0) return ship
+        const weapon = ship.weapons[fire.arg]
+        if (weapon.coolDown > 0 || weapon.amo === 0) return ship
+
         const bullet: Bullet = {
-          ...BASIC_BULLET,
+          ...weapon.bullet,
           id: ship.id + ship.bulletsFired,
           position: {
-            speed: BASIC_BULLET.position.speed + ship.position.speed,
+            speed: weapon.bullet.position.speed + ship.position.speed,
             direction: ship.position.direction,
             pos: {
               x:
                 ship.position.pos.x +
-                (ship.stats.size + BASIC_BULLET.stats.size) *
+                (ship.stats.size + weapon.bullet.stats.size) *
                   Math.cos(ship.position.direction),
               y:
                 ship.position.pos.y +
-                (ship.stats.size + BASIC_BULLET.stats.size) *
+                (ship.stats.size + weapon.bullet.stats.size) *
                   Math.sin(ship.position.direction),
             },
           },
         }
         newBullets.push(bullet)
         ship.bulletsFired = ship.bulletsFired + 1
-        ship.coolDown = bullet.coolDown
-        return ship
+        return {
+          ...ship,
+          weapons: ship.weapons.map((w, i) =>
+            i === fire.arg
+              ? { ...w, coolDown: bullet.coolDown, amo: weapon.amo - 1 }
+              : { ...w }
+          ),
+        }
       default:
         return ship
     }
@@ -168,7 +173,7 @@ const checkCollisions =
 
 export const step = (
   state: State,
-  instructions: Array<Instruction>,
+  instructions: Array<InstructionShip>,
   engine: Engine
 ): State => {
   const newBullets: Array<Bullet> = []
@@ -177,7 +182,7 @@ export const step = (
       ship,
       instruction: instructions.find(i => i.id === ship.id) || {
         id: ship.id,
-        instruction: INSTRUCTION.IDLE,
+        instruction: new Idle(),
       },
     }))
     .map(({ ship, instruction }) => ({
@@ -236,7 +241,7 @@ const getRadarResults = (ship: Ship, state: State): Array<RadarResult> =>
 export const getInstructions = (
   state: State,
   controllers: Array<Controller<any>>
-): Array<Instruction> =>
+): Array<InstructionShip> =>
   controllers
     .map((c: Controller<any>) => ({
       c,

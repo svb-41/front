@@ -1,28 +1,27 @@
-import { INSTRUCTION } from '../engine'
-import { Controller } from '../engine/control'
+import { Controller, ControllerArgs } from '../engine/control'
 import { Ship, RadarResult, dist2 } from '../engine/ship'
 import * as helpers from '@/helpers'
 
 type Data = {}
 const hold = (ship: Ship) => {
   const shipId = ship.id
-  const getInstruction = (ship: Ship, radar: RadarResult[], _data: Data) => {
+  const getInstruction = ({ stats, radar, memory, ship }: ControllerArgs) => {
     const ally = radar.find(
       (res: RadarResult) =>
-        res.team === ship.team &&
+        res.team === stats.team &&
         Math.abs(
           helpers.trigo.angle({
-            source: ship.position,
+            source: stats.position,
             target: helpers.trigo.nextPosition(200)(res.position),
-          }) - ship.position.direction
+          }) - stats.position.direction
         ) < 0.1
     )
 
     const closeEnemy = radar
-      .filter((res: RadarResult) => res.team !== ship.team && !res.destroyed)
+      .filter((res: RadarResult) => res.team !== stats.team && !res.destroyed)
       .map((res: RadarResult) => ({
         res,
-        dist: dist2(res.position, ship.position),
+        dist: dist2(res.position, stats.position),
       }))
     if (closeEnemy.length > 0) {
       const nearestEnemy: RadarResult = closeEnemy.reduce((acc, val) =>
@@ -30,18 +29,19 @@ const hold = (ship: Ship) => {
       ).res
 
       const resAim = helpers.trigo.aim({
-        source: ship.position,
+        ship,
+        source: stats.position,
         target: nearestEnemy.position,
         threshold: 0.1,
         delay: 200,
       })
-      if (resAim === INSTRUCTION.FIRE && ally) return INSTRUCTION.IDLE
+      if (resAim === ship.fire() && ally) return ship.idle()
       return resAim
     }
 
-    return INSTRUCTION.IDLE
+    return ship.idle()
   }
-  return new Controller(shipId, getInstruction, {})
+  return new Controller<Data>(shipId, getInstruction, {})
 }
 
 export default hold

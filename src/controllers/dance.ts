@@ -1,10 +1,9 @@
-import { INSTRUCTION } from '../engine'
-import { Controller } from '../engine/control'
+import { Controller, ControllerArgs } from '../engine/control'
 import { Ship, RadarResult } from '../engine/ship'
 import * as helpers from '@/helpers'
 
 type Data = {
-  inst: INSTRUCTION
+  inst: number
   num: number
   cptDist: number
   cptTurn: number
@@ -12,47 +11,47 @@ type Data = {
 }
 const dance = (ship: Ship) => {
   const shipId = ship.id
-  const getInstruction = (ship: Ship, radar: RadarResult[], data: Data) => {
+  const getInstruction = ({ stats, radar, memory, ship }: ControllerArgs) => {
     // return INSTRUCTION.IDLE
-    if (data.wait < 0) {
+    if (memory.wait < 0) {
       const target = radar.find(
         (res: RadarResult) =>
-          res.team !== ship.team &&
+          res.team !== stats.team &&
           Math.abs(
             helpers.trigo.angle({
-              source: ship.position,
+              source: stats.position,
               target: res.position,
-            }) - ship.position.direction
+            }) - stats.position.direction
           ) < 0.01
       )
       if (target) {
-        return INSTRUCTION.FIRE
+        return ship.fire()
       }
     } else {
-      data.wait--
+      memory.wait--
     }
-    if (data.num > 0) {
-      data.num--
-      return data.inst
+    if (memory.num > 0) {
+      memory.num--
+      return memory.inst
     }
-    if (data.cptDist <= 0 && data.cptTurn <= 0) {
-      data.cptDist = 20 + Math.random() * 100
-      data.cptTurn = 20 + Math.random() * 20
+    if (memory.cptDist <= 0 && memory.cptTurn <= 0) {
+      memory.cptDist = 20 + Math.random() * 100
+      memory.cptTurn = 20 + Math.random() * 20
     }
 
-    if (data.cptDist < 0 && data.cptTurn > 0) {
-      if (ship.position.speed) {
-        return INSTRUCTION.BACK_THRUST
+    if (memory.cptDist < 0 && memory.cptTurn > 0) {
+      if (stats.position.speed) {
+        return ship.thrust(-1)
       }
-      data.cptTurn--
-      return data.inst
+      memory.cptTurn--
+      return ship.turn(memory.inst)
     }
-    data.cptDist--
-    return ship.position.speed < 11 ? INSTRUCTION.THRUST : INSTRUCTION.IDLE
+    memory.cptDist--
+    return stats.position.speed < 11 ? ship.thrust() : ship.idle()
   }
 
-  return new Controller(shipId, getInstruction, {
-    inst: Math.random() > 0.5 ? INSTRUCTION.TURN_RIGHT : INSTRUCTION.TURN_LEFT,
+  return new Controller<Data>(shipId, getInstruction, {
+    inst: Math.random() - 1,
     num: Math.random() * 100,
     cptDist: 40 + Math.random() * 40,
     cptTurn: 20 + Math.random() * 20,

@@ -1,5 +1,5 @@
 import { Position, position } from '@/engine/ship'
-import { INSTRUCTION } from '@/engine'
+import { ControllerArgs, Instruction, ControlPanel } from '../engine/control'
 
 export const nextPosition =
   (num: number) =>
@@ -23,14 +23,16 @@ export const angle = ({
 }
 
 export const findDirection = ({
+  ship,
   source,
   target,
   delay = 1,
 }: {
+  ship: ControlPanel
   source: Position
   target: Position
   delay?: number
-}): INSTRUCTION => {
+}): Instruction => {
   const deltaAngle =
     (angle({
       source,
@@ -39,20 +41,22 @@ export const findDirection = ({
       source.direction +
       Math.PI * 2) %
     (Math.PI * 2)
-  return deltaAngle < Math.PI ? INSTRUCTION.TURN_LEFT : INSTRUCTION.TURN_RIGHT
+  return deltaAngle < Math.PI ? ship.turnLeft() : ship.turnRight()
 }
 
 export const aim = ({
+  ship,
   source,
   target,
   delay = 1,
   threshold = 0.1,
 }: {
+  ship: ControlPanel
   source: Position
   target: Position
   delay?: number
   threshold?: number
-}): INSTRUCTION => {
+}): Instruction => {
   const deltaAngle =
     (angle({
       source,
@@ -61,6 +65,6 @@ export const aim = ({
       source.direction +
       Math.PI * 2) %
     (Math.PI * 2)
-  if (deltaAngle < threshold) return INSTRUCTION.FIRE
-  return deltaAngle < Math.PI ? INSTRUCTION.TURN_LEFT : INSTRUCTION.TURN_RIGHT
+  if (deltaAngle < threshold) return ship.fire()
+  return deltaAngle < Math.PI ? ship.turnLeft() : ship.turnRight()
 }
