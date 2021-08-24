@@ -12,37 +12,38 @@ import { Controller } from './control'
 
 export class Engine extends EventTarget {
   state: State
-  step: (nb?: number) => State
-  controllers: Array<Controller>
+  controllers: Array<Controller<any>>
   history: Array<State> = []
   gameEnder: (state: State) => boolean
 
   constructor(
     initialState: State,
-    controllers: Array<Controller>,
+    controllers: Array<Controller<any>>,
     gameEnder: (state: State) => boolean
   ) {
     super()
     this.state = initialState
     this.gameEnder = gameEnder
     this.controllers = controllers
-    this.step = (nb?: number) => {
-      if (nb && nb > 1) {
-        return this.step(nb - 1)
-      }
-      this.history.push(JSON.parse(JSON.stringify(this.state)))
-      this.state = step(
-        this.state,
-        getInstructions(this.state, this.controllers),
-        this
-      )
-      const previousEnd = this.state.endOfGame
-      this.state.endOfGame = gameEnder(this.state)
-      if (!previousEnd && this.state.endOfGame) {
-        this.dispatchEvent(new Event('state.end'))
-      }
-      return this.state
+  }
+
+  switchController(controller: Controller<any>) {
+    const { shipId } = controller
+    const index = this.controllers.findIndex(c => c.shipId === shipId)
+    this.controllers[index] = controller
+  }
+
+  step(nb?: number): State {
+    if (nb && nb > 1) return this.step(nb - 1)
+    this.history.push(JSON.parse(JSON.stringify(this.state)))
+    const instruction = getInstructions(this.state, this.controllers)
+    this.state = step(this.state, instruction, this)
+    const previousEnd = this.state.endOfGame
+    this.state.endOfGame = this.gameEnder(this.state)
+    if (!previousEnd && this.state.endOfGame) {
+      this.dispatchEvent(new Event('state.end'))
     }
+    return this.state
   }
 }
 
@@ -157,9 +158,8 @@ const checkCollisions =
   (b: Bullet): Bullet => {
     const destroyed = ships.find(collide(b))
     if (destroyed) {
-      engine.dispatchEvent(
-        new CustomEvent('sprite.explosion', { detail: { ship: destroyed, bullet: b } })
-      )
+      const detail = { ship: destroyed, bullet: b }
+      engine.dispatchEvent(new CustomEvent('sprite.explosion', { detail }))
       if (b.armed) destroyed.destroyed = true
       b.destroyed = true
     }
@@ -235,10 +235,10 @@ const getRadarResults = (ship: Ship, state: State): Array<RadarResult> =>
 
 export const getInstructions = (
   state: State,
-  controllers: Array<Controller>
+  controllers: Array<Controller<any>>
 ): Array<Instruction> =>
   controllers
-    .map((c: Controller) => ({
+    .map((c: Controller<any>) => ({
       c,
       ship: state.ships.find(s => s.id === c.shipId),
     }))
