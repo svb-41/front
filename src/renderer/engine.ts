@@ -159,8 +159,8 @@ export class Engine extends EventTarget {
   }
 
   private onSpriteExplosion = (event: Event) => {
-    type OnBoum = { ship: ship.Ship; bullet: ship.Bullet }
-    const evt = event as CustomEvent<OnBoum>
+    type OnSpriteExplosion = { ship: ship.Ship; bullet: ship.Bullet }
+    const evt = event as CustomEvent<OnSpriteExplosion>
     const texture = this.#app.loader.resources.explosion1.texture
     const textures = [
       this.#app.loader.resources.explosion2.texture,
@@ -177,6 +177,11 @@ export class Engine extends EventTarget {
     sprite.y = ship.y
     this.#ephemerals[id] = { sprite, textures, ttl: CHANGE_EPHEMERAL_TEXTURE }
     this.#app.stage.addChild(sprite)
+    if (evt.detail.ship.destroyed) {
+      const filter = new PIXI.filters.ColorMatrixFilter()
+      filter.brightness(0.4, true)
+      ship.filters = [filter]
+    }
   }
 
   private onEnd = (_event: Event) => {
