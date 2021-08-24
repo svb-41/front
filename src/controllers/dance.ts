@@ -3,9 +3,16 @@ import { Controller } from '../engine/control'
 import { Ship, RadarResult } from '../engine/ship'
 import * as helpers from '@/helpers'
 
+type Data = {
+  inst: INSTRUCTION
+  num: number
+  cptDist: number
+  cptTurn: number
+  wait: number
+}
 const dance = (ship: Ship) => {
   const shipId = ship.id
-  const getInstruction = (ship: Ship, radar: Array<RadarResult>, data: any) => {
+  const getInstruction = (ship: Ship, radar: RadarResult[], data: Data) => {
     // return INSTRUCTION.IDLE
     if (data.wait < 0) {
       const target = radar.find(

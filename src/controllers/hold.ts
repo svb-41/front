@@ -3,13 +3,10 @@ import { Controller } from '../engine/control'
 import { Ship, RadarResult, dist2 } from '../engine/ship'
 import * as helpers from '@/helpers'
 
+type Data = {}
 const hold = (ship: Ship) => {
   const shipId = ship.id
-  const getInstruction = (
-    ship: Ship,
-    radar: Array<RadarResult>,
-    _data: any
-  ) => {
+  const getInstruction = (ship: Ship, radar: RadarResult[], _data: Data) => {
     const ally = radar.find(
       (res: RadarResult) =>
         res.team === ship.team &&

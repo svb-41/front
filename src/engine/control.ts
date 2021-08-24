@@ -1,25 +1,23 @@
 import { INSTRUCTION } from '.'
 import { Ship, RadarResult } from './ship'
 
-export class Controller {
-  data: any
+export type GetInstruction<Data> = (
+  ship: Ship,
+  radar: Array<RadarResult>,
+  data: Data
+) => INSTRUCTION
+
+export class Controller<Data> {
+  data: Data
   shipId: string
-  getInstruction: (
-    ship: Ship,
-    radar: Array<RadarResult>,
-    data: any
-  ) => INSTRUCTION
+  getInstruction: GetInstruction<Data>
 
   constructor(
     shipId: string,
-    getInstruction: (
-      ship: Ship,
-      radar: Array<RadarResult>,
-      data: any
-    ) => INSTRUCTION,
-    initialData?: any
+    getInstruction: GetInstruction<Data>,
+    initialData: Data
   ) {
-    this.data = initialData ? initialData : {}
+    this.data = initialData
     this.shipId = shipId
     this.getInstruction = getInstruction
   }
