@@ -1,0 +1,120 @@
+.grid {
+  display: grid;
+  grid-template-areas:
+    'menu tabs'
+    'menu monaco';
+  grid-template-columns: 200px 1fr;
+  grid-template-rows: 50px 1fr;
+  width: 100vw;
+}
+
+.tabs {
+  grid-area: tabs;
+  background: #555;
+  display: flex;
+  overflow: auto;
+}
+
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.tab {
+  color: white;
+  background: #333;
+  padding: 12px;
+  border-bottom: 3px solid transparent;
+  border-top: 3px solid transparent;
+  font-family: var(--monospace);
+  max-width: 200px;
+  width: 100%;
+  min-width: 50px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: all 0.2s;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  border-right: 1px solid #444;
+  border-left: 1px solid #444;
+}
+
+.tab:hover .close {
+  opacity: 1;
+}
+
+.tab:first-child {
+  border-left-color: transparent;
+}
+
+.tab:last-child {
+  border-right-color: transparent;
+}
+
+.tabActive {
+  composes: tab;
+  border-bottom-color: white;
+}
+
+.tabItemName {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu {
+  grid-area: menu;
+  background: #555;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #444;
+}
+
+.menuTitle {
+  color: white;
+  font-family: var(--monospace);
+  font-size: 0.9rem;
+  font-weight: bolder;
+  padding: 12px;
+  background: #444;
+}
+
+.menuItem {
+  color: white;
+  font-family: var(--monospace);
+  font-size: 0.8rem;
+  font-weight: bold;
+  padding: 6px 30px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.menuItem:first-child {
+  padding-top: 12px;
+}
+
+.menuItem:last-child {
+  padding-bottom: 12px;
+}
+
+.monaco {
+  grid-area: monaco;
+}
+
+.languageLogo {
+  margin-right: 6px;
+  width: 16px;
+  height: 16px;
+  border-radius: 2px;
+}
+
+.close {
+  width: 12px;
+  height: 12px;
+  opacity: 0;
+  transition: all 0.2s;
+}
