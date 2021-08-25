@@ -1,25 +1,26 @@
 import * as PIXI from 'pixi.js'
 import { Engine as GameEngine } from '@/engine'
 import * as helpers from '@/helpers'
-import { sprites, getSprite } from '@/renderer/sprites'
+import { sprites, getSprite, getBulletSprite } from '@/renderer/sprites'
 import * as ship from '@/engine/ship'
 
 const STANDARD_ANIMATED_SPEED = 0.075
 
 const computeRotation = (rotation: number) => -rotation + Math.PI / 2
 
-type Info = { team: string; size: number }
+type Info = { team?: string; size: number }
 enum Type {
   SHIP,
   BULLET,
 }
 
-const selectTexture = (app: PIXI.Application, type: Type, sprite?: Info) => {
+const selectTexture = (app: PIXI.Application, type: Type, sprite: Info) => {
   if (type === Type.SHIP && sprite) {
-    const spriteId = getSprite(sprite.team, sprite.size)
+    const spriteId = getSprite(sprite.team!, sprite.size)
     return app.loader.resources[spriteId].texture
   } else {
-    return app.loader.resources.bullet.texture
+    const spriteId = getBulletSprite(sprite.size)
+    return app.loader.resources[spriteId].texture
   }
 }
 
@@ -80,7 +81,7 @@ export class Engine extends EventTarget {
     type: Type,
     id: string,
     position: ship.Position,
-    sprite?: Info
+    sprite: Info
   ) {
     if (this.#sprites.has(id)) {
       const existing = this.#sprites.get(id)!
@@ -106,8 +107,9 @@ export class Engine extends EventTarget {
       this.updateSprite(Type.SHIP, id, position, { team, size })
     })
     this.#engine.state.bullets.forEach(bullet => {
-      const { id, position } = bullet
-      this.updateSprite(Type.BULLET, id, position)
+      const { id, position, stats } = bullet
+      const size = stats.size
+      this.updateSprite(Type.BULLET, id, position, { size })
     })
   }
 

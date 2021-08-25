@@ -1,10 +1,5 @@
 import { Position, position } from '@/engine/ship'
-import {
-  ControllerArgs,
-  Instruction,
-  ControlPanel,
-  BulletControlPanel,
-} from '@/engine/control'
+import { Instruction, ControlPanel, BulletControlPanel } from '@/engine/control'
 
 export const PI = Math.PI
 export const TWO_PI = Math.PI * 2
@@ -56,8 +51,8 @@ export const findDirection = ({
       target: nextPosition(delay)(target),
     }) -
       source.direction +
-      Math.PI * 2) %
-    (Math.PI * 2)
+      TWO_PI) %
+    TWO_PI
   return ship.turn(-deltaAngle + Math.PI)
 }
 export const aim = ({
@@ -81,8 +76,8 @@ export const aim = ({
       target: nextPosition(delay)(target),
     }) -
       source.direction +
-      Math.PI * 2) %
-    (Math.PI * 2)
+      TWO_PI) %
+    TWO_PI
   if (deltaAngle < threshold) return ship.fire(weapon)
-  return ship.turn(-deltaAngle + Math.PI)
+  return ship.turn(-deltaAngle + PI)
 }
