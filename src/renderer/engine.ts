@@ -238,7 +238,6 @@ export class Engine extends EventTarget {
     helpers.console.log('=> [RendererEngine] Preload assets')
     await this.loadSprites()
     await this.loadSpriteSheets()
-    console.log(this.#app.loader.resources)
     const background = this.#app.loader?.resources?.background?.texture
     if (background) {
       const width = window.innerWidth

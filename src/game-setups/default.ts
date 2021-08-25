@@ -3,7 +3,7 @@ import { Ship } from '@/engine/ship'
 import { buildBasicShip, buildMotherShip } from '@/engine/config/builder'
 import * as controller from '@/controllers'
 
-const teams = ['yellow', 'green']
+const teams = ['red', 'blue']
 const redMotherShip = buildMotherShip({
   position: { pos: { x: 100, y: 600 }, direction: 0 },
   team: teams[0],
