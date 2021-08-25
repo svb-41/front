@@ -4,7 +4,7 @@ import * as helpers from '@/helpers'
 import { sprites, getSprite } from '@/renderer/sprites'
 import * as ship from '@/engine/ship'
 
-const CHANGE_EPHEMERAL_TEXTURE = 80
+const STANDARD_ANIMATED_SPEED = 0.075
 
 const computeRotation = (rotation: number) => -rotation + Math.PI / 2
 
@@ -23,17 +23,11 @@ const selectTexture = (app: PIXI.Application, type: Type, sprite?: Info) => {
   }
 }
 
-type Ephemeral = {
-  sprite: PIXI.Sprite
-  textures: Array<PIXI.Texture | undefined>
-  ttl: number
-}
-
 export class Engine extends EventTarget {
   #app: PIXI.Application
   #engine: GameEngine
-  #sprites: { [id: string]: PIXI.Sprite }
-  #ephemerals: { [id: string]: Ephemeral }
+  #animateds: Map<string, PIXI.AnimatedSprite>
+  #sprites: Map<string, PIXI.Sprite>
   #ended: boolean
   #speed: number
 
@@ -42,8 +36,8 @@ export class Engine extends EventTarget {
     helpers.console.log('=> [RendererEngine] Start Engine')
     const view = canvas
     const antialias = true
-    this.#sprites = {}
-    this.#ephemerals = {}
+    this.#sprites = new Map()
+    this.#animateds = new Map()
     this.#engine = engine
     this.#ended = false
     this.#speed = helpers.settings.getInitialSpeed()
@@ -62,11 +56,6 @@ export class Engine extends EventTarget {
 
   unmount() {
     helpers.console.log('=> [RendererEngine] Unmount and clear')
-    for (const resource of Object.values(this.#app.loader.resources)) {
-      resource.texture?.destroy()
-      PIXI.BaseTexture.removeFromCache(resource.name)
-      PIXI.BaseTexture.removeFromCache(resource.url)
-    }
     this.#engine.removeEventListener('sprite.remove', this.onSpriteRemove)
     this.#engine.removeEventListener('sprite.explosion', this.onSpriteExplosion)
     this.#engine.removeEventListener('log.add', this.onLog)
@@ -74,6 +63,11 @@ export class Engine extends EventTarget {
     this.#engine.removeEventListener('state.end', this.onEnd)
     this.removeEventListener('state.pause', this.onStatePause)
     this.removeEventListener('state.speed', this.onSpeed)
+    for (const resource of Object.values(this.#app.loader.resources)) {
+      resource.texture?.destroy()
+      PIXI.BaseTexture.removeFromCache(resource.name)
+      PIXI.BaseTexture.removeFromCache(resource.url)
+    }
     this.#app.ticker.remove(this.run)
     this.#app.destroy()
   }
@@ -88,10 +82,11 @@ export class Engine extends EventTarget {
     position: ship.Position,
     sprite?: Info
   ) {
-    if (this.#sprites[id]) {
-      this.#sprites[id].x = position.pos.x
-      this.#sprites[id].y = this.computeY(position.pos.y)
-      this.#sprites[id].rotation = computeRotation(position.direction)
+    if (this.#sprites.has(id)) {
+      const existing = this.#sprites.get(id)!
+      existing.x = position.pos.x
+      existing.y = this.computeY(position.pos.y)
+      existing.rotation = computeRotation(position.direction)
     } else {
       const texture = selectTexture(this.#app, type, sprite)
       const sprite_ = new PIXI.Sprite(texture)
@@ -100,7 +95,7 @@ export class Engine extends EventTarget {
       sprite_.anchor.set(0.5, 0.5)
       sprite_.rotation = computeRotation(position.direction)
       this.#app.stage.addChild(sprite_)
-      this.#sprites[id] = sprite_
+      this.#sprites.set(id, sprite_)
     }
   }
 
@@ -116,32 +111,12 @@ export class Engine extends EventTarget {
     })
   }
 
-  private updateEphemerals() {
-    const ms = this.#app.ticker.elapsedMS * this.#speed
-    Object.keys(this.#ephemerals).forEach(id => {
-      const ephemeral = this.#ephemerals[id]
-      ephemeral.ttl -= ms
-      if (ephemeral.ttl < 0) {
-        if (ephemeral.textures.length > 0) {
-          const [texture, ...others] = ephemeral.textures
-          if (texture) ephemeral.sprite.texture = texture
-          ephemeral.textures = others
-          ephemeral.ttl = CHANGE_EPHEMERAL_TEXTURE
-        } else {
-          ephemeral.sprite.destroy()
-          delete this.#ephemerals[id]
-        }
-      }
-    })
-  }
-
   private run = (deltaTime: number) => {
     if (!this.#ended) {
       for (let i = 0; i < this.#speed; i++) {
         this.#engine.step(deltaTime)
       }
       this.updateDisplay()
-      this.updateEphemerals()
     } else {
       this.#app.ticker.remove(this.run)
     }
@@ -153,34 +128,26 @@ export class Engine extends EventTarget {
     const evt = event as CustomEvent
     const ids: string[] = evt.detail
     ids.forEach(id => {
-      this.#sprites[id]?.destroy()
-      delete this.#sprites[id]
+      this.#sprites.get(id)?.destroy()
+      this.#sprites.delete(id)
     })
   }
 
   private onSpriteExplosion = (event: Event) => {
     type OnSpriteExplosion = { ship: ship.Ship; bullet: ship.Bullet }
     const evt = event as CustomEvent<OnSpriteExplosion>
-    const texture = this.#app.loader.resources.explosion1.texture
-    const textures = [
-      this.#app.loader.resources.explosion2.texture,
-      this.#app.loader.resources.explosion3.texture,
-      this.#app.loader.resources.explosion4.texture,
-      this.#app.loader.resources.explosion5.texture,
-    ]
-    const id = `${evt.detail.ship.id}/${evt.detail.bullet.id}`
-    const sprite = new PIXI.Sprite(texture)
-    if (texture) sprite.texture = texture
-    sprite.anchor.set(0.5, 0.5)
-    const ship = this.#sprites[evt.detail.ship.id]
-    sprite.x = ship.x
-    sprite.y = ship.y
-    this.#ephemerals[id] = { sprite, textures, ttl: CHANGE_EPHEMERAL_TEXTURE }
-    this.#app.stage.addChild(sprite)
-    if (evt.detail.ship.destroyed) {
-      const filter = new PIXI.filters.ColorMatrixFilter()
-      filter.brightness(0.4, true)
-      ship.filters = [filter]
+    const ship = this.#sprites.get(evt.detail.ship.id)
+    if (ship) {
+      const id = `${evt.detail.ship.id}/${evt.detail.bullet.id}`
+      const sprite = this.createExplosion(id, ship)
+      this.#animateds.set(id, sprite)
+      this.#app.stage.addChild(sprite)
+      sprite.play()
+      if (evt.detail.ship.destroyed) {
+        const filter = new PIXI.filters.ColorMatrixFilter()
+        filter.brightness(0.4, true)
+        ship.filters = [filter]
+      }
     }
   }
 
@@ -194,9 +161,11 @@ export class Engine extends EventTarget {
     const evt = event as CustomEvent
     if (evt.detail.paused) {
       helpers.console.log('=> [RendererEngine] Pause the game')
+      this.#animateds.forEach(sprite => sprite.stop())
       this.#app.ticker.stop()
     } else {
       helpers.console.log('=> [RendererEngine] Resume the game')
+      this.#animateds.forEach(sprite => sprite.play())
       this.#app.ticker.start()
     }
   }
@@ -215,10 +184,34 @@ export class Engine extends EventTarget {
   private onSpeed = (event: Event) => {
     const evt = event as CustomEvent<number>
     helpers.settings.setInitialSpeed(evt.detail)
-    this.#speed = evt.detail
+    const speed = evt.detail
+    this.#speed = speed
+    const newSpeed = STANDARD_ANIMATED_SPEED * speed
+    this.#animateds.forEach(sprite => (sprite.animationSpeed = newSpeed))
   }
 
   // Sprites
+
+  private createExplosion(id: string, ship: PIXI.Sprite) {
+    const textures = [
+      this.#app.loader.resources.explosion1.texture!,
+      this.#app.loader.resources.explosion2.texture!,
+      this.#app.loader.resources.explosion3.texture!,
+      this.#app.loader.resources.explosion4.texture!,
+      this.#app.loader.resources.explosion5.texture!,
+    ]
+    const sprite = new PIXI.AnimatedSprite(textures)
+    sprite.loop = false
+    sprite.animationSpeed = STANDARD_ANIMATED_SPEED * this.#speed
+    sprite.anchor.set(0.5, 0.5)
+    sprite.onComplete = () => {
+      sprite.destroy()
+      this.#animateds.delete(id)
+    }
+    sprite.x = ship.x
+    sprite.y = ship.y
+    return sprite
+  }
 
   private async loadSprites() {
     for (const { url, name } of sprites) {
