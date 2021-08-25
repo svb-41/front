@@ -5,7 +5,7 @@ import * as HUD from '@/components/hud'
 import * as Monaco from '@/components/monaco'
 
 const App = () => {
-  const [screen, setScreen] = useState<HUD.State>('editor')
+  const [screen, setScreen] = useState<HUD.State>('game')
   const onClick = () => {
     const newScreen = screen === 'game' ? 'editor' : 'game'
     setScreen(newScreen)
