@@ -81,4 +81,6 @@ const controllers = [
   ...blue.map(controller.assault.default),
 ]
 
-export default new Engine(defaultState, controllers, gameEnder)
+const gen = () => new Engine(defaultState, controllers, gameEnder)
+
+export default gen
