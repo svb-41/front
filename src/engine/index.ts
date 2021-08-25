@@ -1,12 +1,22 @@
 import {
   Ship,
   step as shipStep,
+  Stats,
   Bullet,
   bulletStep,
   collide,
   RadarResult,
+  Position,
 } from './ship'
-import { Controller, Instruction, Idle, Turn, Thrust, Fire } from './control'
+import {
+  BulletController,
+  Controller,
+  Instruction,
+  Idle,
+  Turn,
+  Thrust,
+  Fire,
+} from './control'
 
 export class Engine extends EventTarget {
   state: State
@@ -56,6 +66,123 @@ export type State = {
 
 export type InstructionShip = { instruction: Instruction; id: string }
 
+const instructionTurn = ({
+  object,
+  turn,
+}: {
+  object: any
+  turn: Turn
+}): any => {
+  if (turn.arg > 0) {
+    return {
+      ...object,
+      position: {
+        ...object.position,
+        direction:
+          (object.position.direction +
+            Math.min(turn.arg, object.stats.turn) +
+            Math.PI * 2) %
+          (Math.PI * 2),
+      },
+    }
+  } else {
+    return {
+      ...object,
+      position: {
+        ...object.position,
+        direction:
+          (object.position.direction +
+            Math.max(turn.arg, -object.stats.turn) +
+            Math.PI * 2) %
+          (Math.PI * 2),
+      },
+    }
+  }
+}
+
+const instructionThrust = ({
+  object,
+  thrust,
+  maxSpeed,
+}: {
+  object: any
+  thrust: Thrust
+  maxSpeed?: number
+}): any => {
+  if (thrust.arg > 0) {
+    const acceleration = Math.min(thrust.arg, object.stats.acceleration)
+    return {
+      ...object,
+      position: {
+        ...object.position,
+        speed: maxSpeed
+          ? Math.min(object.position.speed + acceleration, maxSpeed)
+          : object.position.speed + acceleration,
+      },
+    }
+  } else {
+    const acceleration = Math.max(thrust.arg, -object.stats.acceleration)
+    return {
+      ...object,
+      position: {
+        ...object.position,
+        speed: maxSpeed
+          ? Math.max(object.position.speed + acceleration, -maxSpeed)
+          : object.position.speed + acceleration,
+      },
+    }
+  }
+}
+
+const instructionFire = ({
+  ship,
+  fire,
+  newBullets,
+}: {
+  ship: Ship
+  fire: Fire
+  newBullets: Array<Bullet>
+}): any => {
+  if (fire.arg < 0 || ship.weapons.length === 0) return ship
+  const weapon = ship.weapons[fire.arg]
+  if (weapon.coolDown > 0 || weapon.amo === 0) return ship
+
+  const controller =
+    weapon.bullet.builder && fire?.conf
+      ? weapon.bullet.builder()(fire.conf)
+      : undefined
+
+  const bullet: Bullet = {
+    ...weapon.bullet,
+    id: ship.id + ship.bulletsFired,
+    controller,
+    position: {
+      speed: weapon.bullet.position.speed + ship.position.speed,
+      direction: ship.position.direction,
+      pos: {
+        x:
+          ship.position.pos.x +
+          (ship.stats.size + weapon.bullet.stats.size) *
+            Math.cos(ship.position.direction),
+        y:
+          ship.position.pos.y +
+          (ship.stats.size + weapon.bullet.stats.size) *
+            Math.sin(ship.position.direction),
+      },
+    },
+  }
+  newBullets.push(bullet)
+  ship.bulletsFired = ship.bulletsFired + 1
+  return {
+    ...ship,
+    weapons: ship.weapons.map((w, i) =>
+      i === fire.arg
+        ? { ...w, coolDown: bullet.coolDown, amo: weapon.amo - 1 }
+        : { ...w }
+    ),
+  }
+}
+
 const applyInstruction =
   ({
     newBullets,
@@ -69,92 +196,41 @@ const applyInstruction =
     switch (instruction.constructor.name) {
       case 'Turn':
         const turn = instruction as Turn
-        if (turn.arg > 0) {
-          return {
-            ...ship,
-            position: {
-              ...ship.position,
-              direction:
-                (ship.position.direction +
-                  Math.min(turn.arg, ship.stats.turn) +
-                  Math.PI * 2) %
-                (Math.PI * 2),
-            },
-          }
-        } else {
-          return {
-            ...ship,
-            position: {
-              ...ship.position,
-              direction:
-                (ship.position.direction +
-                  Math.max(turn.arg, -ship.stats.turn) +
-                  Math.PI * 2) %
-                (Math.PI * 2),
-            },
-          }
-        }
+        return instructionTurn({ object: ship, turn })
       case 'Thrust':
         const thrust = instruction as Thrust
-        if (thrust.arg) {
-          const acceleration = Math.min(thrust.arg, ship.stats.acceleration)
-          return {
-            ...ship,
-            position: {
-              ...ship.position,
-              speed: maxSpeed
-                ? Math.min(ship.position.speed + acceleration, maxSpeed)
-                : ship.position.speed + acceleration,
-            },
-          }
-        } else {
-          const acceleration = Math.max(thrust.arg, -ship.stats.acceleration)
-          return {
-            ...ship,
-            position: {
-              ...ship.position,
-              speed: maxSpeed
-                ? Math.max(ship.position.speed + acceleration, -maxSpeed)
-                : ship.position.speed + acceleration,
-            },
-          }
-        }
+        return instructionThrust({ object: ship, thrust, maxSpeed })
       case 'Fire':
         const fire = instruction as Fire
-        if (fire.arg < 0 || ship.weapons.length === 0) return ship
-        const weapon = ship.weapons[fire.arg]
-        if (weapon.coolDown > 0 || weapon.amo === 0) return ship
-
-        const bullet: Bullet = {
-          ...weapon.bullet,
-          id: ship.id + ship.bulletsFired,
-          position: {
-            speed: weapon.bullet.position.speed + ship.position.speed,
-            direction: ship.position.direction,
-            pos: {
-              x:
-                ship.position.pos.x +
-                (ship.stats.size + weapon.bullet.stats.size) *
-                  Math.cos(ship.position.direction),
-              y:
-                ship.position.pos.y +
-                (ship.stats.size + weapon.bullet.stats.size) *
-                  Math.sin(ship.position.direction),
-            },
-          },
-        }
-        newBullets.push(bullet)
-        ship.bulletsFired = ship.bulletsFired + 1
-        return {
-          ...ship,
-          weapons: ship.weapons.map((w, i) =>
-            i === fire.arg
-              ? { ...w, coolDown: bullet.coolDown, amo: weapon.amo - 1 }
-              : { ...w }
-          ),
-        }
+        return instructionFire({ ship, fire, newBullets })
       default:
         return ship
+    }
+  }
+
+const applyBulletsInstructions =
+  ({ state }: { state: State }) =>
+  (bullet: Bullet): Bullet => {
+    if (bullet.controller) {
+      const controller = bullet.controller as BulletController<any>
+      const radar = getRadarResults(bullet, state)
+      const instruction = controller.next(bullet, radar)
+      switch (instruction.constructor.name) {
+        case 'Turn':
+          const turn = instruction as Turn
+          return instructionTurn({ object: bullet, turn })
+        case 'Thrust':
+          const thrust = instruction as Thrust
+          return instructionThrust({
+            object: bullet,
+            thrust,
+            maxSpeed: state.maxSpeed,
+          })
+        default:
+          return bullet
+      }
+    } else {
+      return bullet
     }
   }
 
@@ -171,7 +247,7 @@ const checkCollisions =
     return b
   }
 
-export const step = (
+const step = (
   state: State,
   instructions: Array<InstructionShip>,
   engine: Engine
@@ -202,6 +278,7 @@ export const step = (
 const allSteps = (state: State, engine: Engine): State => {
   const ships = state.ships.map(shipStep)
   const stepBullets = state.bullets
+    .map(applyBulletsInstructions({ state }))
     .map(bulletStep)
     .map(checkCollisions({ ships, engine }))
 
@@ -220,7 +297,10 @@ const allSteps = (state: State, engine: Engine): State => {
   }
 }
 
-const getRadarResults = (ship: Ship, state: State): Array<RadarResult> =>
+const getRadarResults = (
+  ship: { stats: Stats; position: Position; id: string },
+  state: State
+): Array<RadarResult> =>
   ship.stats.detection
     ? state.ships
         .filter(s => s.id !== ship.id)

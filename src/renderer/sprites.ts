@@ -16,6 +16,7 @@ export const sprites: Array<Sprite> = [
   { name: 'explosion3', url: '/assets/Tiles/tile_0006.png' },
   { name: 'explosion4', url: '/assets/Tiles/tile_0007.png' },
   { name: 'explosion5', url: '/assets/Tiles/tile_0008.png' },
+  { name: 'mine', url: '/assets/Tiles/tile_0016.png' },
   { name: 'background', url: '/assets/Backgrounds/blue.png' },
 ]
 
@@ -32,3 +33,6 @@ export const getSprite = (team: string, size: number): string => {
   }
   return 'torpedo'
 }
+
+export const getBulletSprite = (size: number): string =>
+  size === 8 ? 'torpedo' : 'bullet'

@@ -1,3 +1,5 @@
+import { BulletController } from './control'
+
 export type Ship = {
   id: string
   position: Position
@@ -6,6 +8,17 @@ export type Ship = {
   team: string
   bulletsFired: number
   weapons: Array<{ bullet: Bullet; amo: number; coolDown: number }>
+  class: SHIP_CLASS
+}
+
+export enum SHIP_CLASS {
+  DESTROYER = 'DESTROYER',
+  FIGHTER = 'FIGHTER',
+  STEALTH = 'STEALTH',
+  CRUISER = 'CRUISER',
+  BOMBER = 'BOMBER',
+  SCOUT = 'SCOUT',
+  BASE = 'BASE',
 }
 
 export type Position = {
@@ -30,6 +43,8 @@ export type Bullet = {
   id: string
   coolDown: number
   destroyed: boolean
+  controller?: BulletController<any>
+  builder?: () => (args: any) => BulletController<any>
 }
 
 export type RadarResult = {

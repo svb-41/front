@@ -1,5 +1,5 @@
 import { Ship, Bullet, SHIP_CLASS } from '@/engine/ship'
-import { FAST_BULLET, TORPEDO, BASIC_BULLET } from './weapon'
+import { FAST_BULLET, TORPEDO, HOMING_TORPEDO, BASIC_BULLET } from './weapon'
 
 export const BASIC_SHIP: Ship = {
   id: 'basic',
@@ -26,13 +26,18 @@ export const MOTHER_SHIP: Ship = {
     direction: 0,
     speed: 0,
   },
-  stats: { size: 16, acceleration: 0.001, turn: Math.PI / 120, detection: 400 },
+  stats: {
+    size: 16,
+    acceleration: 0.001,
+    turn: Math.PI / 120,
+    detection: 400,
+  },
   destroyed: false,
   team: 'none',
   bulletsFired: 0,
   weapons: [
     { bullet: BASIC_BULLET, amo: 20, coolDown: 0 },
-    { bullet: TORPEDO, amo: 2, coolDown: 0 },
+    { bullet: HOMING_TORPEDO, amo: 4, coolDown: 0 },
   ],
 }
 

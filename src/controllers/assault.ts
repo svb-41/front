@@ -46,7 +46,9 @@ const assault = (ship: Ship) => {
         source: stats.position,
         target: nearestEnemy.res.position,
         threshold: 0.02,
-        delay: Math.sqrt(nearestEnemy.dist),
+        delay:
+          Math.sqrt(nearestEnemy.dist) /
+          stats.weapons[0]?.bullet.position.speed,
       })
       if (resAim.constructor.name === 'Fire' && ally) return ship.idle()
       return resAim

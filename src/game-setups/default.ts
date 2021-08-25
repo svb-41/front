@@ -1,6 +1,6 @@
 import { State, Engine } from '@/engine'
 import { Ship } from '@/engine/ship'
-import { buildBasicShip, buildMotherShip } from '@/engine/config'
+import { buildBasicShip, buildMotherShip } from '@/engine/config/builder'
 import * as controller from '@/controllers'
 
 const teams = ['red', 'blue']
@@ -78,7 +78,7 @@ const defaultState: State = {
 
 const controllers = [
   ...red.map(controller.assault.default),
-  ...blue.map(controller.assault.default),
+  ...blue.map(controller.torpedo.default),
 ]
 
 const gen = () => new Engine(defaultState, controllers, gameEnder)
