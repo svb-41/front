@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Engine as GameEngine } from '@/engine'
 import * as helpers from '@/helpers'
-import * as Controller from '@/renderer/controller'
+import * as Controller from '@/components/controller'
 import * as Logger from '@/renderer/logger'
 import * as Speed from '@/renderer/speed'
 import { Engine } from '@/renderer/engine'
@@ -79,7 +79,7 @@ export const Renderer = ({ engine }: Props) => {
   }, [engine])
   return (
     <div className={styles.fullHeight} ref={div}>
-      <Controller.Overlay.Render />
+      <Controller.Overlay.Controller />
       <Logger.Render logs={logs} />
       <Speed.Render speed={speed} onSetSpeed={onSetSpeed} />
       {running && <Pause state={pausedState} onClick={updater} />}

@@ -1,7 +1,7 @@
 import { useState, useEffect, Fragment } from 'react'
-import * as Gamepad from '@/renderer/controller/gamepad'
-import * as Dpad from '@/renderer/controller/overlay/dpad'
-import styles from '@/renderer/controller/overlay/overlay.module.css'
+import * as Gamepad from '@/components/controller/gamepad'
+import * as Dpad from '@/components/controller/overlay/dpad'
+import styles from '@/components/controller/overlay/overlay.module.css'
 
 type ABXYButtonProps = {
   gamepad: Gamepad | undefined
@@ -74,7 +74,7 @@ const Display = () => {
   return <ControllerOverlay gamepad={gamepads[0]} />
 }
 
-export const Render = () => {
+export const Controller = () => {
   const [visible, setVisible] = useState(false)
   return (
     <Fragment>
