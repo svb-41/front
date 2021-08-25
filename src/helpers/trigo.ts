@@ -20,14 +20,6 @@ export const angle = ({ source, target }: Angle): number => {
   return angle < 0 ? angle + TWO_PI : angle
 }
 
-type DeltaAngle = { delay: number; target: Position; source: Position }
-const computeDeltaAngle = ({ delay, target, source }: DeltaAngle) => {
-  const nxt = nextPosition(delay)(target)
-  const srcTarget = angle({ source, target: nxt })
-  const deltaAngle = (srcTarget - source.direction + TWO_PI) % TWO_PI
-  return deltaAngle
-}
-
 export type FindDirection = {
   ship: ControlPanel
   source: Position
