@@ -123,7 +123,7 @@ const Menu = ({ items, templates, onItemClick }: MenuProps) => {
   )
 }
 
-export const Render = () => {
+export const Monaco = () => {
   const codeRef = useRef()
   const [tabs, setTabs] = useState<string[]>([])
   const [active, setActive] = useState<string>(empty)

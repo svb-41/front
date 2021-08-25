@@ -11,7 +11,7 @@ const selectText = (state: State) => {
 
 export type State = 'game' | 'editor'
 export type Props = { state: State; onClick: () => void }
-export const Render = ({ state, onClick }: Props) => {
+export const HUD = ({ state, onClick }: Props) => {
   const title = selectText(state)
   return (
     <div className={styles.hud}>
