@@ -8,7 +8,7 @@ export type Ship = {
   team: string
   bulletsFired: number
   weapons: Array<{ bullet: Bullet; amo: number; coolDown: number }>
-  class: SHIP_CLASS
+  shipClass: SHIP_CLASS
 }
 
 export enum SHIP_CLASS {

@@ -1,0 +1,41 @@
+{
+  "meta": {
+    "image": "ships_packed_green.png",
+    "size": { "w": 128, "h": 64 },
+    "scale": "1"
+  },
+  "frames": {
+    "destroyer": {
+      "frame": { "x": 0, "y": 0, "w": 32, "h": 32 },
+      "sourceSize": { "w": 32, "h": 32 }
+    },
+    "support": {
+      "frame": { "x": 32, "y": 0, "w": 32, "h": 32 },
+      "sourceSize": { "w": 32, "h": 32 }
+    },
+    "cruiser": {
+      "frame": { "x": 64, "y": 0, "w": 32, "h": 32 },
+      "sourceSize": { "w": 32, "h": 32 }
+    },
+    "bomber": {
+      "frame": { "x": 96, "y": 0, "w": 32, "h": 32 },
+      "sourceSize": { "w": 32, "h": 32 }
+    },
+    "scout": {
+      "frame": { "x": 0, "y": 32, "w": 32, "h": 32 },
+      "sourceSize": { "w": 32, "h": 32 }
+    },
+    "fighter": {
+      "frame": { "x": 32, "y": 32, "w": 32, "h": 32 },
+      "sourceSize": { "w": 32, "h": 32 }
+    },
+    "fighter2": {
+      "frame": { "x": 64, "y": 32, "w": 32, "h": 32 },
+      "sourceSize": { "w": 32, "h": 32 }
+    },
+    "stealth": {
+      "frame": { "x": 96, "y": 32, "w": 32, "h": 32 },
+      "sourceSize": { "w": 32, "h": 32 }
+    }
+  }
+}

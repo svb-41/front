@@ -1,14 +1,7 @@
+import { SHIP_CLASS } from '@/engine/ship'
 export type Sprite = { name: string; url: string }
 
 export const sprites: Array<Sprite> = [
-  { name: 'motherShipBlue', url: '/assets/Ships/ship_0000.png' },
-  { name: 'motherShipRed', url: '/assets/Ships/ship_0001.png' },
-  { name: 'motherShipGreen', url: '/assets/Ships/ship_0002.png' },
-  { name: 'motherShipYellow', url: '/assets/Ships/ship_0003.png' },
-  { name: 'shipBlue', url: '/assets/Ships/ship_0004.png' },
-  { name: 'shipRed', url: '/assets/Ships/ship_0005.png' },
-  { name: 'shipGreen', url: '/assets/Ships/ship_0006.png' },
-  { name: 'shipYellow', url: '/assets/Ships/ship_0007.png' },
   { name: 'bullet', url: '/assets/Tiles/tile_0000.png' },
   { name: 'torpedo', url: '/assets/Tiles/tile_0012.png' },
   { name: 'explosion1', url: '/assets/Tiles/tile_0004.png' },
@@ -19,20 +12,47 @@ export const sprites: Array<Sprite> = [
   { name: 'mine', url: '/assets/Tiles/tile_0016.png' },
   { name: 'background', url: '/assets/Backgrounds/blue.png' },
 ]
-
-export const getSprite = (team: string, size: number): string => {
-  switch (team) {
-    case 'red':
-      return size === 16 ? 'motherShipRed' : 'shipRed'
-    case 'green':
-      return size === 16 ? 'motherShipGreen' : 'shipGreen'
-    case 'yellow':
-      return size === 16 ? 'motherShipYellow' : 'shipYellow'
-    case 'blue':
-      return size === 16 ? 'motherShipBlue' : 'shipBlue'
-  }
-  return 'torpedo'
-}
-
 export const getBulletSprite = (size: number): string =>
   size === 8 ? 'torpedo' : 'bullet'
+
+export const spritesSheets: Array<Sprite> = [
+  { name: 'shipBlue', url: '/assets/Tilemap/mapBlue.json' },
+  { name: 'shipGreen', url: '/assets/Tilemap/mapGreen.json' },
+  { name: 'shipRed', url: '/assets/Tilemap/mapRed.json' },
+  { name: 'shipYellow', url: '/assets/Tilemap/mapYellow.json' },
+  { name: 'shipWhite', url: '/assets/Tilemap/mapWhite.json' },
+]
+
+export const colorSprite = (team: string): string => {
+  switch (team) {
+    case 'red':
+      return 'shipRed'
+    case 'blue':
+      return 'shipBlue'
+    case 'yellow':
+      return 'shipYellow'
+    case 'green':
+      return 'shipGreen'
+    default:
+      return 'shipWhite'
+  }
+}
+
+export const shipSprite = (ship: SHIP_CLASS): string => {
+  switch (ship) {
+    case SHIP_CLASS.DESTROYER:
+      return 'destroyer'
+    case SHIP_CLASS.FIGHTER:
+      return 'fighter'
+    case SHIP_CLASS.STEALTH:
+      return 'stealth'
+    case SHIP_CLASS.CRUISER:
+      return 'cruiser'
+    case SHIP_CLASS.BOMBER:
+      return 'bomber'
+    case SHIP_CLASS.SCOUT:
+      return 'scout'
+    default:
+      return 'support'
+  }
+}

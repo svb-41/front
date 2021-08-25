@@ -1,14 +1,20 @@
 import * as PIXI from 'pixi.js'
 import { Engine as GameEngine } from '@/engine'
 import * as helpers from '@/helpers'
-import { sprites, getSprite, getBulletSprite } from '@/renderer/sprites'
+import {
+  sprites,
+  getBulletSprite,
+  spritesSheets,
+  colorSprite,
+  shipSprite,
+} from '@/renderer/sprites'
 import * as ship from '@/engine/ship'
 
 const STANDARD_ANIMATED_SPEED = 0.075
 
 const computeRotation = (rotation: number) => -rotation + Math.PI / 2
 
-type Info = { team?: string; size: number }
+type Info = { team?: string; size: number; shipClass?: ship.SHIP_CLASS }
 enum Type {
   SHIP,
   BULLET,
@@ -16,8 +22,9 @@ enum Type {
 
 const selectTexture = (app: PIXI.Application, type: Type, sprite: Info) => {
   if (type === Type.SHIP && sprite) {
-    const spriteId = getSprite(sprite.team!, sprite.size)
-    return app.loader.resources[spriteId].texture
+    return app.loader.resources[colorSprite(sprite.team!)].textures![
+      shipSprite(sprite.shipClass!)
+    ]
   } else {
     const spriteId = getBulletSprite(sprite.size)
     return app.loader.resources[spriteId].texture
@@ -102,9 +109,9 @@ export class Engine extends EventTarget {
 
   private updateDisplay() {
     this.#engine.state.ships.forEach(ship => {
-      const { id, position, team, stats } = ship
+      const { id, position, team, stats, shipClass } = ship
       const size = stats.size
-      this.updateSprite(Type.SHIP, id, position, { team, size })
+      this.updateSprite(Type.SHIP, id, position, { team, size, shipClass })
     })
     this.#engine.state.bullets.forEach(bullet => {
       const { id, position, stats } = bullet
@@ -221,9 +228,17 @@ export class Engine extends EventTarget {
     }
   }
 
+  private async loadSpriteSheets() {
+    for (const { url, name } of spritesSheets) {
+      await new Promise(r => this.#app.loader?.add(name, url).load(r))
+    }
+  }
+
   private async preload() {
     helpers.console.log('=> [RendererEngine] Preload assets')
     await this.loadSprites()
+    await this.loadSpriteSheets()
+    console.log(this.#app.loader.resources)
     const background = this.#app.loader?.resources?.background?.texture
     if (background) {
       const width = window.innerWidth

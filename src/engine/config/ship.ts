@@ -3,7 +3,7 @@ import { FAST_BULLET, TORPEDO, HOMING_TORPEDO, BASIC_BULLET } from './weapon'
 
 export const BASIC_SHIP: Ship = {
   id: 'basic',
-  class: SHIP_CLASS.FIGHTER,
+  shipClass: SHIP_CLASS.FIGHTER,
   position: {
     pos: { x: 0, y: 0 },
     direction: 0,
@@ -20,7 +20,7 @@ export const BASIC_SHIP: Ship = {
 }
 export const MOTHER_SHIP: Ship = {
   id: 'mother',
-  class: SHIP_CLASS.DESTROYER,
+  shipClass: SHIP_CLASS.DESTROYER,
   position: {
     pos: { x: 0, y: 0 },
     direction: 0,
@@ -43,7 +43,7 @@ export const MOTHER_SHIP: Ship = {
 
 export const BASIC_BASE: Ship = {
   id: 'base',
-  class: SHIP_CLASS.BASE,
+  shipClass: SHIP_CLASS.BASE,
   position: {
     pos: { x: 0, y: 0 },
     direction: 0,

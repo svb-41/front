@@ -3,52 +3,52 @@ import { Ship } from '@/engine/ship'
 import { buildBasicShip, buildMotherShip } from '@/engine/config/builder'
 import * as controller from '@/controllers'
 
-const teams = ['red', 'blue']
+const teams = ['yellow', 'green']
 const redMotherShip = buildMotherShip({
   position: { pos: { x: 100, y: 600 }, direction: 0 },
-  team: 'red',
+  team: teams[0],
 })
 const red: Array<Ship> = [
   buildBasicShip({
     position: { pos: { x: 300, y: 300 }, direction: 0 },
-    team: 'red',
+    team: teams[0],
   }),
   buildBasicShip({
     position: { pos: { x: 300, y: 500 }, direction: 0 },
-    team: 'red',
+    team: teams[0],
   }),
   buildBasicShip({
     position: { pos: { x: 300, y: 700 }, direction: 0 },
-    team: 'red',
+    team: teams[0],
   }),
   buildBasicShip({
     position: { pos: { x: 300, y: 900 }, direction: 0 },
-    team: 'red',
+    team: teams[0],
   }),
   // redMotherShip,
 ]
 
 const blueMotherShip = buildMotherShip({
   position: { pos: { x: 1400, y: 600 }, direction: Math.PI },
-  team: 'blue',
+  team: teams[1],
 })
 
 const blue: Array<Ship> = [
   // buildBasicShip({
   //   position: { pos: { x: 1200, y: 300 }, direction: Math.PI },
-  //   team: 'blue',
+  //   team: teams[1],
   // }),
   // buildBasicShip({
   //   position: { pos: { x: 1200, y: 500 }, direction: Math.PI },
-  //   team: 'blue',
+  //   team: teams[1],
   // }),
   // buildBasicShip({
   //   position: { pos: { x: 1200, y: 700 }, direction: Math.PI },
-  //   team: 'blue',
+  //   team: teams[1],
   // }),
   // buildBasicShip({
   //   position: { pos: { x: 1200, y: 900 }, direction: Math.PI },
-  //   team: 'blue',
+  //   team: teams[1],
   // }),
   blueMotherShip,
 ]
