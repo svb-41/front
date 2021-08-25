@@ -5,35 +5,35 @@
     "scale": "1"
   },
   "frames": {
-    "destroyer": {
+    "destroyer-red": {
       "frame": { "x": 0, "y": 0, "w": 32, "h": 32 },
       "sourceSize": { "w": 32, "h": 32 }
     },
-    "support": {
+    "support-red": {
       "frame": { "x": 32, "y": 0, "w": 32, "h": 32 },
       "sourceSize": { "w": 32, "h": 32 }
     },
-    "cruiser": {
+    "cruiser-red": {
       "frame": { "x": 64, "y": 0, "w": 32, "h": 32 },
       "sourceSize": { "w": 32, "h": 32 }
     },
-    "bomber": {
+    "bomber-red": {
       "frame": { "x": 96, "y": 0, "w": 32, "h": 32 },
       "sourceSize": { "w": 32, "h": 32 }
     },
-    "scout": {
+    "scout-red": {
       "frame": { "x": 0, "y": 32, "w": 32, "h": 32 },
       "sourceSize": { "w": 32, "h": 32 }
     },
-    "fighter": {
+    "fighter-red": {
       "frame": { "x": 32, "y": 32, "w": 32, "h": 32 },
       "sourceSize": { "w": 32, "h": 32 }
     },
-    "fighter2": {
+    "fighter2-red": {
       "frame": { "x": 64, "y": 32, "w": 32, "h": 32 },
       "sourceSize": { "w": 32, "h": 32 }
     },
-    "stealth": {
+    "stealth-red": {
       "frame": { "x": 96, "y": 32, "w": 32, "h": 32 },
       "sourceSize": { "w": 32, "h": 32 }
     }

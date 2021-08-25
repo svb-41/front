@@ -38,21 +38,27 @@ export const colorSprite = (team: string): string => {
   }
 }
 
-export const shipSprite = (ship: SHIP_CLASS): string => {
+export const shipSprite = ({
+  ship,
+  team = 'white',
+}: {
+  ship: SHIP_CLASS
+  team?: string
+}): string => {
   switch (ship) {
     case SHIP_CLASS.DESTROYER:
-      return 'destroyer'
+      return `destroyer-${team}`
     case SHIP_CLASS.FIGHTER:
-      return 'fighter'
+      return `fighter-${team}`
     case SHIP_CLASS.STEALTH:
-      return 'stealth'
+      return `stealth-${team}`
     case SHIP_CLASS.CRUISER:
-      return 'cruiser'
+      return `cruiser-${team}`
     case SHIP_CLASS.BOMBER:
-      return 'bomber'
+      return `bomber-${team}`
     case SHIP_CLASS.SCOUT:
-      return 'scout'
+      return `scout-${team}`
     default:
-      return 'support'
+      return `support-${team}`
   }
 }

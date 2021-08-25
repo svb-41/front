@@ -3,7 +3,7 @@ import { Ship } from '@/engine/ship'
 import { buildBasicShip, buildMotherShip } from '@/engine/config/builder'
 import * as controller from '@/controllers'
 
-const teams = ['red', 'blue']
+const teams = ['blue', 'red']
 const redMotherShip = buildMotherShip({
   position: { pos: { x: 100, y: 600 }, direction: 0 },
   team: teams[0],
@@ -57,11 +57,11 @@ const ships = [...red, ...blue]
 
 const gameEnder = (state: State): boolean =>
   state.ships
-    .filter(s => s.team === 'blue')
+    .filter(s => s.team === teams[0])
     .map(s => s.destroyed)
     .reduce((acc, val) => acc && val, true) ||
   state.ships
-    .filter(s => s.team === 'red')
+    .filter(s => s.team === teams[1])
     .map(s => s.destroyed)
     .reduce((acc, val) => acc && val, true) ||
   state.ships.find(s => s.id === blueMotherShip.id)?.destroyed ||

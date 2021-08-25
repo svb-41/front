@@ -23,7 +23,7 @@ enum Type {
 const selectTexture = (app: PIXI.Application, type: Type, sprite: Info) => {
   if (type === Type.SHIP && sprite) {
     return app.loader.resources[colorSprite(sprite.team!)].textures![
-      shipSprite(sprite.shipClass!)
+      shipSprite({ ship: sprite.shipClass!, team: sprite.team })
     ]
   } else {
     const spriteId = getBulletSprite(sprite.size)
