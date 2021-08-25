@@ -1,5 +1,13 @@
 import { v4 as uuid } from 'uuid'
-import { MOTHER_SHIP, BASIC_BASE, BASIC_SHIP } from './ship'
+import {
+  DESTROYER,
+  FIGHTER,
+  STEALTH,
+  // CRUISER,
+  // BOMBER,
+  // SCOUT,
+  // BASE,
+} from './ship'
 import { Ship, RadarResult, dist2 } from '@/engine/ship'
 import { BulletController, BulletControllerArgs } from '@/engine/control'
 import { trigo } from '@/helpers'
@@ -11,38 +19,23 @@ type BuildShipProps = {
   }
   team?: string
 }
-export const buildBasicShip = ({
-  position = { pos: { x: 0, y: 0 }, direction: 0 },
-  team = 'none',
-}: BuildShipProps): Ship => ({
-  ...BASIC_SHIP,
-  id: uuid(),
-  weapons: BASIC_SHIP.weapons.map(w => ({ ...w })),
-  position: { ...BASIC_SHIP.position, ...position },
-  team,
-})
 
-export const buildMotherShip = ({
-  position = { pos: { x: 0, y: 0 }, direction: 0 },
-  team = 'none',
-}: BuildShipProps): Ship => ({
-  ...MOTHER_SHIP,
-  id: uuid(),
-  position: { ...MOTHER_SHIP.position, ...position },
-  weapons: MOTHER_SHIP.weapons.map(w => ({ ...w })),
-  team,
-})
+const buildShip =
+  (blueprint: Ship) =>
+  ({
+    position = { pos: { x: 0, y: 0 }, direction: 0 },
+    team = 'none',
+  }: BuildShipProps): Ship => ({
+    ...blueprint,
+    id: uuid(),
+    weapons: blueprint.weapons.map(w => ({ ...w })),
+    position: { ...blueprint.position, ...position },
+    team,
+  })
 
-export const buildBasicBase = ({
-  position = { pos: { x: 0, y: 0 }, direction: 0 },
-  team = 'none',
-}: BuildShipProps): Ship => ({
-  ...BASIC_BASE,
-  id: uuid(),
-  weapons: BASIC_BASE.weapons.map(w => ({ ...w })),
-  position: { ...BASIC_BASE.position, ...position },
-  team,
-})
+export const buildFighter = buildShip(FIGHTER)
+export const buildStealth = buildShip(STEALTH)
+export const buildDestroyer = buildShip(DESTROYER)
 
 type Target = { x: number; y: number }
 type HomingTarget = { target: Target; armedTime: number }

@@ -62,3 +62,18 @@ export const FAST_BULLET: Bullet = {
   coolDown: 50,
   destroyed: false,
 }
+
+export const LONG_BULLET: Bullet = {
+  id: 'bullet',
+  position: {
+    pos: { x: 0, y: 0 },
+    direction: 0,
+    speed: 0.8,
+  },
+  stats: { size: 4, acceleration: 0, turn: 0 },
+  distance: 0,
+  armed: false,
+  range: 3000,
+  coolDown: 5000,
+  destroyed: false,
+}

@@ -45,7 +45,7 @@ const assault = (ship: Ship) => {
         ship,
         source: stats.position,
         target: nearestEnemy.res.position,
-        threshold: 0.02,
+        threshold: 1 / Math.sqrt(nearestEnemy.dist),
         delay:
           Math.sqrt(nearestEnemy.dist) /
           stats.weapons[0]?.bullet.position.speed,

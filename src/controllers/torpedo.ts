@@ -13,18 +13,13 @@ const hold = (ship: Ship) => {
         return ship.fire(1, { target, armedTime: 800 })
       }
     } else {
-      // const enemy = radar.filter((res: RadarResult) => res.team !== stats.team)
-      // memory.targets = enemy.map(res => res.position.pos)
+      const enemy = radar.filter((res: RadarResult) => res.team !== stats.team)
+      memory.targets = enemy.map(res => res.position.pos)
     }
     return ship.idle()
   }
   return new Controller<Data>(shipId, getInstruction, {
-    targets: [
-      { x: 401, y: 300 },
-      { x: 401, y: 500 },
-      { x: 401, y: 700 },
-      { x: 401, y: 900 },
-    ],
+    targets: [],
   })
 }
 

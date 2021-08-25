@@ -1,8 +1,14 @@
 import { Ship, Bullet, SHIP_CLASS } from '@/engine/ship'
-import { FAST_BULLET, TORPEDO, HOMING_TORPEDO, BASIC_BULLET } from './weapon'
+import {
+  FAST_BULLET,
+  TORPEDO,
+  HOMING_TORPEDO,
+  BASIC_BULLET,
+  LONG_BULLET,
+} from './weapon'
 
-export const BASIC_SHIP: Ship = {
-  id: 'basic',
+export const FIGHTER: Ship = {
+  id: 'fighter',
   shipClass: SHIP_CLASS.FIGHTER,
   position: {
     pos: { x: 0, y: 0 },
@@ -14,12 +20,38 @@ export const BASIC_SHIP: Ship = {
   team: 'none',
   bulletsFired: 0,
   weapons: [
+    { bullet: FAST_BULLET, amo: 15, coolDown: 0 },
+    { bullet: FAST_BULLET, amo: 15, coolDown: 0 },
+  ],
+}
+
+export const STEALTH: Ship = {
+  id: 'stealth',
+  shipClass: SHIP_CLASS.FIGHTER,
+  position: {
+    pos: { x: 0, y: 0 },
+    direction: 0,
+    speed: 0,
+  },
+  stats: {
+    size: 8,
+    acceleration: 0.002,
+    turn: Math.PI / 30,
+    detection: 200,
+    stealth: true,
+  },
+  destroyed: false,
+  team: 'none',
+  bulletsFired: 0,
+  stealth: true,
+  weapons: [
     { bullet: FAST_BULLET, amo: 5, coolDown: 0 },
     { bullet: FAST_BULLET, amo: 5, coolDown: 0 },
   ],
 }
-export const MOTHER_SHIP: Ship = {
-  id: 'mother',
+
+export const DESTROYER: Ship = {
+  id: 'destroyer',
   shipClass: SHIP_CLASS.DESTROYER,
   position: {
     pos: { x: 0, y: 0 },
@@ -37,7 +69,8 @@ export const MOTHER_SHIP: Ship = {
   bulletsFired: 0,
   weapons: [
     { bullet: BASIC_BULLET, amo: 20, coolDown: 0 },
-    { bullet: HOMING_TORPEDO, amo: 4, coolDown: 0 },
+    { bullet: TORPEDO, amo: 4, coolDown: 0 },
+    { bullet: LONG_BULLET, amo: 5, coolDown: 0 },
   ],
 }
 

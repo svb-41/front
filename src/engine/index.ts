@@ -193,6 +193,7 @@ const applyInstruction =
   }) =>
   ({ ship, instruction }: { ship: Ship; instruction: Instruction }): Ship => {
     if (ship.destroyed) return ship
+    ship.stealth = false
     switch (instruction.constructor.name) {
       case 'Turn':
         const turn = instruction as Turn
@@ -204,6 +205,7 @@ const applyInstruction =
         const fire = instruction as Fire
         return instructionFire({ ship, fire, newBullets })
       default:
+        if (ship.stats.stealth) ship.stealth = true
         return ship
     }
   }
@@ -304,6 +306,7 @@ const getRadarResults = (
   ship.stats.detection
     ? state.ships
         .filter(s => s.id !== ship.id)
+        .filter(s => !s.stealth)
         .filter(
           collide({
             position: ship.position,
