@@ -13,7 +13,9 @@ const hold = (ship: Ship) => {
         return ship.fire(1, { target, armedTime: 800 })
       }
     } else {
-      const enemy = radar.filter((res: RadarResult) => res.team !== stats.team)
+      const enemy = radar.filter(
+        (res: RadarResult) => res.team !== stats.team && !res.destroyed
+      )
       memory.targets = enemy.map(res => res.position.pos)
     }
     return ship.idle()
