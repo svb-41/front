@@ -5,6 +5,7 @@ import {
   buildDestroyer,
   buildCruiser,
   buildStealth,
+  buildBomber,
 } from '@/engine/config/builder'
 import * as controller from '@/controllers'
 
@@ -14,19 +15,19 @@ const redMotherShip = buildDestroyer({
   team: teams[0],
 })
 const red: Array<Ship> = [
-  buildStealth({
+  buildBomber({
     position: { pos: { x: 300, y: 300 }, direction: 0 },
     team: teams[0],
   }),
-  buildStealth({
+  buildBomber({
     position: { pos: { x: 300, y: 500 }, direction: 0 },
     team: teams[0],
   }),
-  buildStealth({
+  buildBomber({
     position: { pos: { x: 300, y: 700 }, direction: 0 },
     team: teams[0],
   }),
-  buildStealth({
+  buildBomber({
     position: { pos: { x: 300, y: 900 }, direction: 0 },
     team: teams[0],
   }),
@@ -39,22 +40,22 @@ const blueMotherShip = buildCruiser({
 })
 
 const blue: Array<Ship> = [
-  // buildFighter({
-  //   position: { pos: { x: 1200, y: 300 }, direction: Math.PI },
-  //   team: teams[1],
-  // }),
-  // buildFighter({
-  //   position: { pos: { x: 1200, y: 500 }, direction: Math.PI },
-  //   team: teams[1],
-  // }),
-  // buildFighter({
-  //   position: { pos: { x: 1200, y: 700 }, direction: Math.PI },
-  //   team: teams[1],
-  // }),
-  // buildFighter({
-  //   position: { pos: { x: 1200, y: 900 }, direction: Math.PI },
-  //   team: teams[1],
-  // }),
+  buildFighter({
+    position: { pos: { x: 1200, y: 300 }, direction: Math.PI },
+    team: teams[1],
+  }),
+  buildFighter({
+    position: { pos: { x: 1200, y: 500 }, direction: Math.PI },
+    team: teams[1],
+  }),
+  buildFighter({
+    position: { pos: { x: 1200, y: 700 }, direction: Math.PI },
+    team: teams[1],
+  }),
+  buildFighter({
+    position: { pos: { x: 1200, y: 900 }, direction: Math.PI },
+    team: teams[1],
+  }),
   blueMotherShip,
 ]
 
@@ -82,8 +83,8 @@ const defaultState: State = {
 }
 
 const controllers = [
-  ...red.map(controller.assault.default),
-  ...blue.map(controller.hold.default),
+  ...red.map(controller.torpedo.default),
+  ...blue.map(controller.assault.default),
 ]
 
 const gen = () => new Engine(defaultState, controllers, gameEnder)
