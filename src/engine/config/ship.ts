@@ -1,4 +1,4 @@
-import { Ship, Bullet, SHIP_CLASS } from '@/engine/ship'
+import { Ship, SHIP_CLASS } from '@/engine/ship'
 import {
   FAST_BULLET,
   TORPEDO,
@@ -19,15 +19,70 @@ export const FIGHTER: Ship = {
   destroyed: false,
   team: 'none',
   bulletsFired: 0,
+  stealth: 600,
   weapons: [
     { bullet: FAST_BULLET, amo: 15, coolDown: 0 },
     { bullet: FAST_BULLET, amo: 15, coolDown: 0 },
   ],
 }
 
+export const SCOUT: Ship = {
+  id: 'scout',
+  shipClass: SHIP_CLASS.SCOUT,
+  position: {
+    pos: { x: 0, y: 0 },
+    direction: 0,
+    speed: 0,
+  },
+  stats: { size: 8, acceleration: 0.05, turn: Math.PI / 10, detection: 600 },
+  destroyed: false,
+  team: 'none',
+  bulletsFired: 0,
+  stealth: 600,
+  weapons: [],
+}
+
+export const BOMBER: Ship = {
+  id: 'cruiser',
+  shipClass: SHIP_CLASS.BOMBER,
+  position: {
+    pos: { x: 0, y: 0 },
+    direction: 0,
+    speed: 0,
+  },
+  stats: { size: 16, acceleration: 0.001, turn: Math.PI / 30, detection: 400 },
+  destroyed: false,
+  team: 'none',
+  bulletsFired: 0,
+  stealth: 600,
+  weapons: [
+    { bullet: TORPEDO, amo: 10, coolDown: 0 },
+    { bullet: HOMING_TORPEDO, amo: 8, coolDown: 0 },
+  ],
+}
+
+export const CRUISER: Ship = {
+  id: 'cruiser',
+  shipClass: SHIP_CLASS.CRUISER,
+  position: {
+    pos: { x: 0, y: 0 },
+    direction: 0,
+    speed: 0,
+  },
+  stats: { size: 16, acceleration: 0.001, turn: Math.PI / 80, detection: 400 },
+  destroyed: false,
+  team: 'none',
+  bulletsFired: 0,
+  stealth: 600,
+  weapons: [
+    { bullet: BASIC_BULLET, amo: 10, coolDown: 0 },
+    { bullet: BASIC_BULLET, amo: 10, coolDown: 0 },
+  ],
+}
+
 export const STEALTH: Ship = {
   id: 'stealth',
-  shipClass: SHIP_CLASS.FIGHTER,
+  shipClass: SHIP_CLASS.STEALTH,
   position: {
     pos: { x: 0, y: 0 },
     direction: 0,
@@ -43,11 +98,8 @@ export const STEALTH: Ship = {
   destroyed: false,
   team: 'none',
   bulletsFired: 0,
-  stealth: true,
-  weapons: [
-    { bullet: FAST_BULLET, amo: 5, coolDown: 0 },
-    { bullet: FAST_BULLET, amo: 5, coolDown: 0 },
-  ],
+  stealth: 0,
+  weapons: [{ bullet: FAST_BULLET, amo: 5, coolDown: 0 }],
 }
 
 export const DESTROYER: Ship = {
@@ -67,10 +119,10 @@ export const DESTROYER: Ship = {
   destroyed: false,
   team: 'none',
   bulletsFired: 0,
+  stealth: 600,
   weapons: [
-    { bullet: BASIC_BULLET, amo: 20, coolDown: 0 },
-    { bullet: TORPEDO, amo: 4, coolDown: 0 },
-    { bullet: LONG_BULLET, amo: 5, coolDown: 0 },
+    { bullet: TORPEDO, amo: 8, coolDown: 0 },
+    { bullet: LONG_BULLET, amo: 10, coolDown: 0 },
   ],
 }
 
@@ -86,5 +138,6 @@ export const BASIC_BASE: Ship = {
   destroyed: false,
   team: 'none',
   bulletsFired: 0,
+  stealth: 600,
   weapons: [],
 }

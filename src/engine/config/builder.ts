@@ -3,9 +3,9 @@ import {
   DESTROYER,
   FIGHTER,
   STEALTH,
-  // CRUISER,
-  // BOMBER,
-  // SCOUT,
+  CRUISER,
+  BOMBER,
+  SCOUT,
   // BASE,
 } from './ship'
 import { Ship, RadarResult, dist2 } from '@/engine/ship'
@@ -36,6 +36,9 @@ const buildShip =
 export const buildFighter = buildShip(FIGHTER)
 export const buildStealth = buildShip(STEALTH)
 export const buildDestroyer = buildShip(DESTROYER)
+export const buildCruiser = buildShip(CRUISER)
+export const buildBomber = buildShip(BOMBER)
+export const buildScout = buildShip(SCOUT)
 
 type Target = { x: number; y: number }
 type HomingTarget = { target: Target; armedTime: number }

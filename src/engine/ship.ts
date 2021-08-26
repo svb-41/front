@@ -9,7 +9,7 @@ export type Ship = {
   bulletsFired: number
   weapons: Array<{ bullet: Bullet; amo: number; coolDown: number }>
   shipClass: SHIP_CLASS
-  stealth?: boolean
+  stealth: number
 }
 
 export enum SHIP_CLASS {

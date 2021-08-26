@@ -3,6 +3,7 @@ import { Ship } from '@/engine/ship'
 import {
   buildFighter,
   buildDestroyer,
+  buildCruiser,
   buildStealth,
 } from '@/engine/config/builder'
 import * as controller from '@/controllers'
@@ -32,7 +33,7 @@ const red: Array<Ship> = [
   // redMotherShip,
 ]
 
-const blueMotherShip = buildDestroyer({
+const blueMotherShip = buildCruiser({
   position: { pos: { x: 1400, y: 600 }, direction: Math.PI },
   team: teams[1],
 })
