@@ -121,8 +121,8 @@ export const DESTROYER: Ship = {
   bulletsFired: 0,
   stealth: 600,
   weapons: [
-    { bullet: TORPEDO, amo: 8, coolDown: 0 },
     { bullet: LONG_BULLET, amo: 10, coolDown: 0 },
+    { bullet: TORPEDO, amo: 8, coolDown: 0 },
   ],
 }
 
