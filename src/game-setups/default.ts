@@ -4,8 +4,8 @@ import {
   buildFighter,
   buildDestroyer,
   buildCruiser,
-  buildStealth,
   buildBomber,
+  // buildStealth,
 } from '@/engine/config/builder'
 import * as controller from '@/controllers'
 

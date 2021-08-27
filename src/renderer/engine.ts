@@ -71,11 +71,11 @@ export class Engine extends EventTarget {
     this.#engine.removeEventListener('state.end', this.onEnd)
     this.removeEventListener('state.pause', this.onStatePause)
     this.removeEventListener('state.speed', this.onSpeed)
-    for (const resource of Object.values(this.#app.loader.resources)) {
-      resource.texture?.destroy()
-      PIXI.BaseTexture.removeFromCache(resource.name)
-      PIXI.BaseTexture.removeFromCache(resource.url)
-    }
+    const resources = Object.values(this.#app.loader?.resources ?? {})
+    resources.forEach(resource => {
+      resource.texture?.destroy(true)
+      Object.values(resource.textures ?? {}).forEach(t => t.destroy(true))
+    })
     this.#app.ticker.remove(this.run)
     this.#app.destroy()
   }
@@ -122,9 +122,7 @@ export class Engine extends EventTarget {
 
   private run = (deltaTime: number) => {
     if (!this.#ended) {
-      for (let i = 0; i < this.#speed; i++) {
-        this.#engine.step(deltaTime)
-      }
+      for (let i = 0; i < this.#speed; i++) this.#engine.step(deltaTime)
       this.updateDisplay()
     } else {
       this.#app.ticker.remove(this.run)
@@ -180,7 +178,7 @@ export class Engine extends EventTarget {
   }
 
   private onLog = (event: Event) => {
-    console.log(event)
+    helpers.console.log(event)
     const evt = event as CustomEvent
     const { detail } = evt
     this.dispatchEvent(new CustomEvent('log.add', { detail }))
@@ -193,10 +191,8 @@ export class Engine extends EventTarget {
   private onSpeed = (event: Event) => {
     const evt = event as CustomEvent<number>
     helpers.settings.setInitialSpeed(evt.detail)
-    const speed = evt.detail
-    this.#speed = speed
-    const newSpeed = STANDARD_ANIMATED_SPEED * speed
-    this.#animateds.forEach(sprite => (sprite.animationSpeed = newSpeed))
+    this.#speed = evt.detail
+    this.#animateds.forEach(this.computeAnimationSpeed)
   }
 
   // Sprites
@@ -211,7 +207,7 @@ export class Engine extends EventTarget {
     ]
     const sprite = new PIXI.AnimatedSprite(textures)
     sprite.loop = false
-    sprite.animationSpeed = STANDARD_ANIMATED_SPEED * this.#speed
+    this.computeAnimationSpeed(sprite)
     sprite.anchor.set(0.5, 0.5)
     sprite.onComplete = () => {
       sprite.destroy()
@@ -246,5 +242,12 @@ export class Engine extends EventTarget {
       this.#app.stage.addChild(back)
     }
     this.updateDisplay()
+  }
+
+  // helpers
+
+  private computeAnimationSpeed = (sprite: PIXI.AnimatedSprite) => {
+    const newSpeed = STANDARD_ANIMATED_SPEED * this.#speed
+    sprite.animationSpeed = newSpeed
   }
 }
