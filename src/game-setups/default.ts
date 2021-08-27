@@ -7,7 +7,7 @@ import {
   buildDestroyer,
   buildCruiser,
   buildBomber,
-  // buildStealth,
+  buildStealth,
 } from '@/engine/config/builder'
 import * as controller from '@/controllers'
 
