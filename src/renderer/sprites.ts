@@ -1,4 +1,5 @@
 import { SHIP_CLASS } from '@/engine/ship'
+
 export type Sprite = { name: string; url: string }
 
 export const sprites: Array<Sprite> = [
@@ -12,8 +13,10 @@ export const sprites: Array<Sprite> = [
   { name: 'mine', url: '/assets/Tiles/tile_0016.png' },
   { name: 'background', url: '/assets/Backgrounds/blue.png' },
 ]
-export const getBulletSprite = (size: number): string =>
-  size === 8 ? 'torpedo' : 'bullet'
+
+export const getBulletSprite = (size: number): string => {
+  return size === 8 ? 'torpedo' : 'bullet'
+}
 
 export const spritesSheets: Array<Sprite> = [
   { name: 'shipBlue', url: '/assets/Tilemap/mapBlue.json' },
@@ -38,13 +41,8 @@ export const colorSprite = (team: string): string => {
   }
 }
 
-export const shipSprite = ({
-  ship,
-  team = 'white',
-}: {
-  ship: SHIP_CLASS
-  team?: string
-}): string => {
+export type ShipSprite = { ship: SHIP_CLASS; team?: string }
+export const shipSprite = ({ ship, team = 'white' }: ShipSprite): string => {
   switch (ship) {
     case SHIP_CLASS.DESTROYER:
       return `destroyer-${team}`
