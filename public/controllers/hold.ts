@@ -1,6 +1,5 @@
-import { Controller, ControllerArgs } from '../engine/control'
-import { Ship, RadarResult, dist2 } from '../engine/ship'
-import * as helpers from '@/helpers'
+import { Controller, ControllerArgs } from 'starships'
+import { Ship, RadarResult, dist2 } from 'starships'
 
 type Data = {}
 const hold = (ship: Ship) => {

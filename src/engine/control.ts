@@ -6,21 +6,21 @@ export type GetInstruction<Data> = (
   data: Data
 ) => Instruction
 
-export type ControllerArgs = {
+export type ControllerArgs<Data> = {
   stats: Ship
   radar: Array<RadarResult>
-  memory: any
+  memory: Data
   ship: ControlPanel
 }
 
 export class Controller<Data> {
   data: any
   shipId: string
-  getInstruction: (args: ControllerArgs) => Instruction
+  getInstruction: (args: ControllerArgs<Data>) => Instruction
 
   constructor(
     shipId: string,
-    getInstruction: (args: ControllerArgs) => Instruction,
+    getInstruction: (args: ControllerArgs<Data>) => Instruction,
     initialData?: Data
   ) {
     this.data = initialData

@@ -1,5 +1,5 @@
-import { Controller, ControllerArgs } from '../engine/control'
-import { Ship, RadarResult } from '../engine/ship'
+import { Controller, ControllerArgs } from 'starships'
+import { Ship, RadarResult } from 'starships'
 
 type Data = {
   targets: Array<{ x: number; y: number }>

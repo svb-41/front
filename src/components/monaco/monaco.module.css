@@ -38,6 +38,16 @@
   cursor: pointer;
   border-right: 1px solid #444;
   border-left: 1px solid #444;
+  flex-shrink: 0;
+}
+
+.plusTab {
+  composes: tab;
+  width: 50px;
+  min-width: inherit;
+  background: #666;
+  position: sticky;
+  right: 0;
 }
 
 .tab:hover .close {
@@ -61,6 +71,17 @@
   flex: 1;
   display: flex;
   align-items: center;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.tabItemNameTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tabItemNamePlus {
+  composes: tabItemName;
   justify-content: center;
 }
 
@@ -82,6 +103,10 @@
   background: #444;
 }
 
+.menuItems {
+  overflow: hidden;
+}
+
 .menuItem {
   color: white;
   font-family: var(--monospace);
@@ -91,6 +116,12 @@
   display: flex;
   align-items: center;
   cursor: pointer;
+  white-space: nowrap;
+}
+
+.menuItemTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .menuItem:first-child {
@@ -110,6 +141,7 @@
   width: 16px;
   height: 16px;
   border-radius: 2px;
+  flex-shrink: 0;
 }
 
 .close {
@@ -117,4 +149,109 @@
   height: 12px;
   opacity: 0;
   transition: all 0.2s;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10000;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.modalForm {
+  background: #333;
+  border-radius: 10px;
+  border: 4px solid white;
+  padding: 40px;
+  margin: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.renameTitle {
+  font-family: var(--monospace);
+  font-weight: bold;
+  font-size: 2rem;
+  color: white;
+}
+
+.modalSpacer {
+  padding: 20px;
+}
+
+.modalSpacerS {
+  padding: 10px;
+}
+
+.inputName {
+  font-family: var(--monospace);
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 12px;
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid white;
+  background: inherit;
+  color: white;
+  outline: none;
+}
+
+.inputName:focus {
+  border: 2px solid white;
+}
+
+.inputBase {
+  appareance: none;
+  border: 2px solid white;
+  padding: 12px;
+  border-radius: 10px;
+  font-family: var(--monospace);
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.inputSubmit {
+  composes: inputBase;
+  background: green;
+  color: white;
+  margin-right: 20px;
+}
+
+.inputCancel {
+  composes: inputBase;
+  background: red;
+  color: white;
+}
+
+.modalInput {
+  display: grid;
+  width: 100%;
+  align-items: center;
+  grid-template-columns: 1fr auto auto;
+  grid-gap: 20px;
+}
+
+.inputExtension {
+  color: white;
+  font-family: var(--monospace);
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 0 12px;
+  background: inherit;
+  border: 1px solid white;
+  border-radius: 10px;
+  height: 100%;
+  cursor: pointer;
+}
+
+.inputExtensionActive {
+  composes: inputExtension;
+  background: white;
+  color: inherit;
 }

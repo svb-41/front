@@ -1,5 +1,5 @@
-import { Controller, ControllerArgs } from '../engine/control'
-import { Ship } from '../engine/ship'
+import { Controller, ControllerArgs } from 'starships'
+import { Ship } from 'starships'
 
 type Data = { angle: number }
 const forward = (ship: Ship) => {

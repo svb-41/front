@@ -1,6 +1,6 @@
-import { Controller, ControllerArgs } from '../engine/control'
-import { Ship, RadarResult } from '../engine/ship'
-import * as helpers from '@/helpers'
+import { Controller, ControllerArgs } from 'starships'
+import { Ship, RadarResult } from 'starships'
+import * as helpers from 'starships'
 
 type Data = {
   inst: number
