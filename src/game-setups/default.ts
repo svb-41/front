@@ -1,5 +1,7 @@
 import { State, Engine } from '@/engine'
 import { Ship } from '@/engine/ship'
+import { Channel } from '@/engine/comm'
+
 import {
   buildFighter,
   buildDestroyer,
@@ -10,53 +12,41 @@ import {
 import * as controller from '@/controllers'
 
 const teams = ['blue', 'red']
-const redMotherShip = buildDestroyer({
+
+const bomber = buildBomber({
   position: { pos: { x: 100, y: 600 }, direction: 0 },
   team: teams[0],
 })
-const red: Array<Ship> = [
-  buildBomber({
-    position: { pos: { x: 300, y: 300 }, direction: 0 },
+const stealths = [
+  buildStealth({
+    position: { pos: { x: 100, y: 400 }, direction: 0 },
     team: teams[0],
   }),
-  buildBomber({
-    position: { pos: { x: 300, y: 500 }, direction: 0 },
+  buildStealth({
+    position: { pos: { x: 100, y: 800 }, direction: 0 },
     team: teams[0],
   }),
-  buildBomber({
-    position: { pos: { x: 300, y: 700 }, direction: 0 },
-    team: teams[0],
-  }),
-  buildBomber({
-    position: { pos: { x: 300, y: 900 }, direction: 0 },
-    team: teams[0],
-  }),
-  // redMotherShip,
 ]
 
-const blueMotherShip = buildCruiser({
-  position: { pos: { x: 1400, y: 600 }, direction: Math.PI },
-  team: teams[1],
-})
+const red: Array<Ship> = [bomber, ...stealths]
 
 const blue: Array<Ship> = [
   buildFighter({
-    position: { pos: { x: 1200, y: 300 }, direction: Math.PI },
+    position: { pos: { x: 1500, y: 300 }, direction: Math.PI },
     team: teams[1],
   }),
   buildFighter({
-    position: { pos: { x: 1200, y: 500 }, direction: Math.PI },
+    position: { pos: { x: 1500, y: 500 }, direction: Math.PI },
     team: teams[1],
   }),
   buildFighter({
-    position: { pos: { x: 1200, y: 700 }, direction: Math.PI },
+    position: { pos: { x: 1500, y: 700 }, direction: Math.PI },
     team: teams[1],
   }),
   buildFighter({
-    position: { pos: { x: 1200, y: 900 }, direction: Math.PI },
+    position: { pos: { x: 1500, y: 900 }, direction: Math.PI },
     team: teams[1],
   }),
-  blueMotherShip,
 ]
 
 const ships = [...red, ...blue]
@@ -70,8 +60,6 @@ const gameEnder = (state: State): boolean =>
     .filter(s => s.team === teams[1])
     .map(s => s.destroyed)
     .reduce((acc, val) => acc && val, true) ||
-  state.ships.find(s => s.id === blueMotherShip.id)?.destroyed ||
-  state.ships.find(s => s.id === redMotherShip.id)?.destroyed ||
   false
 
 const defaultState: State = {
@@ -80,10 +68,13 @@ const defaultState: State = {
   teams,
   bullets: [],
   maxSpeed: 3,
+  comm: teams.map(id => ({ id, channel: new Channel(id) })),
+  timeElapsed: 0,
 }
 
 const controllers = [
-  ...red.map(controller.torpedo.default),
+  controller.torpedo.default(bomber),
+  ...stealths.map(controller.scout.default),
   ...blue.map(controller.assault.default),
 ]
 

@@ -6,19 +6,8 @@ type Data = { turn: boolean }
 const assault = (ship: Ship) => {
   const shipId = ship.id
   const getInstruction = ({ stats, radar, memory, ship }: ControllerArgs) => {
-    if (stats.stats.size === 8) {
-      if (memory.turn) {
-        memory.turn = false
-        return Math.random() > 0.5 ? ship.turnLeft() : ship.turnRight()
-      }
-      if (stats.position.speed < 0.1) {
-        return ship.thrust()
-      }
-    } else {
-      if (stats.position.speed < 0.1) {
-        return ship.thrust()
-      }
-    }
+    if (stats.position.speed < 0.1) return ship.thrust()
+
     const ally = radar.find(
       (res: RadarResult) =>
         res.team === stats.team &&
@@ -29,7 +18,6 @@ const assault = (ship: Ship) => {
           }) - stats.position.direction
         ) < 0.1
     )
-
     const closeEnemy = radar
       .filter((res: RadarResult) => res.team !== stats.team && !res.destroyed)
       .map((res: RadarResult) => ({

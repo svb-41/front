@@ -1,15 +1,21 @@
 import { Ship, RadarResult, Bullet } from './ship'
-
+import { Message } from './comm'
 export type GetInstruction<Data> = (
   ship: Ship,
   radar: Array<RadarResult>,
   data: Data
 ) => Instruction
 
+export type Comm = {
+  getNewMessages: () => Array<Message>
+  sendMessage: (message: any) => void
+}
+
 export type ControllerArgs = {
   stats: Ship
   radar: Array<RadarResult>
   memory: any
+  comm: Comm
   ship: ControlPanel
 }
 
@@ -28,10 +34,11 @@ export class Controller<Data> {
     this.getInstruction = getInstruction
   }
 
-  next = (ship: Ship, radar: Array<RadarResult>) =>
+  next = (ship: Ship, comm: Comm, radar: Array<RadarResult>) =>
     this.getInstruction({
       stats: ship,
       radar,
+      comm,
       memory: this.data,
       ship: controlPanel(ship),
     })

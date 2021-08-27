@@ -16,7 +16,11 @@ import {
   Turn,
   Thrust,
   Fire,
+  Comm,
 } from './control'
+import { trigo } from '@/helpers'
+import { Channel } from './comm'
+const { TWO_PI } = trigo
 
 export class Engine extends EventTarget {
   state: State
@@ -62,6 +66,8 @@ export type State = {
   maxSpeed?: number
   teams: Array<string>
   endOfGame?: boolean
+  timeElapsed: number
+  comm: Array<{ id: string; channel: Channel }>
 }
 
 export type InstructionShip = { instruction: Instruction; id: string }
@@ -81,8 +87,8 @@ const instructionTurn = ({
         direction:
           (object.position.direction +
             Math.min(turn.arg, object.stats.turn) +
-            Math.PI * 2) %
-          (Math.PI * 2),
+            TWO_PI) %
+          TWO_PI,
       },
     }
   } else {
@@ -93,8 +99,8 @@ const instructionTurn = ({
         direction:
           (object.position.direction +
             Math.max(turn.arg, -object.stats.turn) +
-            Math.PI * 2) %
-          (Math.PI * 2),
+            TWO_PI) %
+          TWO_PI,
       },
     }
   }
@@ -298,6 +304,7 @@ const allSteps = (state: State, engine: Engine): State => {
     ...state,
     ships,
     bullets,
+    timeElapsed: state.timeElapsed + 1,
   }
 }
 
@@ -323,6 +330,23 @@ const getRadarResults = (
         }))
     : []
 
+const buildComm = ({
+  timeElapsed,
+  channel,
+  ship,
+}: {
+  ship: Ship
+  timeElapsed: number
+  channel: Channel
+}): Comm => ({
+  getNewMessages: () => channel.getNewMessages(timeElapsed - 12),
+  sendMessage: (message: any) =>
+    channel.sendMessage({
+      timeSend: timeElapsed,
+      content: { sender: ship.id, message },
+    }),
+})
+
 export const getInstructions = (
   state: State,
   controllers: Array<Controller<any>>
@@ -337,6 +361,12 @@ export const getInstructions = (
       id: context.ship!.id,
       instruction: context.c.next(
         context.ship!!,
+        buildComm({
+          timeElapsed: state.timeElapsed,
+          ship: context.ship!!,
+          channel: state.comm.find(({ id }) => context.ship!.team === id)
+            ?.channel!!,
+        }),
         getRadarResults(context.ship!!, state)
       ),
     }))
