@@ -1,5 +1,5 @@
 import { Controller, ControllerArgs } from '@/engine/control'
-import { Ship, Position } from '@/engine/ship'
+import { Ship, Position, dist2 } from '@/engine/ship'
 import { trigo } from '@/helpers'
 
 type Data = {
@@ -24,7 +24,8 @@ const hold = (ship: Ship) => {
     if (memory.targets.length > 0) {
       const target = trigo.nextPosition(200)(memory.targets.pop())
 
-      return ship.fire(1, { target: target.pos, armedTime: 800 })
+      const d = Math.sqrt(dist2(stats.position, target))
+      return ship.fire(1, { target: target.pos, armedTime: d - 100 })
     }
 
     return ship.idle()
