@@ -357,6 +357,7 @@ export const getInstructions = (
       ship: state.ships.find(s => s.id === c.shipId),
     }))
     .filter(val => val.ship !== undefined)
+    .filter(val => !val.ship?.destroyed)
     .map(context => ({
       id: context.ship!.id,
       instruction: context.c.next(
