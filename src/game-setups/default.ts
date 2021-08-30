@@ -5,7 +5,7 @@ import { Channel } from '@/engine/comm'
 import {
   buildFighter,
   buildDestroyer,
-  buildCruiser,
+  // buildCruiser,
   buildBomber,
   buildStealth,
 } from '@/engine/config/builder'
@@ -45,6 +45,11 @@ const blue: Array<Ship> = [
   }),
   buildFighter({
     position: { pos: { x: 1500, y: 900 }, direction: Math.PI },
+    team: teams[1],
+  }),
+
+  buildDestroyer({
+    position: { pos: { x: 1900, y: 700 }, direction: Math.PI },
     team: teams[1],
   }),
 ]
