@@ -5,6 +5,7 @@ import {
   HOMING_TORPEDO,
   BASIC_BULLET,
   LONG_BULLET,
+  MINE,
 } from './weapon'
 
 export const FIGHTER: Ship = {
@@ -58,6 +59,7 @@ export const BOMBER: Ship = {
   weapons: [
     { bullet: TORPEDO, amo: 10, coolDown: 0 },
     { bullet: HOMING_TORPEDO, amo: 8, coolDown: 0 },
+    { bullet: MINE, amo: 4, coolDown: 0 },
   ],
 }
 

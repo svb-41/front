@@ -1,5 +1,5 @@
 import { Bullet } from '@/engine/ship'
-import { buildTorpedo, buildHomingTorpedo } from './builder'
+import { buildTorpedo, buildHomingTorpedo, buildMine } from './builder'
 
 export const BASIC_BULLET: Bullet = {
   id: 'bullet',
@@ -30,6 +30,22 @@ export const TORPEDO: Bullet = {
   coolDown: 4000,
   destroyed: false,
   builder: () => buildTorpedo,
+}
+
+export const MINE: Bullet = {
+  id: 'bullet',
+  position: {
+    pos: { x: 0, y: 0 },
+    direction: 0,
+    speed: 0,
+  },
+  stats: { size: 8, acceleration: 0.01, turn: Math.PI / 400, detection: 32 },
+  distance: 0,
+  armed: false,
+  range: 6000,
+  coolDown: 1000,
+  destroyed: false,
+  builder: () => buildMine,
 }
 
 export const HOMING_TORPEDO: Bullet = {

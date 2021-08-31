@@ -85,3 +85,48 @@ const homeTo = ({ bullet, stats, memory, radar }: BulletControllerArgs) => {
 
 export const buildHomingTorpedo = (target: HomingTarget) =>
   new BulletController<HomingTarget>(homeTo, target)
+
+const mineTo = ({ bullet, stats, memory, radar }: BulletControllerArgs) => {
+  memory.armedTime--
+  if (memory.armedTime < 0) {
+    const closeEnemy = radar
+      .filter(r => !r.destroyed)
+      .map((res: RadarResult) => ({
+        res,
+        dist: dist2(res.position, stats.position),
+      }))
+    if (closeEnemy.length > 0) {
+      const nearestEnemy = closeEnemy.reduce((acc, val) =>
+        acc.dist > val.dist ? val : acc
+      )
+      if (stats.position.speed < 0.2) return bullet.thrust()
+
+      return trigo.findDirection({
+        ship: bullet,
+        source: stats.position,
+        target: { direction: 0, speed: 0, pos: nearestEnemy.res.position.pos },
+      })
+    }
+  }
+  if (
+    dist2(stats.position, {
+      direction: 0,
+      speed: 0,
+      pos: memory.target,
+    }) < 1
+  ) {
+    if (stats.position.speed === 0) return bullet.idle()
+    return bullet.thrust(-stats.position.speed)
+  } else {
+    if (stats.position.speed < 0.1) return bullet.thrust(0.1)
+  }
+
+  return trigo.findDirection({
+    ship: bullet,
+    source: stats.position,
+    target: { direction: 0, speed: 0, pos: memory.target },
+  })
+}
+
+export const buildMine = (target: HomingTarget) =>
+  new BulletController<HomingTarget>(mineTo, target)

@@ -2,7 +2,8 @@ import { Controller, ControllerArgs } from '../engine/control'
 import { Ship, dist2 } from '../engine/ship'
 import * as helpers from '@/helpers'
 
-type Data = {}
+type Data = { initialDir?: number }
+
 const forward = (ship: Ship) => {
   const shipId = ship.id
   const getInstruction = ({
@@ -12,6 +13,7 @@ const forward = (ship: Ship) => {
     radar,
     ship,
   }: ControllerArgs) => {
+    if (!memory.initialDir) memory.initialDir = stats.position.direction
     if (stats.position.speed < 0.08) return ship.thrust()
     if (radar.length > 0) {
       const enemies = radar
@@ -33,7 +35,8 @@ const forward = (ship: Ship) => {
         })
       }
     }
-    return ship.idle()
+    if (memory.initialDir - stats.position.direction === 0) return ship.idle()
+    return ship.turn(memory.initialDir - stats.position.direction)
   }
   return new Controller<Data>(shipId, getInstruction, {})
 }

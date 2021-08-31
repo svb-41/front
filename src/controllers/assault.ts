@@ -2,7 +2,7 @@ import { Controller, ControllerArgs } from '../engine/control'
 import { Ship, RadarResult, dist2 } from '../engine/ship'
 import * as helpers from '@/helpers'
 
-type Data = { turn: boolean; initialDir?: number }
+type Data = { initialDir?: number }
 const assault = (ship: Ship) => {
   const shipId = ship.id
   const getInstruction = ({ stats, radar, memory, ship }: ControllerArgs) => {
@@ -45,7 +45,7 @@ const assault = (ship: Ship) => {
 
     return ship.turn(memory.initialDir - stats.position.direction)
   }
-  return new Controller<Data>(shipId, getInstruction, { turn: false })
+  return new Controller<Data>(shipId, getInstruction, {})
 }
 
 export default assault
