@@ -43,7 +43,9 @@ const assault = (ship: Ship) => {
       return resAim
     }
 
-    return ship.turn(memory.initialDir - stats.position.direction)
+    if (memory.initialDir - stats.position.direction)
+      return ship.turn(memory.initialDir - stats.position.direction)
+    return ship.idle()
   }
   return new Controller<Data>(shipId, getInstruction, {})
 }
