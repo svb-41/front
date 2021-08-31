@@ -72,10 +72,23 @@ export class BulletController<Data> {
     })
 }
 
-export class Instruction {}
+export enum INSTRUCTION {
+  DEFAULT = 'DEFAULT',
+  IDLE = 'IDLE',
+  TURN = 'TURN',
+  FIRE = 'FIRE',
+  THRUST = 'THRUST',
+}
 
-export class Idle extends Instruction {}
+export class Instruction {
+  id: INSTRUCTION = INSTRUCTION.DEFAULT
+}
+
+export class Idle extends Instruction {
+  id = INSTRUCTION.IDLE
+}
 export class Turn extends Instruction {
+  id = INSTRUCTION.TURN
   arg: number
   constructor(arg: number) {
     super()
@@ -83,6 +96,7 @@ export class Turn extends Instruction {
   }
 }
 export class Thrust extends Instruction {
+  id = INSTRUCTION.THRUST
   arg: number
   constructor(arg: number) {
     super()
@@ -90,6 +104,7 @@ export class Thrust extends Instruction {
   }
 }
 export class Fire extends Instruction {
+  id = INSTRUCTION.FIRE
   arg: number
   conf?: { target?: { x: number; y: number }; armedTime?: number }
   constructor(

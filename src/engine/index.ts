@@ -17,6 +17,7 @@ import {
   Thrust,
   Fire,
   Comm,
+  INSTRUCTION,
 } from './control'
 import { trigo } from '@/helpers'
 import { Channel } from './comm'
@@ -201,16 +202,17 @@ const applyInstruction =
     const STEALTH_TIME = 600
     if (ship.destroyed) return ship
     if (ship.stats.stealth && ship.stealth > 0) ship.stealth--
-    switch (instruction.constructor.name) {
-      case 'Turn':
+    console.log(instruction.constructor.name)
+    switch (instruction.id) {
+      case INSTRUCTION.TURN:
         const turn = instruction as Turn
         if (ship.stats.stealth) ship.stealth = STEALTH_TIME
         return instructionTurn({ object: ship, turn })
-      case 'Thrust':
+      case INSTRUCTION.THRUST:
         const thrust = instruction as Thrust
         if (ship.stats.stealth) ship.stealth = STEALTH_TIME
         return instructionThrust({ object: ship, thrust, maxSpeed })
-      case 'Fire':
+      case INSTRUCTION.FIRE:
         const fire = instruction as Fire
         if (ship.stats.stealth) ship.stealth = STEALTH_TIME
         return instructionFire({ ship, fire, newBullets })
@@ -226,11 +228,11 @@ const applyBulletsInstructions =
       const controller = bullet.controller as BulletController<any>
       const radar = getRadarResults(bullet, state)
       const instruction = controller.next(bullet, radar)
-      switch (instruction.constructor.name) {
-        case 'Turn':
+      switch (instruction.id) {
+        case INSTRUCTION.TURN:
           const turn = instruction as Turn
           return instructionTurn({ object: bullet, turn })
-        case 'Thrust':
+        case INSTRUCTION.THRUST:
           const thrust = instruction as Thrust
           return instructionThrust({
             object: bullet,
