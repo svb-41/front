@@ -11,7 +11,7 @@ const forward = (ship: Ship) => {
     radar,
     ship,
   }: ControllerArgs) => {
-    if (stats.position.speed < 0.1) return ship.thrust()
+    if (stats.position.speed < 0.08) return ship.thrust()
     if (radar.length > 0) {
       const enemy = radar
         .filter(res => res.team !== stats.team && !res.destroyed)

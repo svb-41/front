@@ -1,5 +1,5 @@
 import { Controller, ControllerArgs } from '@/engine/control'
-import { Ship, Position, dist2 } from '@/engine/ship'
+import { Ship, Position, dist2, RadarResult } from '@/engine/ship'
 import { trigo } from '@/helpers'
 
 type Data = {
@@ -15,6 +15,28 @@ const hold = (ship: Ship) => {
     comm,
   }: ControllerArgs) => {
     const messages = comm.getNewMessages()
+    if (radar.length > 0) {
+      const closeEnemy = radar
+        .filter((res: RadarResult) => res.team !== stats.team && !res.destroyed)
+        .map((res: RadarResult) => ({
+          res,
+          dist: dist2(res.position, stats.position),
+        }))
+      if (closeEnemy.length > 0) {
+        const nearestEnemy = closeEnemy.reduce((acc, val) =>
+          acc.dist > val.dist ? val : acc
+        )
+        if (nearestEnemy) {
+          const target = trigo.nextPosition(Math.sqrt(nearestEnemy.dist) / 0.6)(
+            nearestEnemy.res.position
+          )
+          return ship.fire(stats.weapons[0].coolDown === 0 ? 0 : 1, {
+            target: target.pos,
+            armedTime: nearestEnemy.dist - 100,
+          })
+        }
+      }
+    }
     if (messages.length > 0) {
       const targets = messages
         .map(m => m.content.message.map((res: any) => res))
