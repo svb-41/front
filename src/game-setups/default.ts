@@ -4,8 +4,8 @@ import { Channel } from '@/engine/comm'
 
 import {
   buildFighter,
-  buildDestroyer,
-  // buildCruiser,
+  // buildDestroyer,
+  buildCruiser,
   buildBomber,
   buildStealth,
 } from '@/engine/config/builder'
@@ -17,7 +17,7 @@ const bomber = buildBomber({
   position: { pos: { x: 100, y: 600 }, direction: 0 },
   team: teams[0],
 })
-const stealths = [
+const stealths: Array<Ship> = [
   buildStealth({
     position: { pos: { x: 100, y: 400 }, direction: 0 },
     team: teams[0],
@@ -48,8 +48,8 @@ const blue: Array<Ship> = [
     team: teams[1],
   }),
 
-  buildDestroyer({
-    position: { pos: { x: 1900, y: 700 }, direction: Math.PI },
+  buildCruiser({
+    position: { pos: { x: 2000, y: 700 }, direction: Math.PI },
     team: teams[1],
   }),
 ]
