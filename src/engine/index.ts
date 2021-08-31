@@ -198,20 +198,22 @@ const applyInstruction =
     maxSpeed?: number
   }) =>
   ({ ship, instruction }: { ship: Ship; instruction: Instruction }): Ship => {
+    const STEALTH_TIME = 600
     if (ship.destroyed) return ship
     if (ship.stats.stealth && ship.stealth > 0) ship.stealth--
+    // console.log(instruction.constructor.name)
     switch (instruction.constructor.name) {
       case 'Turn':
         const turn = instruction as Turn
-        if (ship.stats.stealth) ship.stealth = 600
+        if (ship.stats.stealth) ship.stealth = STEALTH_TIME
         return instructionTurn({ object: ship, turn })
       case 'Thrust':
         const thrust = instruction as Thrust
-        if (ship.stats.stealth) ship.stealth = 600
+        if (ship.stats.stealth) ship.stealth = STEALTH_TIME
         return instructionThrust({ object: ship, thrust, maxSpeed })
       case 'Fire':
         const fire = instruction as Fire
-        if (ship.stats.stealth) ship.stealth = 600
+        if (ship.stats.stealth) ship.stealth = STEALTH_TIME
         return instructionFire({ ship, fire, newBullets })
       default:
         return ship

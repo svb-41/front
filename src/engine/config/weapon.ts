@@ -43,7 +43,7 @@ export const HOMING_TORPEDO: Bullet = {
   distance: 0,
   armed: false,
   range: 6000,
-  coolDown: 400,
+  coolDown: 4000,
   destroyed: false,
   builder: () => buildHomingTorpedo,
 }

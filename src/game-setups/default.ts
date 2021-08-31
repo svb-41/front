@@ -32,19 +32,19 @@ const red: Array<Ship> = [bomber, ...stealths]
 
 const blue: Array<Ship> = [
   buildFighter({
-    position: { pos: { x: 1500, y: 300 }, direction: Math.PI },
+    position: { pos: { x: 1700, y: 300 }, direction: Math.PI },
     team: teams[1],
   }),
   buildFighter({
-    position: { pos: { x: 1500, y: 500 }, direction: Math.PI },
+    position: { pos: { x: 1700, y: 500 }, direction: Math.PI },
     team: teams[1],
   }),
   buildFighter({
-    position: { pos: { x: 1500, y: 700 }, direction: Math.PI },
+    position: { pos: { x: 1700, y: 700 }, direction: Math.PI },
     team: teams[1],
   }),
   buildFighter({
-    position: { pos: { x: 1500, y: 900 }, direction: Math.PI },
+    position: { pos: { x: 1700, y: 900 }, direction: Math.PI },
     team: teams[1],
   }),
 
