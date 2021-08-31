@@ -21,7 +21,7 @@ const hold = (ship: Ship) => {
         .reduce((acc, val) => [...acc, ...val]) as Array<Position>
       memory.targets = targets
     }
-    if (memory.targets.length > 0) {
+    if (memory.targets.length > 0 && stats.weapons[1].coolDown === 0) {
       const target = trigo.nextPosition(200)(memory.targets.pop())
 
       const d = Math.sqrt(dist2(stats.position, target))
