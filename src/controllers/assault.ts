@@ -2,10 +2,11 @@ import { Controller, ControllerArgs } from '../engine/control'
 import { Ship, RadarResult, dist2 } from '../engine/ship'
 import * as helpers from '@/helpers'
 
-type Data = { turn: boolean }
+type Data = { turn: boolean; initialDir?: number }
 const assault = (ship: Ship) => {
   const shipId = ship.id
   const getInstruction = ({ stats, radar, memory, ship }: ControllerArgs) => {
+    if (!memory.initialDir) memory.initialDir = stats.position.direction
     if (stats.position.speed < 0.1) return ship.thrust()
 
     const ally = radar.find(
@@ -33,7 +34,7 @@ const assault = (ship: Ship) => {
         ship,
         source: stats.position,
         target: nearestEnemy.res.position,
-        threshold: 1 / Math.sqrt(nearestEnemy.dist),
+        threshold: 4 / Math.sqrt(nearestEnemy.dist),
         delay:
           Math.sqrt(nearestEnemy.dist) /
           stats.weapons[0]?.bullet.position.speed,
@@ -42,7 +43,7 @@ const assault = (ship: Ship) => {
       return resAim
     }
 
-    return ship.idle()
+    return ship.turn(memory.initialDir - stats.position.direction)
   }
   return new Controller<Data>(shipId, getInstruction, { turn: false })
 }
