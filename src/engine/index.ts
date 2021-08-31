@@ -201,7 +201,6 @@ const applyInstruction =
     const STEALTH_TIME = 600
     if (ship.destroyed) return ship
     if (ship.stats.stealth && ship.stealth > 0) ship.stealth--
-    // console.log(instruction.constructor.name)
     switch (instruction.constructor.name) {
       case 'Turn':
         const turn = instruction as Turn
