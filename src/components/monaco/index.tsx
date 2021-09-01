@@ -6,28 +6,14 @@ import jsLogo from './js.svg'
 import cross from './cross.svg'
 import * as helpers from '@/helpers'
 import * as templates from './templates'
-
-const empty =
-  'empty-file-no-one-will-find-or-you-read-the-dev-tools-you-cheater'
-const emptyFile: File = { language: 'typescript', value: '', path: empty }
-const savedControllersKey = 'controllers.saved'
-
-const saveFiles = (files: Files) => {
-  const value = JSON.stringify(files)
-  localStorage.setItem(savedControllersKey, value)
-}
-
-const readFiles = () => {
-  const value = localStorage.getItem(savedControllersKey)
-  return value ? JSON.parse(value) : { [empty]: emptyFile }
-}
-
-export type Files = { [id: string]: File }
-export type File = {
-  language: 'typescript' | 'javascript'
-  path: string
-  value: string
-}
+import {
+  File,
+  Files,
+  empty,
+  readFiles,
+  saveFiles,
+  emptyFile,
+} from '@/helpers/storage'
 
 const getExtension = (name: string) => {
   const [extension] = name.split('.').reverse()
