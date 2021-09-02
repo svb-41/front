@@ -80,42 +80,31 @@ export enum INSTRUCTION {
   THRUST = 'THRUST',
 }
 
-export class Instruction {
-  id: INSTRUCTION = INSTRUCTION.DEFAULT
+export type Idle = {
+  id: INSTRUCTION.IDLE
 }
-
-export class Idle extends Instruction {
-  id = INSTRUCTION.IDLE
-}
-export class Turn extends Instruction {
-  id = INSTRUCTION.TURN
+export type Turn = {
+  id: INSTRUCTION.TURN
   arg: number
-  constructor(arg: number) {
-    super()
-    this.arg = arg
-  }
 }
-export class Thrust extends Instruction {
-  id = INSTRUCTION.THRUST
+export type Thrust = {
+  id: INSTRUCTION.THRUST
   arg: number
-  constructor(arg: number) {
-    super()
-    this.arg = arg
-  }
 }
-export class Fire extends Instruction {
-  id = INSTRUCTION.FIRE
+export type Fire = {
+  id: INSTRUCTION.FIRE
   arg: number
   conf?: { target?: { x: number; y: number }; armedTime?: number }
-  constructor(
-    arg: number,
-    conf?: { target?: { x: number; y: number }; armedTime?: number }
-  ) {
-    super()
-    this.arg = arg
-    this.conf = conf
-  }
 }
+export type Instruction = Idle | Turn | Thrust | Fire
+
+export const idle = (): Idle => ({ id: INSTRUCTION.IDLE })
+export const turn = (arg: number): Turn => ({ id: INSTRUCTION.TURN, arg })
+export const thrust = (arg: number): Thrust => ({ id: INSTRUCTION.THRUST, arg })
+export const fire = (
+  arg: number,
+  conf?: { target?: { x: number; y: number }; armedTime?: number }
+): Fire => ({ id: INSTRUCTION.FIRE, arg, conf })
 
 export type ControlPanel = {
   idle: () => Idle
@@ -130,12 +119,12 @@ export type ControlPanel = {
 }
 
 export const controlPanel = (ship: Ship): ControlPanel => ({
-  idle: () => new Idle(),
-  turn: arg => new Turn(arg ? arg : ship.stats.turn),
-  turnRight: arg => new Turn(arg ? -arg : -ship.stats.turn),
-  turnLeft: arg => new Turn(arg ? arg : ship.stats.turn),
-  fire: (arg, target) => new Fire(arg ? arg : 0, target),
-  thrust: arg => new Thrust(arg ? arg : ship.stats.acceleration),
+  idle: () => idle(),
+  turn: arg => turn(arg ? arg : ship.stats.turn),
+  turnRight: arg => turn(arg ? -arg : -ship.stats.turn),
+  turnLeft: arg => turn(arg ? arg : ship.stats.turn),
+  fire: (arg, target) => fire(arg ? arg : 0, target),
+  thrust: arg => thrust(arg ? arg : ship.stats.acceleration),
 })
 
 export type BulletControlPanel = {
@@ -147,9 +136,9 @@ export type BulletControlPanel = {
 }
 
 export const bulletControlPanel = (bullet: Bullet): BulletControlPanel => ({
-  idle: () => new Idle(),
-  turn: arg => new Turn(arg ? arg : bullet.stats.turn),
-  turnRight: arg => new Turn(arg ? -arg : -bullet.stats.turn),
-  turnLeft: arg => new Turn(arg ? arg : bullet.stats.turn),
-  thrust: arg => new Thrust(arg ? arg : bullet.stats.acceleration),
+  idle: () => idle(),
+  turn: arg => turn(arg ? arg : bullet.stats.turn),
+  turnRight: arg => turn(arg ? -arg : -bullet.stats.turn),
+  turnLeft: arg => turn(arg ? arg : bullet.stats.turn),
+  thrust: arg => thrust(arg ? arg : bullet.stats.acceleration),
 })
