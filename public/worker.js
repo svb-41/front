@@ -7,9 +7,17 @@ const params = location.search
   })
   .reduce((acc, val) => ({ ...acc, [val.id]: val.value }), {})
 
+let code
 onmessage = function (event) {
-  postMessage({
-    type: 'step',
-    res: JSON.stringify({ id: 'THRUST', arg: 0.01 }),
-  })
+  const data = event.data
+  if (!code && data.type === 'initialization') {
+    code = eval(`[${data.code}]`)[0]
+  } else {
+    if (code) {
+      postMessage({
+        type: 'step',
+        res: code(JSON.parse(data.data)),
+      })
+    }
+  }
 }

@@ -43,6 +43,15 @@ export class Engine extends EventTarget {
       id: controller.shipId,
       worker: new Worker('worker.js?id=' + controller.shipId),
     }))
+
+    this.workers.forEach(w => {
+      w.worker.postMessage({
+        type: 'initialization',
+        code: `function () {
+          return { id: 'THRUST', arg: 0.01 }
+        }`,
+      })
+    })
   }
 
   switchController(controller: Controller<any>) {
@@ -389,7 +398,7 @@ export const getInstructions = async (
   const results: Array<InstructionShip> = []
   workers.forEach(val => {
     val.worker.onmessage = event => {
-      const instruction = JSON.parse(event.data.res) as Instruction
+      const instruction = event.data.res as Instruction
       results.push({ id: val.id, instruction })
     }
   })
@@ -397,7 +406,7 @@ export const getInstructions = async (
     .map(c => ({ ...c, worker: workers.find(w => w.id === c.id) }))
     .filter(({ worker }) => worker)
     .forEach(({ worker, data }) => {
-      worker?.worker.postMessage(JSON.stringify({ type: 'step', data }))
+      worker?.worker.postMessage({ type: 'step', data: JSON.stringify(data) })
     })
   await new Promise(resolve => setTimeout(resolve, 10))
   const collectedInstructions: Array<InstructionShip> = controllers
