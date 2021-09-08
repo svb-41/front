@@ -37,10 +37,10 @@ const hold = (ship: Ship) => {
   }
   return new Controller<Data>(shipId, getInstruction, {
     targets: [
-      { x: 500, y: 250 },
-      { x: 500, y: 450 },
-      { x: 500, y: 650 },
-      { x: 500, y: 850 },
+      { x: 500, y: 300 },
+      { x: 500, y: 500 },
+      { x: 500, y: 700 },
+      { x: 500, y: 900 },
     ],
   })
 }
