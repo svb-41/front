@@ -398,8 +398,10 @@ export const getInstructions = async (
   const results: Array<InstructionShip> = []
   workers.forEach(val => {
     val.worker.onmessage = event => {
-      const instruction = event.data.res as Instruction
-      results.push({ id: val.id, instruction })
+      if (event.data.type === 'step') {
+        const instruction = event.data.res as Instruction
+        results.push({ id: val.id, instruction })
+      } else if (event.data.type === 'step') console.error(event.data.error)
     }
   })
   contexts

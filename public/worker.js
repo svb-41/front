@@ -8,16 +8,29 @@ const params = location.search
   .reduce((acc, val) => ({ ...acc, [val.id]: val.value }), {})
 
 let code
+let error
 onmessage = function (event) {
   const data = event.data
   if (!code && data.type === 'initialization') {
-    code = eval(`false||${data.code}`)
+    try {
+      code = eval(`false||${data.code}`)
+    } catch (e) {
+      error = e.message
+    }
   } else {
-    if (code) {
-      postMessage({
-        type: 'step',
-        res: code(JSON.parse(data.data)),
-      })
+    if (error) {
+      postMessage({ type: 'error', error })
+    } else if (code) {
+      try {
+        postMessage({
+          type: 'step',
+          res: code(JSON.parse(data.data)),
+        })
+      } catch (e) {
+        postMessage({ type: 'error', error: e.message })
+      }
+    } else {
+      postMessage({ type: 'error', error: 'nocode' })
     }
   }
 }
