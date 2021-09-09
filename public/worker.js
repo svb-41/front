@@ -11,7 +11,7 @@ let code
 onmessage = function (event) {
   const data = event.data
   if (!code && data.type === 'initialization') {
-    code = eval(`[${data.code}]`)[0]
+    code = eval(`false||${data.code}`)
   } else {
     if (code) {
       postMessage({
