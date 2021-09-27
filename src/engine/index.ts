@@ -47,8 +47,8 @@ export class Engine extends EventTarget {
     this.workers.forEach(w => {
       w.worker.postMessage({
         type: 'initialization',
-        code: `function () {
-          return { id: 'THRUST', arg: 0.01 }
+        code: `this.default = function () {
+         return { id: 'THRUST', arg: 0.01 }
         }`,
       })
     })

@@ -1,3 +1,7 @@
+let code
+let error
+
+// eslint-disable-next-line
 const params = location.search
   .slice(1)
   .split('&')
@@ -7,13 +11,21 @@ const params = location.search
   })
   .reduce((acc, val) => ({ ...acc, [val.id]: val.value }), {})
 
-let code
-let error
-onmessage = function (event) {
+const initCode = code => {
+  code = {
+    init() {
+      // eslint-disable-next-line
+      eval(`false || (${code})`)
+    },
+  }
+  code.init()
+}
+
+onmessage = async function (event) {
   const data = event.data
-  if (!code && data.type === 'initialization') {
+  if (!code.init && data.type === 'initialization') {
     try {
-      code = eval(`false||${data.code}`)
+      initCode(data.code)
     } catch (e) {
       error = e.message
     }
@@ -24,7 +36,7 @@ onmessage = function (event) {
       try {
         postMessage({
           type: 'step',
-          res: code(JSON.parse(data.data)),
+          res: code.default(JSON.parse(data.data)),
         })
       } catch (e) {
         postMessage({ type: 'error', error: e.message })
