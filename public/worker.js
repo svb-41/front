@@ -1,4 +1,4 @@
-let code
+let code = {}
 let error
 
 // eslint-disable-next-line
@@ -11,11 +11,11 @@ const params = location.search
   })
   .reduce((acc, val) => ({ ...acc, [val.id]: val.value }), {})
 
-const initCode = code => {
+const initCode = c => {
   code = {
     init() {
       // eslint-disable-next-line
-      eval(`false || (${code})`)
+      eval(`false || (${c})`)
     },
   }
   code.init()
