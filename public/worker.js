@@ -19,6 +19,7 @@ const initCode = c => {
     },
   }
   code.init()
+  console.log(c)
 }
 
 onmessage = async function (event) {
