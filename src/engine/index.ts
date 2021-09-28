@@ -369,7 +369,7 @@ export const getInstructions = async (
       id: context.ship!.id,
       worker: context.worker,
       data: {
-        ship: context.ship!!,
+        stats: context.ship!!,
         comm: buildComm({
           timeElapsed: state.timeElapsed,
           ship: context.ship!!,
