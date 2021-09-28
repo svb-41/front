@@ -11,11 +11,11 @@ const params = location.search
   })
   .reduce((acc, val) => ({ ...acc, [val.id]: val.value }), {})
 
-const initCode = code => {
+const initCode = code_ => {
   code = {
     init() {
       // eslint-disable-next-line
-      eval(`false || (${code})`)
+      eval(code_)
     },
   }
   code.init()
@@ -23,7 +23,7 @@ const initCode = code => {
 
 onmessage = async function (event) {
   const data = event.data
-  if (!code.init && data.type === 'initialization') {
+  if (!code?.init && data.type === 'initialization') {
     try {
       initCode(data.code)
     } catch (e) {
@@ -34,10 +34,8 @@ onmessage = async function (event) {
       postMessage({ type: 'error', error })
     } else if (code) {
       try {
-        postMessage({
-          type: 'step',
-          res: code.default(JSON.parse(data.data)),
-        })
+        const res = code.default(JSON.parse(data.data))
+        postMessage({ type: 'step', res })
       } catch (e) {
         postMessage({ type: 'error', error: e.message })
       }
