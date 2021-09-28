@@ -1,6 +1,7 @@
 import { State, Engine } from '@/engine'
 import { Ship } from '@/engine/ship'
 import { Channel } from '@/engine/comm'
+import * as services from '@/services/compile'
 
 import {
   buildFighter,
@@ -9,7 +10,8 @@ import {
   buildBomber,
   buildStealth,
 } from '@/engine/config/builder'
-import * as controller from '@/controllers'
+
+import controller from '@/default-controllers/assets.json'
 
 const teams = ['blue', 'red']
 
@@ -77,12 +79,31 @@ const defaultState: State = {
   timeElapsed: 0,
 }
 
-const controllers = [
-  controller.torpedo.default(bomber),
-  ...stealths.map(controller.scout.default),
-  ...blue.map(controller.assault.default),
+const controllers: Array<{ code: string; shipId: string; name: string }> = [
+  { code: controller.torpedo, shipId: bomber.id, name: 'torpedo.ts' },
+  ...stealths.map(({ id }) => ({
+    code: controller.scout,
+    shipId: id,
+    name: 'scout.ts',
+  })),
+  ...blue.map(({ id }) => ({
+    code: controller.assault,
+    shipId: id,
+    name: 'assault.ts',
+  })),
 ]
 
-const gen = () => new Engine(defaultState, controllers, gameEnder)
+const compiledController = async (
+  controllers: Array<{ code: string; shipId: string; name: string }>
+): Promise<Array<{ code: string; shipId: string }>> =>
+  Promise.all(
+    controllers.map(async ({ code, name, shipId }) => ({
+      shipId,
+      code: await services.compile({ uid: 'test-to-delete', name, code }),
+    }))
+  )
+
+const gen = async () =>
+  new Engine(defaultState, await compiledController(controllers), gameEnder)
 
 export default gen

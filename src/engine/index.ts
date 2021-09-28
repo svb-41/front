@@ -10,7 +10,6 @@ import {
 } from './ship'
 import {
   BulletController,
-  Controller,
   Instruction,
   Turn,
   Thrust,
@@ -25,49 +24,36 @@ const { TWO_PI } = trigo
 
 export class Engine extends EventTarget {
   state: State
-  controllers: Array<Controller<any>>
   history: Array<State> = []
   gameEnder: (state: State) => boolean
-  workers: Array<{ id: string; worker: Worker }>
+  workers: Array<{ id: string; worker: Worker; code: string }>
 
   constructor(
     initialState: State,
-    controllers: Array<Controller<any>>,
+    controllers: Array<{ shipId: string; code: string }>,
     gameEnder: (state: State) => boolean
   ) {
     super()
     this.state = initialState
     this.gameEnder = gameEnder
-    this.controllers = controllers
     this.workers = controllers.map(controller => ({
       id: controller.shipId,
       worker: new Worker('worker.js?id=' + controller.shipId),
+      code: controller.code,
     }))
 
     this.workers.forEach(w => {
       w.worker.postMessage({
         type: 'initialization',
-        code: `this.default = function () {
-         return { id: 'THRUST', arg: 0.01 }
-        }`,
+        code: w.code,
       })
     })
-  }
-
-  switchController(controller: Controller<any>) {
-    const { shipId } = controller
-    const index = this.controllers.findIndex(c => c.shipId === shipId)
-    this.controllers[index] = controller
   }
 
   async step(nb?: number): Promise<State> {
     if (nb && nb > 1) return this.step(nb - 1)
     this.history.push(JSON.parse(JSON.stringify(this.state)))
-    const instruction = await getInstructions(
-      this.state,
-      this.controllers,
-      this.workers
-    )
+    const instruction = await getInstructions(this.state, this.workers)
     this.state = step(this.state, instruction, this)
     const previousEnd = this.state.endOfGame
     this.state.endOfGame = this.gameEnder(this.state)
@@ -370,19 +356,18 @@ const buildComm = ({
 
 export const getInstructions = async (
   state: State,
-  controllers: Array<Controller<any>>,
   workers: Array<{ id: string; worker: Worker }>
 ): Promise<Array<InstructionShip>> => {
-  const contexts = controllers
-    .map((c: Controller<any>) => ({
-      c,
-      ship: state.ships.find(s => s.id === c.shipId),
+  const contexts = workers
+    .map(({ id, worker }: { id: string; worker: Worker }) => ({
+      worker,
+      ship: state.ships.find(s => s.id === id),
     }))
     .filter(val => val.ship !== undefined)
     .filter(val => !val.ship?.destroyed)
     .map(context => ({
       id: context.ship!.id,
-      controller: context.c,
+      worker: context.worker,
       data: {
         ship: context.ship!!,
         comm: buildComm({
@@ -405,16 +390,14 @@ export const getInstructions = async (
     }
   })
   contexts
-    .map(c => ({ ...c, worker: workers.find(w => w.id === c.id) }))
     .filter(({ worker }) => worker)
     .forEach(({ worker, data }) => {
-      worker?.worker.postMessage({ type: 'step', data: JSON.stringify(data) })
+      worker.postMessage({ type: 'step', data: JSON.stringify(data) })
     })
   await new Promise(resolve => setTimeout(resolve, 10))
-  const collectedInstructions: Array<InstructionShip> = controllers
-    .map(c => c.shipId)
-    .map(
-      id => results.find(res => res.id === id) ?? { id, instruction: idle() }
-    )
+  const collectedInstructions: Array<InstructionShip> = workers.map(
+    ({ id }) =>
+      results.find(res => res.id === id) ?? { id, instruction: idle() }
+  )
   return collectedInstructions
 }
