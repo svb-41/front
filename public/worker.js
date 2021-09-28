@@ -11,19 +11,11 @@ const params = location.search
   })
   .reduce((acc, val) => ({ ...acc, [val.id]: val.value }), {})
 
-<<<<<<< HEAD
 const initCode = code_ => {
   code = {
     init() {
       // eslint-disable-next-line
       eval(code_)
-=======
-const initCode = c => {
-  code = {
-    init() {
-      // eslint-disable-next-line
-      eval(`false || (${c})`)
->>>>>>> bfa8816a9670fca6cbdb914ecda7fe8e3d10931a
     },
   }
   code.init()
