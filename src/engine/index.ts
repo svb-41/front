@@ -14,7 +14,6 @@ import {
   Turn,
   Thrust,
   Fire,
-  Comm,
   idle,
   INSTRUCTION,
 } from './control'
@@ -22,11 +21,20 @@ import { trigo } from '@/helpers'
 import { Channel } from './comm'
 const { TWO_PI } = trigo
 
+type Message = any
 export class Engine extends EventTarget {
   state: State
   history: Array<State> = []
   gameEnder: (state: State) => boolean
-  workers: Array<{ id: string; worker: Worker; code: string }>
+  workers: Array<{
+    id: string
+    worker: Worker
+    code: string
+    messages: {
+      step?: Message
+      to: Array<Message>
+    }
+  }>
 
   constructor(
     initialState: State,
@@ -40,9 +48,31 @@ export class Engine extends EventTarget {
       id: controller.shipId,
       worker: new Worker('worker.js?id=' + controller.shipId),
       code: controller.code,
+      messages: { from: [], to: [] },
     }))
 
-    this.workers.forEach(w => {
+    const onmessages = this.workers.map(
+      w =>
+        (w.worker.onmessage = event => {
+          if (!event) return
+          const type = event.data.type
+          if (type === 'step') w.messages.step = event.data
+          if (type === 'comm') {
+            const team = this.state.ships.find(s => s.id === w.id)?.team
+            if (team) {
+              const shipsTeam = this.state.ships
+                .filter(s => s.team === team)
+                .map(s => s.id)
+              this.workers
+                .filter(w => shipsTeam.includes(w.id))
+                .map(w => w.messages.to.push(event.data.message))
+            }
+          }
+          if (type === 'error') console.error(event.data.error)
+        })
+    )
+
+    this.workers.map(w => {
       w.worker.postMessage({
         type: 'initialization',
         code: w.code,
@@ -337,32 +367,30 @@ const getRadarResults = (
         }))
     : []
 
-const buildComm = ({
-  timeElapsed,
-  channel,
-  ship,
-}: {
-  ship: Ship
-  timeElapsed: number
-  channel: Channel
-}): Comm => ({
-  getNewMessages: () => channel.getNewMessages(timeElapsed - 12),
-  sendMessage: (message: any) =>
-    channel.sendMessage({
-      timeSend: timeElapsed,
-      content: { sender: ship.id, message },
-    }),
-})
-
 export const getInstructions = async (
   state: State,
-  workers: Array<{ id: string; worker: Worker }>
+  workers: Array<{
+    id: string
+    worker: Worker
+    messages: { step?: Message; to: Array<Message> }
+  }>
 ): Promise<Array<InstructionShip>> => {
   const contexts = workers
-    .map(({ id, worker }: { id: string; worker: Worker }) => ({
-      worker,
-      ship: state.ships.find(s => s.id === id),
-    }))
+    .map(
+      ({
+        id,
+        worker,
+        messages,
+      }: {
+        id: string
+        worker: Worker
+        messages: { step?: Message; to: Array<Message> }
+      }) => ({
+        worker,
+        messages,
+        ship: state.ships.find(s => s.id === id),
+      })
+    )
     .filter(val => val.ship !== undefined)
     .filter(val => !val.ship?.destroyed)
     .map(context => ({
@@ -370,31 +398,23 @@ export const getInstructions = async (
       worker: context.worker,
       data: {
         stats: context.ship!!,
-        comm: buildComm({
-          timeElapsed: state.timeElapsed,
-          ship: context.ship!!,
-          channel: state.comm.find(({ id }) => context.ship!.team === id)
-            ?.channel!!,
-        }),
+        messages: context.messages.to,
         radar: getRadarResults(context.ship!!, state),
       },
     }))
 
-  const results: Array<InstructionShip> = []
-  workers.forEach(val => {
-    val.worker.onmessage = event => {
-      if (event.data.type === 'step') {
-        const instruction = event.data.res as Instruction
-        results.push({ id: val.id, instruction })
-      } else if (event.data.type === 'step') console.error(event.data.error)
-    }
-  })
+  workers.map(w => (w.messages.step = undefined))
   contexts
     .filter(({ worker }) => worker)
     .forEach(({ worker, data }) => {
       worker.postMessage({ type: 'step', data: JSON.stringify(data) })
     })
+  workers.map(w => (w.messages.to = []))
   await new Promise(resolve => setTimeout(resolve, 10))
+  const results: Array<InstructionShip> = workers
+    .map(w => ({ m: w.messages.step, id: w.id }))
+    .filter(({ m }) => m)
+    .map(({ m, id }) => ({ instruction: m.res, id } as InstructionShip))
   const collectedInstructions: Array<InstructionShip> = workers.map(
     ({ id }) =>
       results.find(res => res.id === id) ?? { id, instruction: idle() }

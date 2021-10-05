@@ -45,7 +45,15 @@ const controlPanel = ship => ({
 //TODO comm
 const comm = {
   getNewMessages: () => [],
-  sendMessage: () => {},
+  sendMessage: message => {
+    postMessage({
+      type: 'comm',
+      message: {
+        timeSend: Date.now(),
+        content: { sender: params.id, message },
+      },
+    })
+  },
   history: [],
 }
 
@@ -64,7 +72,8 @@ onmessage = async function (event) {
       postMessage({ type: 'error', error })
     } else if (code) {
       try {
-        const { stats, radar } = JSON.parse(data.data)
+        const { stats, radar, messages } = JSON.parse(data.data)
+        comm.getNewMessages = () => messages
         const args = { stats, comm, radar, memory, ship: controlPanel(stats) }
         const res = code.getInstruction(args)
         postMessage({ type: 'step', res })
