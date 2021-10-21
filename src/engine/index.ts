@@ -51,7 +51,7 @@ export class Engine extends EventTarget {
       messages: { from: [], to: [] },
     }))
 
-    const onmessages = this.workers.map(
+    this.workers.forEach(
       w =>
         (w.worker.onmessage = event => {
           if (!event) return
