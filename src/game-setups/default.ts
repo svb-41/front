@@ -97,10 +97,10 @@ const compiledController = async (
   controllers: Array<{ code: string; shipId: string; name: string }>
 ): Promise<Array<{ code: string; shipId: string }>> =>
   Promise.all(
-    controllers.map(async ({ code, name, shipId }) => ({
-      shipId,
-      code: await services.compile({ uid: 'test-to-delete', name, code }),
-    }))
+    controllers.map(async ({ code, name, shipId }) => {
+      const c_ = await services.compile({ uid: 'test-to-delete', name, code })
+      return { shipId, code: c_ }
+    })
   )
 
 const gen = async () =>
