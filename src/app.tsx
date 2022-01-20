@@ -1,28 +1,12 @@
-import { useState, useEffect, Fragment } from 'react'
-import { Engine } from '@/engine'
-import { Renderer } from '@/renderer'
-import defaultEngine from '@/game-setups/default'
-import * as HUD from '@/components/hud'
-import * as Monaco from '@/components/monaco'
+import { Routes, Route } from 'react-router-dom'
+import Home from '@/pages/home'
+import Ships from '@/pages/ships'
 
-const App = () => {
-  const [screen, setScreen] = useState<HUD.State>('game')
-  const [engine, setEngine] = useState<Engine>()
-
-  useEffect(() => {
-    defaultEngine().then(setEngine)
-  }, [])
-  const onClick = () => {
-    const newScreen = screen === 'game' ? 'editor' : 'game'
-    setScreen(newScreen)
-  }
-  return (
-    <Fragment>
-      <HUD.HUD state={screen} onClick={onClick} />
-      {screen === 'game' && engine && <Renderer engine={engine} />}
-      {screen === 'editor' && <Monaco.Monaco />}
-    </Fragment>
-  )
-}
+const App = () => (
+  <Routes>
+    <Route path="/" element={<Home />} />
+    <Route path="ships" element={<Ships />} />
+  </Routes>
+)
 
 export default App
