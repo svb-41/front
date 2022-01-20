@@ -44,7 +44,7 @@ export const SCOUT: Ship = {
 }
 
 export const BOMBER: Ship = {
-  id: 'cruiser',
+  id: 'bomber',
   shipClass: SHIP_CLASS.BOMBER,
   position: {
     pos: { x: 0, y: 0 },
