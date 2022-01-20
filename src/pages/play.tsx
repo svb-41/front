@@ -18,7 +18,7 @@ const App = () => {
   }
   return (
     <Fragment>
-      <HUD.HUD state={screen} onClick={onClick} />
+      <HUD.HUD />
       {screen === 'game' && engine && <Renderer engine={engine} />}
       {screen === 'editor' && <Monaco.Monaco />}
     </Fragment>

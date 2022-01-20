@@ -15,7 +15,11 @@ const Display = () => {
       {ships.map(ship => (
         <div key={ship} className={styles.cell}>
           {unlockedShips.includes(ship) ? (
-            <img src={getImage(ship, color)} className={styles.img} />
+            <img
+              src={getImage(ship, color)}
+              className={styles.img}
+              alt="ship"
+            />
           ) : (
             <div className={styles.img}>locked</div>
           )}
