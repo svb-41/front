@@ -1,0 +1,20 @@
+.container {
+  display: grid;
+  padding: 0 4rem;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.img {
+  image-rendering: pixelated;
+  height: 200px;
+  width: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
