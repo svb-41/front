@@ -1,0 +1,40 @@
+.colorPicker {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding: 1rem 0;
+  gap: 1rem;
+}
+
+.tile {
+  height: 60px;
+  width: 60px;
+  border-radius: 16px;
+  border: solid 3px var(--grey);
+  cursor: pointer;
+}
+
+.tile-blue {
+  composes: tile;
+  background: var(--blue);
+}
+
+.tile-green {
+  composes: tile;
+  background: var(--green);
+}
+
+.tile-red {
+  composes: tile;
+  background: var(--red);
+}
+
+.tile-yellow {
+  composes: tile;
+  background: var(--yellow);
+}
+
+.tile-white {
+  composes: tile;
+  background: var(--white);
+}
