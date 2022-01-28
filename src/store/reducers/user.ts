@@ -1,5 +1,5 @@
 import { Reducer } from 'redux'
-import { UPDATE_USER, UPDATE_USER_ID } from '@/store/actions/user'
+import { UPDATE_USER, UPDATE_USER_ID, UPDATE_COLOR } from '@/store/actions/user'
 
 export type User = string | null
 export enum Color {
@@ -34,6 +34,10 @@ export type Action =
       unlockedShips: Array<string>
       unlockedMissions: Array<string>
     }
+  | {
+      type: 'user/UPDATE_COLOR'
+      color: Color
+    }
 
 export const reducer: Reducer<State, Action> = (state = init, action) => {
   switch (action.type) {
@@ -44,6 +48,10 @@ export const reducer: Reducer<State, Action> = (state = init, action) => {
     case UPDATE_USER: {
       const { unlockedShips, unlockedMissions } = action
       return { ...state, unlockedShips, unlockedMissions }
+    }
+    case UPDATE_COLOR: {
+      const { color } = action
+      return { ...state, color }
     }
     default:
       return state

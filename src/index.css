@@ -11,6 +11,12 @@ body {
   font-family: var(--sans-serif);
   height: 100vh;
   overscroll-behavior: none;
+  --blue: #11a5d4;
+  --green: #92b115;
+  --red: #dd442c;
+  --yellow: #e2a106;
+  --white: #959ab1;
+  --grey: #959ab1;
 }
 
 #root {

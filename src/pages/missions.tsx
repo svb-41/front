@@ -1,3 +1,3 @@
-const Missions = () => <></>
+const Missions = () => <>missions</>
 
 export default Missions

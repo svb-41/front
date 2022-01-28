@@ -1,3 +1,3 @@
-const Onboarding = () => <></>
+const Onboarding = () => <>onboarding</>
 
 export default Onboarding

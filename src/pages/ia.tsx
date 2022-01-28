@@ -1,3 +1,3 @@
-const Ia = () => <></>
+const Ia = () => <>ia</>
 
 export default Ia
