@@ -6,9 +6,11 @@ export type Props = { state: State; onClick: () => void }
 export const HUD = ({
   title = 'SVB 41',
   back,
+  button,
 }: {
   title?: string
   back?: string
+  button?: string
 }) => {
   const navigate = useNavigate()
   return (
@@ -20,7 +22,7 @@ export const HUD = ({
         }}
         className={styles.button}
       >
-        back
+        {button ? button : 'back'}
       </button>
     </div>
   )
