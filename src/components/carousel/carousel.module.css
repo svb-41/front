@@ -1,0 +1,62 @@
+.container {
+  height: 100%;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 35% 35rem 35%;
+  grid-gap: 1rem;
+  overflow-x: hidden;
+}
+
+.mission {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.info {
+  font-size: 30px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.galleryCell {
+  height: 20rem;
+  width: 20rem;
+}
+
+.galleryCell img {
+  cursor: pointer;
+  height: 100%;
+  width: auto;
+  border-radius: 8px;
+}
+
+.galleryCellActive {
+  composes: galleryCell;
+  height: 35rem;
+  width: 100%;
+}
+
+.cell {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.previous {
+  composes: cell;
+  gap: 1rem;
+  justify-content: end;
+  text-align: right;
+}
+.center {
+  composes: cell;
+  z-index: 1;
+}
+.next {
+  composes: cell;
+  gap: 1rem;
+}
