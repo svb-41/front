@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import Button from '@/components/button'
 import styles from './carousel.module.css'
 
 const ARROW_LEFT = 'ArrowLeft'
@@ -9,22 +8,35 @@ const ARROW_DOWN = 'ArrowDown'
 
 type Props = {
   element: Array<{ link: string; img: string; value: string }>
+  onChange?: (i: number) => void
 }
-const Carousel = ({ element }: Props) => {
+const Carousel = ({ element, onChange }: Props) => {
   const [selected, setSelected] = useState<number>(0)
+  const move = (i: number | ((a: number) => number)) => {
+    if (typeof i == 'number') {
+      if (onChange) onChange(i)
+      setSelected(i)
+    } else if (onChange) {
+      setSelected(s => {
+        const n = i(s)
+        onChange(n)
+        return n
+      })
+    }
+  }
 
   useEffect(() => {
     const keydown = (event: KeyboardEvent) => {
       if (event.code === ARROW_LEFT)
-        setSelected(selected => (selected > 0 ? selected - 1 : selected))
+        move(selected => (selected > 0 ? selected - 1 : selected))
 
       if (event.code === ARROW_RIGHT)
-        setSelected(selected =>
+        move(selected =>
           selected < element.length - 1 ? selected + 1 : selected
         )
 
-      if (event.code === ARROW_UP) setSelected(element.length - 1)
-      if (event.code === ARROW_DOWN) setSelected(0)
+      if (event.code === ARROW_UP) move(element.length - 1)
+      if (event.code === ARROW_DOWN) move(0)
     }
     window.addEventListener('keydown', keydown)
     return () => {
@@ -38,7 +50,7 @@ const Carousel = ({ element }: Props) => {
         <div className={styles.previous}>
           {element.slice(0, selected).map((e, i) => (
             <div key={i} className={styles.galleryCell}>
-              <img src={e.img} onClick={() => setSelected(i)} />
+              <img src={e.img} onClick={() => move(i)} />
             </div>
           ))}
         </div>
@@ -50,14 +62,10 @@ const Carousel = ({ element }: Props) => {
         <div className={styles.next}>
           {element.slice(selected + 1).map((e, i) => (
             <div key={i} className={styles.galleryCell}>
-              <img src={e.img} onClick={() => setSelected(i + selected + 1)} />
+              <img src={e.img} onClick={() => move(i + selected + 1)} />
             </div>
           ))}
         </div>
-      </div>
-      <div className={styles.info}>
-        Mission number {selected + 1}
-        <Button text="Start mission" onClick={() => {}} color="darkgreen" />
       </div>
     </div>
   )
