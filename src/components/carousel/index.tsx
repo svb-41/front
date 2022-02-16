@@ -45,27 +45,25 @@ const Carousel = ({ element, onChange }: Props) => {
   }, [])
 
   return (
-    <div className={styles.missions}>
-      <div className={styles.container}>
-        <div className={styles.previous}>
-          {element.slice(0, selected).map((e, i) => (
-            <div key={i} className={styles.galleryCell}>
-              <img src={e.img} onClick={() => move(i)} />
-            </div>
-          ))}
-        </div>
-        <div className={styles.center}>
-          <div className={styles.galleryCellActive}>
-            <img src={element[selected].img} />
+    <div className={styles.container}>
+      <div className={styles.previous}>
+        {element.slice(0, selected).map((e, i) => (
+          <div key={i} className={styles.galleryCell}>
+            <img src={e.img} onClick={() => move(i)} />
           </div>
+        ))}
+      </div>
+      <div className={styles.center}>
+        <div className={styles.galleryCellActive}>
+          <img src={element[selected].img} />
         </div>
-        <div className={styles.next}>
-          {element.slice(selected + 1).map((e, i) => (
-            <div key={i} className={styles.galleryCell}>
-              <img src={e.img} onClick={() => move(i + selected + 1)} />
-            </div>
-          ))}
-        </div>
+      </div>
+      <div className={styles.next}>
+        {element.slice(selected + 1).map((e, i) => (
+          <div key={i} className={styles.galleryCell}>
+            <img src={e.img} onClick={() => move(i + selected + 1)} />
+          </div>
+        ))}
       </div>
     </div>
   )

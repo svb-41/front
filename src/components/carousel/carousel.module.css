@@ -7,21 +7,6 @@
   overflow-x: hidden;
 }
 
-.mission {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-}
-
-.info {
-  font-size: 30px;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  gap: 1rem;
-}
-
 .galleryCell {
   height: 20rem;
   width: 20rem;

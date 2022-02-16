@@ -4,6 +4,7 @@ import Ia from '@/pages/ia'
 import Ships from '@/pages/ships'
 import Missions from '@/pages/missions'
 import Onboarding from '@/pages/onboarding'
+import Mission from '@/pages/missions/mission'
 
 const App = () => (
   <Routes>
@@ -11,6 +12,7 @@ const App = () => (
     <Route path="ia" element={<Ia />} />
     <Route path="ships" element={<Ships />} />
     <Route path="missions" element={<Missions />} />
+    <Route path="mission/:id" element={<Mission />} />
     <Route path="onboarding" element={<Onboarding />} />
   </Routes>
 )
