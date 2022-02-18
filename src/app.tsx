@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom'
 import Home from '@/pages/home'
 import Ia from '@/pages/ia'
+import AiPage from '@/pages/ia/aiPage'
 import Ships from '@/pages/ships'
 import Missions from '@/pages/missions'
 import Onboarding from '@/pages/onboarding'
@@ -10,6 +11,7 @@ const App = () => (
   <Routes>
     <Route path="/" element={<Home />} />
     <Route path="ai" element={<Ia />} />
+    <Route path="ai/:id" element={<AiPage />} />
     <Route path="ships" element={<Ships />} />
     <Route path="missions" element={<Missions />} />
     <Route path="mission/:id" element={<Mission />} />
