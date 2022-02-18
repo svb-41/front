@@ -9,7 +9,7 @@ import Mission from '@/pages/missions/mission'
 const App = () => (
   <Routes>
     <Route path="/" element={<Home />} />
-    <Route path="ia" element={<Ia />} />
+    <Route path="ai" element={<Ia />} />
     <Route path="ships" element={<Ships />} />
     <Route path="missions" element={<Missions />} />
     <Route path="mission/:id" element={<Mission />} />

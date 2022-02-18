@@ -13,8 +13,8 @@ const Home = () => {
             <Link to="/missions">
               <div className={styles.mainLink}>Missions</div>
             </Link>
-            <Link to="/ia">
-              <div className={styles.mainLink}>IA</div>
+            <Link to="/ai">
+              <div className={styles.mainLink}>AI</div>
             </Link>
           </div>
           <Link to="/ships">
