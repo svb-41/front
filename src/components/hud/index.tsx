@@ -15,7 +15,9 @@ export const HUD = ({
   const navigate = useNavigate()
   return (
     <div className={styles.hud}>
-      <div>{title}</div>
+      <div onClick={() => navigate('/')} className={styles.title}>
+        {title}
+      </div>
       <button
         onClick={() => {
           if (back) navigate(back)

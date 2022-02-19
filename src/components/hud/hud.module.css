@@ -30,3 +30,7 @@
   align-items: stretch;
   width: 100vw;
 }
+
+.title {
+  cursor: pointer;
+}
