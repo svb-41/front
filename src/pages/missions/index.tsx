@@ -22,7 +22,7 @@ const Missions = () => {
             onChange={setSelected}
             element={missions.map((i, index) => ({
               link: 'mission/' + i,
-              img: 'https://picsum.photos/300/300/?blur=' + ((index % 10) + 1),
+              img: 'https://picsum.photos/300/300/?qsd=' + index,
               value: i.toString(),
             }))}
           />
