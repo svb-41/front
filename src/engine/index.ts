@@ -46,7 +46,7 @@ export class Engine extends EventTarget {
     this.gameEnder = gameEnder
     this.workers = controllers.map(controller => ({
       id: controller.shipId,
-      worker: new Worker('worker.js?id=' + controller.shipId),
+      worker: new Worker('/worker.js?id=' + controller.shipId),
       code: controller.code,
       messages: { from: [], to: [] },
     }))
