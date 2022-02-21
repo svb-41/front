@@ -5,20 +5,15 @@ import tsLogo from './ts.svg'
 import jsLogo from './js.svg'
 import cross from './cross.svg'
 import * as helpers from '@/helpers'
+import { v4 as uuid } from 'uuid'
 
 const empty =
   'empty-file-no-one-will-find-or-you-read-the-dev-tools-you-cheater'
-const emptyFile: File = { language: 'typescript', value: '', path: empty }
-const savedControllersKey = 'controllers.saved'
-
-const saveFiles = (files: Files) => {
-  const value = JSON.stringify(files)
-  localStorage.setItem(savedControllersKey, value)
-}
-
-const readFiles = () => {
-  const value = localStorage.getItem(savedControllersKey)
-  return value ? JSON.parse(value) : { [empty]: emptyFile }
+const emptyFile: File = {
+  language: 'typescript',
+  value: '',
+  path: empty,
+  id: empty,
 }
 
 export type Files = { [id: string]: File }
@@ -26,6 +21,7 @@ export type File = {
   language: 'typescript' | 'javascript'
   path: string
   value: string
+  id: string
 }
 
 const getExtension = (name: string) => {
@@ -123,12 +119,14 @@ const Menu = ({ items, templates, onItemClick }: MenuProps) => {
   )
 }
 
-export const Monaco = () => {
+export type Props = { files: Files; onChange: (files: Files) => void }
+export const Monaco = (props: Props) => {
   const codeRef = useRef()
   const [tabs, setTabs] = useState<string[]>([])
   const [active, setActive] = useState<string>(empty)
-  const [files, setFiles] = useState<Files>(readFiles())
-  useEffect(() => saveFiles(files), [files])
+  const [files, setFiles] = useState<Files>(props.files)
+  // prettier-ignore
+  useEffect(() => { props.onChange(files) }, [files])
   const onTabClose = (value: string) => {
     setTabs(tabs => {
       const newTabs = tabs.filter(t => t !== value)
@@ -144,7 +142,7 @@ export const Monaco = () => {
       const f = files[value]
       const val = f?.value
       const v = val ?? (active === empty ? files[empty].value : '')
-      const file: File = { language, value: v, path }
+      const file: File = { language, value: v, path, id: uuid() }
       const newEmpty = active === empty ? emptyFile : files[empty]
       const final = { ...files, [value]: file, [empty]: newEmpty }
       return final
