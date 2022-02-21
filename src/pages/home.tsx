@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 const Home = () => {
   return (
     <>
-      <HUD.HUD title="SVB 41" back="/" button="Connect" />
+      <HUD.HUD title="SVB 41" />
       <HUD.Container>
         <div className={styles.container}>
           <div className={styles.title}>Tableau de bord</div>
