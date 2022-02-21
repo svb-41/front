@@ -3,7 +3,6 @@ import { Engine } from '@/engine'
 import { Renderer } from '@/renderer'
 import defaultEngine from '@/game-setups/default'
 import * as HUD from '@/components/hud'
-import * as Monaco from '@/components/monaco'
 
 const App = () => {
   const [screen, setScreen] = useState<HUD.State>('game')
@@ -20,7 +19,6 @@ const App = () => {
     <Fragment>
       <HUD.HUD />
       {screen === 'game' && engine && <Renderer engine={engine} />}
-      {screen === 'editor' && <Monaco.Monaco />}
     </Fragment>
   )
 }

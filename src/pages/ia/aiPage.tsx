@@ -11,7 +11,7 @@ const Mission = () => {
     <>
       <HUD.HUD title="Artificial intelligence" back="/ai" />
       <HUD.Container>
-        <Monaco.Monaco />
+        <></>
       </HUD.Container>
     </>
   )
