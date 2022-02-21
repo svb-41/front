@@ -7,7 +7,7 @@ const Mission = () => {
   const id = search[search.length - 1]
   return (
     <>
-      <HUD.HUD title="missions" back="/missions" />
+      <HUD.HUD title="Missions" back="/missions" />
       <HUD.Container>
         <>mission {id}</>
       </HUD.Container>

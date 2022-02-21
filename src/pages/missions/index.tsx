@@ -15,7 +15,7 @@ const Missions = () => {
 
   return (
     <>
-      <HUD.HUD title="missions" back="/" />
+      <HUD.HUD title="Missions" back="/" />
       <HUD.Container>
         <div className={styles.missions}>
           <Carousel
