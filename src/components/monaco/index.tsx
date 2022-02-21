@@ -11,7 +11,7 @@ const empty =
   'empty-file-no-one-will-find-or-you-read-the-dev-tools-you-cheater'
 const emptyFile: File = {
   language: 'typescript',
-  value: '',
+  code: '',
   path: empty,
   id: empty,
 }
@@ -20,7 +20,7 @@ export type Files = { [id: string]: File }
 export type File = {
   language: 'typescript' | 'javascript'
   path: string
-  value: string
+  code: string
   id: string
 }
 
@@ -140,9 +140,9 @@ export const Monaco = (props: Props) => {
       const language = getLanguage(value)
       const path = value
       const f = files[value]
-      const val = f?.value
-      const v = val ?? (active === empty ? files[empty].value : '')
-      const file: File = { language, value: v, path, id: uuid() }
+      const val = f?.code
+      const v = val ?? (active === empty ? files[empty].code : '')
+      const file: File = { language, code: v, path, id: uuid() }
       const newEmpty = active === empty ? emptyFile : files[empty]
       const final = { ...files, [value]: file, [empty]: newEmpty }
       return final
@@ -191,10 +191,10 @@ export const Monaco = (props: Props) => {
         onItemClick={onItemClick}
       />
       <Editor
-        value={files[active]?.value}
+        value={files[active]?.code}
         path={files[active]?.path}
         defaultLanguage={files[active]?.language}
-        defaultValue={files[active]?.value}
+        defaultValue={files[active]?.code}
         theme="vs-dark"
         onMount={(editor, _monaco) => (codeRef.current = editor)}
         onChange={onChange}
