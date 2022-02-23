@@ -1,6 +1,7 @@
 import { Reducer } from 'redux'
 import { LOAD_AI, UPDATE_AI, DELETE_AI } from '@/store/actions/ai'
 import * as local from '@/services/localStorage'
+import { File } from '@/components/monaco'
 
 export type State = {
   ais: Array<AI>
@@ -8,7 +9,7 @@ export type State = {
 
 export type AI = {
   id: string
-  code: string
+  file: File
   updatedAt: Date
   createdAt: Date
   tags: Array<string>
@@ -33,10 +34,11 @@ export const reducer: Reducer<State, Action> = (state = init, action) => {
       return { ...state, ais }
     }
     case UPDATE_AI: {
-      const i =
-        state.ais.findIndex(ai => ai.id === action.id) ?? state.ais.length
+      const index = state.ais.findIndex(ai => ai.id === action.id)
+      const i = index === -1 ? state.ais.length : index
       state.ais[i] = action.ai
       const ais = [...state.ais]
+      console.log(ais)
       setAllAIs(ais)
       return { ...state, ais }
     }

@@ -7,7 +7,7 @@ export const DELETE_AI = 'ai/DELETE_AI'
 
 const defaultAI = (id: string): AI => ({
   id,
-  code: '',
+  file: { language: 'typescript', code: '', path: 'new.ts', id },
   updatedAt: new Date(),
   createdAt: new Date(),
   tags: [],
