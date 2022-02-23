@@ -12,6 +12,7 @@ export type AI = {
   file: File
   updatedAt: Date | string
   createdAt: Date | string
+  compiledValue?: string
   tags: Array<string>
 }
 
