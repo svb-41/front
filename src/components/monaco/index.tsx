@@ -124,9 +124,6 @@ export const Monaco = (props: Props) => {
   const codeRef = useRef()
   const [tabs, setTabs] = useState<string[]>([])
   const [active, setActive] = useState<string>(empty)
-  const [files, setFiles] = useState<Files>(props.files)
-  // prettier-ignore
-  useEffect(() => { props.onChange(files) }, [files])
   const onTabClose = (value: string) => {
     setTabs(tabs => {
       const newTabs = tabs.filter(t => t !== value)
@@ -135,26 +132,24 @@ export const Monaco = (props: Props) => {
     })
   }
   const onItemClick = (value: string) => {
+    const { files, onChange } = props
     setTabs(tabs => (tabs.includes(value) ? tabs : [...tabs, value]))
-    setFiles((files: Files) => {
-      const language = getLanguage(value)
-      const path = value
-      const f = files[value]
-      const val = f?.code
-      const v = val ?? (active === empty ? files[empty].code : '')
-      const file: File = { language, code: v, path, id: uuid() }
-      const newEmpty = active === empty ? emptyFile : files[empty]
-      const final = { ...files, [value]: file, [empty]: newEmpty }
-      return final
-    })
+    const language = getLanguage(value)
+    const path = value
+    const f = files[value]
+    const val = f?.code
+    const v = val ?? (active === empty ? files[empty].code : '')
+    const file: File = { language, code: v, path, id: uuid() }
+    const newEmpty = active === empty ? emptyFile : files[empty]
+    const final = { ...files, [value]: file, [empty]: newEmpty }
+    onChange(final)
     setActive(value)
   }
   const onChange: OnChange = code => {
-    setFiles((files: Files) => {
-      const file = { ...files[active], value: code ?? '' }
-      const final = { ...files, [active]: file }
-      return final
-    })
+    const { files, onChange } = props
+    const file = { ...files[active], value: code ?? '' }
+    const final = { ...files, [active]: file }
+    onChange(final)
   }
   useEffect(() => {
     const fun = (event: KeyboardEvent) => {
@@ -187,14 +182,14 @@ export const Monaco = (props: Props) => {
       />
       <Menu
         templates={['assault.ts', 'dance.ts', 'forward.js', 'hold.js']}
-        items={Object.keys(files).filter(t => t !== empty)}
+        items={Object.keys(props.files).filter(t => t !== empty)}
         onItemClick={onItemClick}
       />
       <Editor
-        value={files[active]?.code}
-        path={files[active]?.path}
-        defaultLanguage={files[active]?.language}
-        defaultValue={files[active]?.code}
+        value={props.files[active]?.code}
+        path={props.files[active]?.path}
+        defaultLanguage={props.files[active]?.language}
+        defaultValue={props.files[active]?.code}
         theme="vs-dark"
         onMount={(editor, _monaco) => (codeRef.current = editor)}
         onChange={onChange}
