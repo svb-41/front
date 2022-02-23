@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom'
 import * as selectors from '@/store/selectors'
 import styles from './ai.module.css'
 import { createAI } from '@/store/actions/ai'
+import { File } from '@/components/monaco'
 
 const Ia = () => {
   const navigate = useNavigate()
@@ -18,8 +19,15 @@ const Ia = () => {
   } = {
     cols: [
       {
-        key: 'title',
+        key: 'file',
         title: 'Name',
+        map: (file: File) => file.path,
+        sort: (e1: string, e2: string) => e1.localeCompare(e2),
+      },
+      {
+        key: 'file',
+        title: 'Language',
+        map: (file: File) => file.language,
         sort: (e1: string, e2: string) => e1.localeCompare(e2),
       },
       {
@@ -30,7 +38,10 @@ const Ia = () => {
       {
         key: 'updatedAt',
         title: 'Last modification',
-        map: (e: Date) => e.toISOString(),
+        map: (e: Date | string) => {
+          if (typeof e === 'string') return e
+          return e.toISOString()
+        },
       },
     ],
     rows: ais,

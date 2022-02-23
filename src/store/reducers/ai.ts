@@ -10,8 +10,8 @@ export type State = {
 export type AI = {
   id: string
   file: File
-  updatedAt: Date
-  createdAt: Date
+  updatedAt: Date | string
+  createdAt: Date | string
   tags: Array<string>
 }
 
