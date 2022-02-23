@@ -22,7 +22,7 @@ const List = ({
         <thead>
           <tr>
             {cols.map(({ key, title }) => (
-              <th key={key}>{title}</th>
+              <th key={key + title}>{title}</th>
             ))}
           </tr>
         </thead>
@@ -30,7 +30,7 @@ const List = ({
           {rows.map(e => (
             <tr key={e.id} onClick={() => click(e)}>
               {cols.map(col => (
-                <td key={`${col.key}-${e.id}`}>
+                <td key={`${col.key + col.title}-${e.id}`}>
                   {col.map ? col.map(e[col.key]) : e[col.key]}
                 </td>
               ))}
