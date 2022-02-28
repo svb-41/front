@@ -1,11 +1,10 @@
 import { useState, useRef, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Editor, { OnChange } from '@monaco-editor/react'
 import styles from './monaco.module.css'
 import tsLogo from './ts.svg'
 import jsLogo from './js.svg'
 import cross from './cross.svg'
-import * as helpers from '@/helpers'
-import { v4 as uuid } from 'uuid'
 
 const empty =
   'empty-file-no-one-will-find-or-you-read-the-dev-tools-you-cheater'
@@ -119,77 +118,40 @@ const Menu = ({ items, templates, onItemClick }: MenuProps) => {
   )
 }
 
-export type Props = { files: Files; onChange: (files: Files) => void }
+export type Props = { file?: File; onChange: (file: File) => void }
 export const Monaco = (props: Props) => {
   const codeRef = useRef()
-  const [tabs, setTabs] = useState<string[]>([])
+  const navigate = useNavigate()
   const [active, setActive] = useState<string>(empty)
-  const onTabClose = (value: string) => {
-    setTabs(tabs => {
-      const newTabs = tabs.filter(t => t !== value)
-      setActive(act => (act === value ? newTabs[0] ?? empty : act))
-      return newTabs
-    })
-  }
-  const onItemClick = (value: string) => {
-    const { files, onChange } = props
-    setTabs(tabs => (tabs.includes(value) ? tabs : [...tabs, value]))
-    const language = getLanguage(value)
-    const path = value
-    const f = files[value]
-    const val = f?.code
-    const v = val ?? (active === empty ? files[empty].code : '')
-    const file: File = { language, code: v, path, id: uuid() }
-    const newEmpty = active === empty ? emptyFile : files[empty]
-    const final = { ...files, [value]: file, [empty]: newEmpty }
-    onChange(final)
-    setActive(value)
-  }
+  const [tabs, setTabs] = useState<string[]>([])
+
   const onChange: OnChange = code => {
-    const { files, onChange } = props
-    const file = { ...files[active], value: code ?? '' }
-    const final = { ...files, [active]: file }
-    onChange(final)
+    const { file, onChange } = props
+    if (file) onChange({ ...file, code: code ? code : file.code })
   }
   useEffect(() => {
-    const fun = (event: KeyboardEvent) => {
-      const containsKey = ['S', 's'].includes(event.key)
-      const isCmd = helpers.keyboard.isCmd(event)
-      if (containsKey && isCmd) event.preventDefault()
+    if (props.file) {
+      setActive(props.file.path)
+      if (props.file.path) setTabs([props.file.path])
     }
-    document.addEventListener('keydown', fun)
-    return () => document.removeEventListener('keydown', fun)
-  }, [])
-  // useEffect(() => {
-  //   const fun = (event: KeyboardEvent) => {
-  //     const containsKey = ['W', 'w'].includes(event.key)
-  //     const isCmd = helpers.keyboard.isCmd(event)
-  //     if (containsKey && isCmd) {
-  //       event.preventDefault()
-  //       if (active !== empty) onTabClose(active)
-  //     }
-  //   }
-  //   document.addEventListener('keydown', fun)
-  //   return () => document.removeEventListener('keydown', fun)
-  // }, [active])
+    return () => {}
+  }, [props])
+
   return (
     <div className={styles.grid}>
       <Tabs
         items={tabs}
         active={active}
         onTabClick={setActive}
-        onTabClose={onTabClose}
-      />
-      <Menu
-        templates={['assault.ts', 'dance.ts', 'forward.js', 'hold.js']}
-        items={Object.keys(props.files).filter(t => t !== empty)}
-        onItemClick={onItemClick}
+        onTabClose={() => {
+          navigate('/ai')
+        }}
       />
       <Editor
-        value={props.files[active]?.code}
-        path={props.files[active]?.path}
-        defaultLanguage={props.files[active]?.language}
-        defaultValue={props.files[active]?.code}
+        value={props.file?.code}
+        path={props.file?.path}
+        defaultLanguage={props.file?.language}
+        defaultValue={props.file?.code}
         theme="vs-dark"
         onMount={(editor, _monaco) => (codeRef.current = editor)}
         onChange={onChange}

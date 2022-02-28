@@ -16,13 +16,21 @@ const List = ({
   rows: Array<any>
   click?: (e: any) => void
 }) => {
+  const sort = (col: Col) => () => {
+    // if (col.sort) {
+    //   rows.sort((e1, e2) => col.sort(e1[col.key], e2[col.key]))
+    // }
+  }
+
   return (
     <div className={styles.listContainer}>
       <table className={styles.table}>
         <thead>
           <tr>
-            {cols.map(({ key, title }) => (
-              <th key={key + title}>{title}</th>
+            {cols.map(col => (
+              <th key={col.key + col.title} onClick={sort(col)}>
+                {col.title}
+              </th>
             ))}
           </tr>
         </thead>

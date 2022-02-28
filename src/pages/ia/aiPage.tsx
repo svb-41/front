@@ -4,9 +4,7 @@ import { useLocation } from 'react-router-dom'
 import * as Monaco from '@/components/monaco'
 import { useSelector, useDispatch } from '@/store/hooks'
 import * as selectors from '@/store/selectors'
-import { createAI } from '@/store/actions/ai'
-
-import styles from './ai.module.css'
+import { createAI, updateAI } from '@/store/actions/ai'
 
 const Mission = () => {
   const dispatch = useDispatch()
@@ -14,15 +12,18 @@ const Mission = () => {
   const search = location.pathname.split('/')
   const id = search[search.length - 1]
   const ai = useSelector(selectors.ai(id))
-  const [files, setFiles] = useState<Monaco.Files>({})
+  const [file, setFile] = useState<Monaco.File>()
+
+  const saveFile = (file: Monaco.File) => {
+    if (ai) dispatch(updateAI({ ...ai, file }))
+    setFile(file)
+  }
 
   useEffect(() => {
     if (ai === undefined) {
       dispatch(createAI(id))
     } else {
-      setFiles({
-        [id]: ai.file,
-      })
+      setFile(ai.file)
     }
   }, [dispatch, ai])
 
@@ -30,7 +31,7 @@ const Mission = () => {
     <>
       <HUD.HUD title="Artificial intelligence" back="/ai" />
       <HUD.Container>
-        <Monaco.Monaco onChange={setFiles} files={files} />
+        <Monaco.Monaco onChange={saveFile} file={file} />
       </HUD.Container>
     </>
   )

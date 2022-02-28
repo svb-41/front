@@ -39,7 +39,6 @@ export const reducer: Reducer<State, Action> = (state = init, action) => {
       const i = index === -1 ? state.ais.length : index
       state.ais[i] = action.ai
       const ais = [...state.ais]
-      console.log(ais)
       setAllAIs(ais)
       return { ...state, ais }
     }
