@@ -6,7 +6,7 @@ import List, { Col } from '@/components/list'
 import { useNavigate } from 'react-router-dom'
 import * as selectors from '@/store/selectors'
 import styles from './ai.module.css'
-import { createAI } from '@/store/actions/ai'
+import { createAI, deleteAI } from '@/store/actions/ai'
 import { File } from '@/components/monaco'
 
 const Ia = () => {
@@ -55,6 +55,10 @@ const Ia = () => {
     navigate('/ai/' + uuid)
   }
 
+  const dele = (id: string) => () => {
+    dispatch(deleteAI(id))
+  }
+
   return (
     <>
       <HUD.HUD title="Artificial intelligence" back="/" />
@@ -62,6 +66,14 @@ const Ia = () => {
         <div className={styles.container}>
           <div className={styles.actions}>
             <Button text="new" onClick={newAI} color="green" />
+            {ais.map(ai => (
+              <Button
+                text="delete"
+                onClick={dele(ai.id)}
+                color="#ee2222"
+                key={ai.id}
+              />
+            ))}
           </div>
           <div className={styles.list}>
             <List {...propsList} />
