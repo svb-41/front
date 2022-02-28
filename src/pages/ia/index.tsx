@@ -1,7 +1,7 @@
 import { v4 } from 'uuid'
 import * as HUD from '@/components/hud'
 import Button from '@/components/button'
-import { useSelector } from '@/store/hooks'
+import { useSelector, useDispatch } from '@/store/hooks'
 import List, { Col } from '@/components/list'
 import { useNavigate } from 'react-router-dom'
 import * as selectors from '@/store/selectors'
@@ -10,6 +10,7 @@ import { createAI } from '@/store/actions/ai'
 import { File } from '@/components/monaco'
 
 const Ia = () => {
+  const dispatch = useDispatch()
   const navigate = useNavigate()
   const ais = useSelector(selectors.ais)
   const propsList: {
@@ -50,7 +51,7 @@ const Ia = () => {
 
   const newAI = () => {
     const uuid = v4()
-    createAI(uuid)
+    dispatch(createAI(uuid))
     navigate('/ai/' + uuid)
   }
 

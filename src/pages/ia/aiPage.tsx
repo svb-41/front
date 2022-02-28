@@ -15,17 +15,15 @@ const Mission = () => {
   const [file, setFile] = useState<Monaco.File>()
 
   const saveFile = (file: Monaco.File) => {
+    console.log(file)
     if (ai) dispatch(updateAI({ ...ai, file }))
+    else dispatch(createAI(id))
     setFile(file)
   }
 
   useEffect(() => {
-    if (ai === undefined) {
-      dispatch(createAI(id))
-    } else {
-      setFile(ai.file)
-    }
-  }, [dispatch, ai])
+    if (ai) setFile(ai.file)
+  }, [ai])
 
   return (
     <>
