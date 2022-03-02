@@ -1,10 +1,8 @@
 .grid {
   display: grid;
-  grid-template-areas:
-    'tabs'
-    'monaco';
+  grid-template-areas: 'monaco';
   grid-template-columns: 1fr;
-  grid-template-rows: 50px 1fr;
+  grid-template-rows: 1fr;
   height: 100%;
   width: 100vw;
 }

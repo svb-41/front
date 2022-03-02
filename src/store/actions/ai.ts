@@ -1,6 +1,7 @@
 import { Effect } from '@/store/types'
 import { AI } from '@/store/reducers/ai'
 import { compile, Compile } from '@/services/compile'
+import templateAI from '@/default-controllers/assets.json'
 
 export const LOAD_AI = 'ai/LOAD_AI'
 export const UPDATE_AI = 'ai/UPDATE_AI'
@@ -8,7 +9,7 @@ export const DELETE_AI = 'ai/DELETE_AI'
 
 const defaultAI = (id: string): AI => ({
   id,
-  file: { language: 'typescript', code: '', path: 'new.ts', id },
+  file: { language: 'typescript', code: templateAI.hold, path: 'new.ts', id },
   updatedAt: new Date(),
   createdAt: new Date(),
   tags: [],
@@ -38,6 +39,10 @@ export const compileAI: (ai: AI) => Effect<void> =
       name: ai.file.path,
     }
     const compiledValue: string = await compile(params)
-    ai.compiledValue = compiledValue
-    dispatch({ type: UPDATE_AI, id: ai.id, ai })
+    const updatedAt = new Date()
+    dispatch({
+      type: UPDATE_AI,
+      id: ai.id,
+      ai: { ...ai, compiledValue, updatedAt },
+    })
   }

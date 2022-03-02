@@ -19,3 +19,21 @@
   gap: 1rem;
   text-align: center;
 }
+
+.header {
+  background: #555;
+  display: flex;
+  justify-content: space-between;
+}
+
+.languageLogo {
+  margin: 0 16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 2px;
+}
+
+.input {
+  display: flex;
+  align-items: center;
+}

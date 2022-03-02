@@ -1,0 +1,15 @@
+.input {
+  padding: 16px;
+  border: 2px solid white;
+  border-radius: 10px;
+  font-size: 1rem;
+  background: grey;
+  font-family: var(--monospace);
+  font-weight: bold;
+  cursor: text;
+}
+
+.input:focus {
+  border: 2px solid blue;
+  outline: none;
+}

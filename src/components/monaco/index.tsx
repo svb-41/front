@@ -17,7 +17,7 @@ const emptyFile: File = {
 
 export type Files = { [id: string]: File }
 export type File = {
-  language: 'typescript' | 'javascript'
+  language: 'typescript' | 'javascript' | '?'
   path: string
   code: string
   id: string
@@ -139,14 +139,6 @@ export const Monaco = (props: Props) => {
 
   return (
     <div className={styles.grid}>
-      <Tabs
-        items={tabs}
-        active={active}
-        onTabClick={setActive}
-        onTabClose={() => {
-          navigate('/ai')
-        }}
-      />
       <Editor
         value={props.file?.code}
         path={props.file?.path}
