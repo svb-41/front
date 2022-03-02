@@ -1,0 +1,78 @@
+{
+  "0": {
+    "title": "tuto",
+    "description": "",
+    "size": { "height": 1000, "width": 1000 },
+    "ships": [
+      {
+        "classShip": "FIGHTER",
+        "ai": "assault",
+        "position": {
+          "direction": 3.141592653589793,
+          "speed": 0,
+          "pos": { "x": 1000, "y": 600 }
+        }
+      }
+    ]
+  },
+  "3": {
+    "title": "stealth",
+    "description": "",
+    "ships": [
+      {
+        "classShip": "FIGHTER",
+        "ai": "assault",
+        "position": {
+          "direction": 3.141592653589793,
+          "speed": 0,
+          "pos": { "x": 1700, "y": 300 }
+        }
+      },
+      {
+        "classShip": "FIGHTER",
+        "ai": "assault",
+        "position": {
+          "direction": 3.141592653589793,
+          "speed": 0,
+          "pos": { "x": 1700, "y": 500 }
+        }
+      },
+      {
+        "classShip": "FIGHTER",
+        "ai": "assault",
+        "position": {
+          "direction": 3.141592653589793,
+          "speed": 0,
+          "pos": { "x": 1700, "y": 700 }
+        }
+      },
+      {
+        "classShip": "FIGHTER",
+        "ai": "assault",
+        "position": {
+          "direction": 3.141592653589793,
+          "speed": 0,
+          "pos": { "x": 1700, "y": 900 }
+        }
+      },
+      {
+        "classShip": "FIGHTER",
+        "ai": "assault",
+        "position": {
+          "direction": 3.141592653589793,
+          "speed": 0,
+          "pos": { "x": 1700, "y": 300 }
+        }
+      },
+      {
+        "classShip": "CRUISER",
+        "ai": "assault",
+        "position": {
+          "direction": 3.141592653589793,
+          "speed": 0,
+          "pos": { "x": 2000, "y": 700 }
+        }
+      }
+    ]
+  }
+}

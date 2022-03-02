@@ -12,7 +12,7 @@ import { Ship, RadarResult, dist2 } from '@/engine/ship'
 import { BulletController, BulletControllerArgs } from '@/engine/control'
 import { trigo } from '@/helpers'
 
-type BuildShipProps = {
+export type BuildShipProps = {
   position?: {
     pos: { x: number; y: number }
     direction: number
