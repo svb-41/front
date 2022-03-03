@@ -2,9 +2,16 @@ import styles from '@/components/ships/display.module.css'
 import * as selectors from '@/store/selectors'
 import { useSelector } from '@/store/hooks'
 
-const ships = ['fighter', 'scout', 'cruiser', 'stealth', 'bomber', 'destroyer']
+export const ships = [
+  'fighter',
+  'scout',
+  'cruiser',
+  'stealth',
+  'bomber',
+  'destroyer',
+]
 
-const getImage = (ship: string, color: string) =>
+export const getImage = (ship: string, color: string) =>
   require(`../../../public/assets/Tiles/${ship}-${color}.png`).default
 
 const Display = () => {

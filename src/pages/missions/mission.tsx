@@ -11,6 +11,7 @@ import { SHIP_CLASS, Position, Ship } from '@/engine/ship'
 import { State, Engine } from '@/engine'
 import { Channel } from '@/engine/comm'
 import { Renderer } from '@/renderer'
+import PreMissions, { PlayerData } from './preMissions'
 
 //@ts-ignore fuck off TS
 const missions: { [k: string]: Mission } = missionsJSON
@@ -18,11 +19,12 @@ const enemyControllers: { [k: string]: string } = aisJson
 
 type SerializedShip = { classShip: SHIP_CLASS; ai: string; position: Position }
 
-type Mission = {
+export type Mission = {
   title: string
   description: string
   size: { height: number; width: number }
   ships: Array<SerializedShip>
+  credit: number
 }
 
 const colors = [Color.BLUE, Color.RED, Color.YELLOW, Color.GREEN, Color.WHITE]
@@ -31,6 +33,8 @@ const colors = [Color.BLUE, Color.RED, Color.YELLOW, Color.GREEN, Color.WHITE]
   .map(({ value }) => value)
 
 const Mission = () => {
+  const [start, setStart] = useState<boolean>(false)
+  const [playerData, setPlayerData] = useState<PlayerData>()
   const location = useLocation()
   const playerColor = useSelector(selector.userColor)
   const [missionId] = location.pathname.split('/').reverse()
@@ -86,7 +90,15 @@ const Mission = () => {
   return (
     <>
       <HUD.HUD title="Missions" back="/missions" />
-      <Renderer engine={generateEngine()} />
+      {start ? (
+        <Renderer engine={generateEngine()} />
+      ) : (
+        <PreMissions
+          onSubmit={(a: PlayerData) => {}}
+          mission={mission}
+          teams={teams.map(c => c.toString())}
+        />
+      )}
     </>
   )
 }
