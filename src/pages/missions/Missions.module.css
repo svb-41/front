@@ -118,6 +118,8 @@
 .ships {
   grid-area: ships;
   padding: 0 1rem;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .subtitle {

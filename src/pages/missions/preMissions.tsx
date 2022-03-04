@@ -106,7 +106,7 @@ const PreMissions = ({
 
     const starts = grid.ships.map((_, i) => ({
       x: (i % 2) * step,
-      y: mission.size.width - Math.floor(i / 2) * step * 2,
+      y: mission.size.height - Math.floor(i / 2) * step * 2,
     }))
 
     const generatShipsFromCell = (
@@ -144,9 +144,11 @@ const PreMissions = ({
   return (
     <div className={styles.preMissions}>
       <div className={styles.ally} style={{ border: `4px solid ${teams[0]}` }}>
-        <div className={styles.title}>Your team</div>
-        <div className={styles.ships}>
+        <div className={styles.title}>
+          Your team
           <div className={styles.subtitle}>Select ships</div>
+        </div>
+        <div className={styles.ships}>
           <div className={styles.shipSelector}>
             {playerData.unlockedShips.map((ship, i) => (
               <div key={i} className={styles.availableShip}>
