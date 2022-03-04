@@ -80,7 +80,6 @@ const Mission = () => {
       ships: [...state.current.ships, ...data.ships],
     }
     ais.current = [...ais.current, ...data.AIs]
-    console.log(data.AIs)
     setStart(true)
   }
 
