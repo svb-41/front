@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import missionsJSON from '@/missions/confs.json'
 import aisJson from '@/missions/ai.json'
 import { findBuilder } from '@/missions/builders'
@@ -34,7 +34,6 @@ const colors = [Color.BLUE, Color.RED, Color.YELLOW, Color.GREEN, Color.WHITE]
 
 const Mission = () => {
   const [start, setStart] = useState<boolean>(false)
-  const [playerData, setPlayerData] = useState<PlayerData>()
   const location = useLocation()
   const playerColor = useSelector(selector.userColor)
   const [missionId] = location.pathname.split('/').reverse()
@@ -43,7 +42,6 @@ const Mission = () => {
 
   const teams = [playerColor, enemyColor]
 
-  //@ts-ignore
   const shipsAndAi: Array<{ ship: Ship; ai: string }> = mission.ships
     .map(ship => ({
       ...ship,
@@ -59,7 +57,7 @@ const Mission = () => {
 
   const ships = shipsAndAi.map(({ ship }) => ship)
 
-  const ais: Array<{ shipId: string; code: string }> = shipsAndAi.map(
+  const defaultAis: Array<{ shipId: string; code: string }> = shipsAndAi.map(
     ({ ship, ai }) => ({ shipId: ship.id, code: enemyControllers[ai] })
   )
 
@@ -73,18 +71,31 @@ const Mission = () => {
     timeElapsed: 0,
   }
 
+  const state = useRef(defaultState)
+  const ais = useRef(defaultAis)
+
+  const playerSubmit = (data: PlayerData) => {
+    state.current = {
+      ...state.current,
+      ships: [...state.current.ships, ...data.ships],
+    }
+    ais.current = [...ais.current, ...data.AIs]
+    console.log(data.AIs)
+    setStart(true)
+  }
+
   const generateEngine = () => {
     const gameEnder = (state: State): boolean =>
-      // state.ships
-      //   .filter(s => s.team === teams[0])
-      //   .map(s => s.destroyed)
-      //   .reduce((acc, val) => acc && val, true) ||
+      state.ships
+        .filter(s => s.team === teams[0])
+        .map(s => s.destroyed)
+        .reduce((acc, val) => acc && val, true) ||
       state.ships
         .filter(s => s.team === teams[1])
         .map(s => s.destroyed)
-        .reduce((acc, val) => acc && val, true) || false
-    console.log(ais[0])
-    return new Engine(defaultState, [...ais], gameEnder)
+        .reduce((acc, val) => acc && val, true) ||
+      false
+    return new Engine(state.current, ais.current, gameEnder)
   }
 
   return (
@@ -94,7 +105,7 @@ const Mission = () => {
         <Renderer engine={generateEngine()} />
       ) : (
         <PreMissions
-          onSubmit={(a: PlayerData) => {}}
+          onSubmit={playerSubmit}
           mission={mission}
           teams={teams.map(c => c.toString())}
         />

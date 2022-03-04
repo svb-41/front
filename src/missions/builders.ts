@@ -22,4 +22,7 @@ const builders: Array<{
 ]
 
 export const findBuilder = (id: string) =>
-  builders.find(builder => builder.id === id)
+  builders.find(builder => builder.id === id) ?? {
+    id: SHIP_CLASS.FIGHTER,
+    builder: buildFighter,
+  }

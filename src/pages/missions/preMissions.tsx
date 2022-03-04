@@ -10,6 +10,8 @@ import List from '@/components/list'
 import { Color } from '@/store/reducers/user'
 import background from '@/assets/backgrounds/darkPurple.png'
 import { AI } from '@/store/reducers/ai'
+import { findBuilder } from '@/missions/builders'
+import { BuildShipProps } from '@/engine/config/builder'
 
 export type PlayerData = {
   ships: Array<Ship>
@@ -99,7 +101,43 @@ const PreMissions = ({
   }
 
   const submitMission = () => {
-    // onSubmit()
+    const step = Math.floor(mission.size.height / 10)
+
+    const starts = grid.ships.map((_, i) => ({
+      x: (i % 2) * step,
+      y: Math.floor(i / 2) * step * 2,
+    }))
+
+    const generatShipsFromCell = (
+      cell: Array<SHIP_CLASS>,
+      cellNumber: number
+    ) => {
+      const cellStep = Math.floor(step / cell.length)
+      const builders = cell
+        .map(findBuilder)
+        .filter(a => a)
+        .map(b => b.builder)
+      return builders.map((builder, i) =>
+        builder({
+          position: {
+            pos: {
+              x: starts[cellNumber].x + step / 2,
+              y: starts[cellNumber].y + (i + 1) * cellStep,
+            },
+            direction: 0,
+          },
+          team: teams[0],
+        })
+      )
+    }
+
+    const ships = grid.ships.map(generatShipsFromCell)
+    const AIs: Array<{ shipId: string; code: string }> = grid.AIs.map(
+      (cellAI, i) =>
+        cellAI.map((ai, j) => ({ code: ai, shipId: ships[i][j].id }))
+    ).flatMap(ai => ai)
+    const result: PlayerData = { ships: ships.flatMap(s => s), AIs }
+    onSubmit(result)
   }
 
   return (
