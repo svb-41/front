@@ -1,17 +1,47 @@
 import { useState, useRef, useEffect } from 'react'
 import Button from '@/components/button'
-import { Ship } from '@/engine/ship'
+import { Ship, SHIP_CLASS } from '@/engine/ship'
 import { Mission } from './mission'
 import styles from './Missions.module.css'
 import { useSelector } from '@/store/hooks'
 import * as selector from '@/store/selectors'
 import { ships, getImage } from '@/components/ships/display'
 import List from '@/components/list'
+import { Color } from '@/store/reducers/user'
+import background from '@/assets/backgrounds/darkPurple.png'
+import { AI } from '@/store/reducers/ai'
 
 export type PlayerData = {
   ships: Array<Ship>
   AIs: Array<{ shipId: string; code: string }>
 }
+
+export type GridData = {
+  ships: Array<Array<SHIP_CLASS>>
+  AIs: Array<Array<string>>
+}
+
+const GridCell = ({
+  ships,
+  color,
+  onClick,
+}: {
+  ships: Array<SHIP_CLASS>
+  color: string
+  onClick: (i: number) => void
+}) => (
+  <div className={styles.gridCell}>
+    {ships.map((ship, i) => (
+      <img
+        onClick={() => onClick(i)}
+        key={i + 'ship'}
+        src={getImage(ship.toLowerCase(), color)}
+        className={styles.img}
+        alt={ship}
+      />
+    ))}
+  </div>
+)
 
 const PreMissions = ({
   onSubmit,
@@ -24,27 +54,53 @@ const PreMissions = ({
 }) => {
   const playerData = useSelector(selector.userData)
   const ais = useSelector(selector.ais)
-  const gridContainer = useRef(null)
-  const canvas = useRef(null)
-  const [gridSize, setGridSize] = useState<{ height: number; width: number }>({
-    height: 200,
-    width: 200,
+  const [grid, setGrid] = useState<GridData>({
+    ships: new Array(10).fill(1).map(() => []),
+    AIs: new Array(10).fill(1).map(() => []),
   })
+  const [selectedGridShip, setSelectedGridShip] =
+    useState<{ cell: number; ship: number }>()
+  const dragVal = useRef<string>()
+  const cellOver = useRef<number>()
 
-  useEffect(() => {
-    //@ts-ignore
-    const { offsetHeight: height, offsetWidth: width } = gridContainer.current
-    setGridSize({ height, width })
-    //@ts-ignore
-    const context = canvas.current?.getContext('2d')
-    if (context) {
-      context.fillStyle = '#ff000'
-      context.strokeStyle = '#ff000'
-      context.fillRect(0, 0, width / 2, height)
-      context.stroke()
-      console.log(context)
+  const onDragStart = (ship: string) => () => {
+    dragVal.current = ship
+  }
+
+  const onDragEnd = (e: any) => {
+    if (dragVal.current && cellOver.current !== undefined) {
+      const shipClass = dragVal.current as SHIP_CLASS
+      const i = cellOver.current as number
+      grid.ships[i] = [...grid.ships[i], shipClass]
+      setGrid({ ...grid })
+      dragVal.current = undefined
+      cellOver.current = undefined
     }
-  }, [])
+  }
+
+  const leaveCell = (i: number) => (e: any) => {
+    setTimeout(() => {
+      if (cellOver.current === i) cellOver.current = undefined
+    }, 1000)
+  }
+  const overCell = (i: number) => () => {
+    cellOver.current = i
+  }
+
+  const clickSelectedShip = (cell: number) => (ship: number) => {
+    setSelectedGridShip({ cell, ship })
+  }
+  const selectAI = (ai: AI) => {
+    if (selectedGridShip && ai.compiledValue) {
+      grid.AIs[selectedGridShip.cell][selectedGridShip.ship] = ai.compiledValue
+      setGrid({ ...grid })
+      setSelectedGridShip(undefined)
+    }
+  }
+
+  const submitMission = () => {
+    // onSubmit()
+  }
 
   return (
     <div className={styles.preMissions}>
@@ -56,6 +112,8 @@ const PreMissions = ({
             {playerData.unlockedShips.map((ship, i) => (
               <div key={i} className={styles.availableShip}>
                 <img
+                  onDragStart={onDragStart(ship)}
+                  onDragEnd={onDragEnd}
                   src={getImage(ship, teams[0])}
                   className={styles.img}
                   alt={ship}
@@ -65,31 +123,53 @@ const PreMissions = ({
           </div>
         </div>
         <div className={styles.ai}>
-          <List
-            rows={ais}
-            cols={[
-              {
-                key: 'file',
-                title: 'Name',
-                map: e => e.path,
-              },
-              {
-                key: 'tags',
-                title: 'Tags',
-                map: e => e.join(','),
-              },
-            ]}
-          />
+          {selectedGridShip ? (
+            <List
+              click={selectAI}
+              rows={ais}
+              cols={[
+                {
+                  key: 'file',
+                  title: 'Name',
+                  map: e => e.path,
+                },
+                {
+                  key: 'tags',
+                  title: 'Tags',
+                  map: e => e.join(','),
+                },
+              ]}
+            />
+          ) : (
+            'Click on a ship'
+          )}
         </div>
-        <div className={styles.pos} ref={gridContainer}>
-          <canvas
-            height={gridSize.height}
-            width={gridSize.width}
-            ref={canvas}
-          />
+        <div
+          className={styles.pos}
+          style={{ backgroundImage: `url(${background})` }}
+        >
+          {grid.ships.map((cell, i) => (
+            <div
+              className={styles.cell}
+              key={i}
+              onDragOver={overCell(i)}
+              onDragLeave={leaveCell(i)}
+            >
+              <GridCell
+                ships={cell}
+                color={teams[0]}
+                key={i + 'gridcell'}
+                onClick={clickSelectedShip(i)}
+              />
+            </div>
+          ))}
         </div>
         <div className={styles.submit}>
-          <Button text="Launch mission" onClick={() => {}} color={teams[0]} />
+          <Button
+            text="Launch mission"
+            onClick={submitMission}
+            color={teams[0]}
+          />
         </div>
       </div>
       <div className={styles.enemy} style={{ border: `4px solid ${teams[1]}` }}>
