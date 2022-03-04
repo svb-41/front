@@ -105,7 +105,7 @@ const PreMissions = ({
 
     const starts = grid.ships.map((_, i) => ({
       x: (i % 2) * step,
-      y: Math.floor(i / 2) * step * 2,
+      y: mission.size.width - Math.floor(i / 2) * step * 2,
     }))
 
     const generatShipsFromCell = (
@@ -122,7 +122,7 @@ const PreMissions = ({
           position: {
             pos: {
               x: starts[cellNumber].x + step / 2,
-              y: starts[cellNumber].y + (i + 1) * cellStep,
+              y: starts[cellNumber].y - (i + 1) * cellStep,
             },
             direction: 0,
           },
