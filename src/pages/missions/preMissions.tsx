@@ -75,6 +75,7 @@ const PreMissions = ({
       const i = cellOver.current as number
       grid.ships[i] = [...grid.ships[i], shipClass]
       setGrid({ ...grid })
+      setSelectedGridShip({ cell: i, ship: grid.ships[i].length - 1 })
       dragVal.current = undefined
       cellOver.current = undefined
     }
