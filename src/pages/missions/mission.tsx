@@ -33,7 +33,7 @@ const colors = [Color.BLUE, Color.RED, Color.YELLOW, Color.GREEN, Color.WHITE]
   .map(({ value }) => value)
 
 const Mission = () => {
-  const [start, setStart] = useState<boolean>(false)
+  const [engine, setEngine] = useState<Engine>()
   const location = useLocation()
   const playerColor = useSelector(selector.userColor)
   const [missionId] = location.pathname.split('/').reverse()
@@ -55,35 +55,25 @@ const Mission = () => {
         ship.builder.builder({ position: ship.position, team: enemyColor }),
     }))
 
-  const ships = shipsAndAi.map(({ ship }) => ship)
-
-  const defaultAis: Array<{ shipId: string; code: string }> = shipsAndAi.map(
-    ({ ship, ai }) => ({ shipId: ship.id, code: enemyControllers[ai] })
-  )
-
-  const defaultState: State = {
-    ships,
-    size: mission.size,
-    teams,
-    bullets: [],
-    maxSpeed: 3,
-    comm: teams.map(id => ({ id, channel: new Channel(id) })),
-    timeElapsed: 0,
-  }
-
-  const state = useRef(defaultState)
-  const ais = useRef(defaultAis)
-
   const playerSubmit = (data: PlayerData) => {
-    state.current = {
-      ...state.current,
-      ships: [...state.current.ships, ...data.ships],
-    }
-    ais.current = [...ais.current, ...data.AIs]
-    setStart(true)
-  }
+    const ais = [
+      ...shipsAndAi.map(({ ship, ai }) => ({
+        shipId: ship.id,
+        code: enemyControllers[ai],
+      })),
+      ...data.AIs,
+    ]
 
-  const generateEngine = () => {
+    const state: State = {
+      ships: [...shipsAndAi.map(({ ship }) => ship), ...data.ships],
+      size: mission.size,
+      teams,
+      bullets: [],
+      maxSpeed: 3,
+      comm: teams.map(id => ({ id, channel: new Channel(id) })),
+      timeElapsed: 0,
+    }
+
     const gameEnder = (state: State): boolean =>
       state.ships
         .filter(s => s.team === teams[0])
@@ -94,14 +84,14 @@ const Mission = () => {
         .map(s => s.destroyed)
         .reduce((acc, val) => acc && val, true) ||
       false
-    return new Engine(state.current, ais.current, gameEnder)
+    setEngine(new Engine(state, ais, gameEnder))
   }
 
   return (
     <>
       <HUD.HUD title="Missions" back="/missions" />
-      {start ? (
-        <Renderer engine={generateEngine()} />
+      {engine ? (
+        <Renderer engine={engine} />
       ) : (
         <PreMissions
           onSubmit={playerSubmit}
