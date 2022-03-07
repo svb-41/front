@@ -113,6 +113,7 @@ const PreMissions = ({
     ) => {
       const cellStep = Math.floor(step / cell.length)
       const builders = cell
+        .map(s => s.toUpperCase())
         .map(findBuilder)
         .filter(a => a)
         .map(b => b.builder)

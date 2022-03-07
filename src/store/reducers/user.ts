@@ -19,8 +19,8 @@ export type State = {
 
 const init: State = {
   id: null,
-  unlockedShips: ['fighter', 'scout', 'cruiser', 'stealth', 'bomber'],
-  unlockedMissions: new Array(30).fill(1).map((_, i) => i + ''),
+  unlockedShips: [],
+  unlockedMissions: [],
   color: Color.GREEN,
 }
 
