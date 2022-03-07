@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import missionsJSON from '@/missions/confs.json'
 import aisJson from '@/missions/ai.json'
 import { findBuilder } from '@/missions/builders'
@@ -12,10 +12,12 @@ import { State, Engine } from '@/engine'
 import { Channel } from '@/engine/comm'
 import { Renderer } from '@/renderer'
 import PreMissions, { PlayerData } from './preMissions'
+import PostMissions from './postMission'
 
 //@ts-ignore fuck off TS
 const missions: { [k: string]: Mission } = missionsJSON
 const enemyControllers: { [k: string]: string } = aisJson
+type MissionState = 'pre' | 'mission' | 'post'
 
 type SerializedShip = { classShip: SHIP_CLASS; ai: string; position: Position }
 
@@ -33,12 +35,17 @@ const colors = [Color.BLUE, Color.RED, Color.YELLOW, Color.GREEN, Color.WHITE]
   .map(({ value }) => value)
 
 const Mission = () => {
+  const [missionState, setMissionState] = useState<MissionState>('pre')
   const [engine, setEngine] = useState<Engine>()
   const location = useLocation()
   const playerColor = useSelector(selector.userColor)
   const [missionId] = location.pathname.split('/').reverse()
   const mission: Mission = missions[missionId]
   const enemyColor: Color = colors.find(c => c !== playerColor)!
+  const restart = () => {
+    setMissionState('pre')
+    setEngine(undefined)
+  }
 
   const teams = [playerColor, enemyColor]
 
@@ -84,14 +91,27 @@ const Mission = () => {
         .map(s => s.destroyed)
         .reduce((acc, val) => acc && val, true) ||
       false
-    setEngine(new Engine(state, ais, gameEnder))
+    const engine = new Engine(state, ais, gameEnder)
+    const toPostMission = () => {
+      setTimeout(() => {
+        engine.removeEventListener('state.end', toPostMission)
+        setMissionState('post')
+      }, 1500)
+    }
+    engine.addEventListener('state.end', toPostMission)
+    setMissionState('mission')
+    setEngine(engine)
   }
 
   return (
     <>
       <HUD.HUD title="Missions" back="/missions" />
       {engine ? (
-        <Renderer engine={engine} />
+        missionState === 'mission' ? (
+          <Renderer {...{ engine }} />
+        ) : (
+          <PostMissions {...{ engine, restart }} />
+        )
       ) : (
         <PreMissions
           onSubmit={playerSubmit}

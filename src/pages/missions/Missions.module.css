@@ -137,3 +137,35 @@
   height: 120px;
   margin: 1rem;
 }
+
+.result {
+  font-size: 96px;
+  font-family: var(--monospace);
+  padding: 1rem;
+}
+
+.postMission {
+  text-align: center;
+}
+
+.shipsDestroyed {
+  border-radius: 10px;
+  background: #ccc;
+  border: solid black 2px;
+  margin: 1rem;
+}
+
+.shipsDestroyed .subtitle {
+  font-size: 48px;
+  font-family: var(--monospace);
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.time {
+  font-size: 36px;
+}

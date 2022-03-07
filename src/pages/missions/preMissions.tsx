@@ -1,17 +1,15 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import Button from '@/components/button'
 import { Ship, SHIP_CLASS } from '@/engine/ship'
 import { Mission } from './mission'
 import styles from './Missions.module.css'
 import { useSelector } from '@/store/hooks'
 import * as selector from '@/store/selectors'
-import { ships, getImage } from '@/components/ships/display'
+import { getImage } from '@/components/ships/display'
 import List from '@/components/list'
-import { Color } from '@/store/reducers/user'
 import background from '@/assets/backgrounds/darkPurple.png'
 import { AI } from '@/store/reducers/ai'
 import { findBuilder } from '@/missions/builders'
-import { BuildShipProps } from '@/engine/config/builder'
 
 export type PlayerData = {
   ships: Array<Ship>
