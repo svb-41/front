@@ -59,15 +59,6 @@
         }
       },
       {
-        "classShip": "FIGHTER",
-        "ai": "assault",
-        "position": {
-          "direction": 3.141592653589793,
-          "speed": 0,
-          "pos": { "x": 1700, "y": 300 }
-        }
-      },
-      {
         "classShip": "CRUISER",
         "ai": "assault",
         "position": {
