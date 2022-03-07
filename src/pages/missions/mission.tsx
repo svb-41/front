@@ -22,8 +22,10 @@ type MissionState = 'pre' | 'mission' | 'post'
 type SerializedShip = { classShip: SHIP_CLASS; ai: string; position: Position }
 
 export type Mission = {
+  id: string
   title: string
   description: string
+  rewards?: { ships: Array<string>; missions: Array<string> }
   size: { height: number; width: number }
   ships: Array<SerializedShip>
   credit: number
@@ -110,7 +112,7 @@ const Mission = () => {
         missionState === 'mission' ? (
           <Renderer {...{ engine }} />
         ) : (
-          <PostMissions {...{ engine, restart }} />
+          <PostMissions {...{ engine, restart, mission }} />
         )
       ) : (
         <PreMissions

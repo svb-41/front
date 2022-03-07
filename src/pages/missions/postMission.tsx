@@ -1,29 +1,39 @@
+import { useEffect } from 'react'
 import { Engine } from '@/engine'
 import styles from './Missions.module.css'
-import { useSelector } from '@/store/hooks'
+import { useSelector, useDispatch } from '@/store/hooks'
 import * as selector from '@/store/selectors'
 import { useNavigate } from 'react-router-dom'
 import { getImage } from '@/components/ships/display'
 import Button from '@/components/button'
+import { unlockRewards } from '@/store/actions/user'
+import { Mission } from './mission'
 
 const PostMission = ({
   engine,
   restart,
+  mission,
 }: {
   engine: Engine
   restart: () => void
+  mission: Mission
 }) => {
   const playerData = useSelector(selector.userData)
   const navigate = useNavigate()
-
+  const dispatch = useDispatch()
   const state = engine.state
-  const teams = engine.state.teams
 
   const playerWin = () =>
     state.ships
       .filter(s => s.team === playerData.color)
       .map(s => !s.destroyed)
       .reduce((acc, val) => acc || val, false)
+
+  useEffect(() => {
+    if (mission.rewards && playerWin()) {
+      dispatch(unlockRewards(mission.rewards))
+    }
+  }, [mission])
   return (
     <div className={styles.postMission}>
       <div className={styles.result}>{playerWin() ? 'Victory' : 'Defeat'}</div>
