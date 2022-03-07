@@ -82,7 +82,7 @@ const Mission = () => {
             <Button text="compile" onClick={compile} color="green" />
           </div>
         </div>
-        <Monaco.Monaco onChange={saveFile} file={file} />
+        <Monaco.Monaco onChange={saveFile} file={file} onSave={compile} />
       </HUD.Container>
     </>
   )
