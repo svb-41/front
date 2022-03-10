@@ -1,48 +1,44 @@
-import { Controller, ControllerArgs } from '../engine/control'
-import { Ship, RadarResult, dist2 } from '../engine/ship'
-import * as helpers from '@/helpers'
+import * as svb from '@svb-41/core'
 
-type Data = {}
-const hold = (ship: Ship) => {
-  const shipId = ship.id
-  const getInstruction = ({ stats, radar, memory, ship }: ControllerArgs) => {
-    const ally = radar.find(
-      (res: RadarResult) =>
-        res.team === stats.team &&
-        Math.abs(
-          helpers.trigo.angle({
-            source: stats.position,
-            target: helpers.trigo.nextPosition(200)(res.position),
-          }) - stats.position.direction
-        ) < 0.1
+export type Data = {}
+export const initialData = {}
+
+export default ({
+  stats,
+  radar,
+  memory,
+  ship,
+}: svb.controller.ControllerArgs<Data>) => {
+  const ally = radar.find(rad => {
+    const isSameTeam = rad.team === stats.team
+    if (!isSameTeam) return false
+    const source = stats.position
+    const target = svb.helpers.nextPosition(200)(rad.position)
+    const newAngle =
+      svb.helpers.angle({ source, target }) - stats.position.direction
+    return Math.abs(newAngle) < 0.1
+  })
+
+  const closeEnemy = radar
+    .filter(res => res.team !== stats.team && !res.destroyed)
+    .map(res => ({
+      res,
+      dist: svb.helpers.dist2(res.position, stats.position),
+    }))
+
+  if (closeEnemy.length > 0) {
+    const nearestEnemy = closeEnemy.reduce((acc, val) =>
+      acc.dist > val.dist ? val : acc
     )
-
-    const closeEnemy = radar
-      .filter((res: RadarResult) => res.team !== stats.team && !res.destroyed)
-      .map((res: RadarResult) => ({
-        res,
-        dist: dist2(res.position, stats.position),
-      }))
-    if (closeEnemy.length > 0) {
-      const nearestEnemy = closeEnemy.reduce((acc, val) =>
-        acc.dist > val.dist ? val : acc
-      )
-
-      const resAim = helpers.trigo.aim({
-        ship,
-        source: stats.position,
-        target: nearestEnemy.res.position,
-        threshold: 1 / Math.sqrt(nearestEnemy.dist),
-        delay:
-          Math.sqrt(nearestEnemy.dist) / stats.weapons[0].bullet.position.speed,
-      })
-      if (resAim === ship.fire() && ally) return ship.idle()
-      return resAim
-    }
-
-    return ship.idle()
+    const source = stats.position
+    const target = nearestEnemy.res.position
+    const threshold = 1 / Math.sqrt(nearestEnemy.dist)
+    const delay =
+      Math.sqrt(nearestEnemy.dist) / stats.weapons[0].bullet.position.speed
+    const resAim = svb.helpers.aim({ ship, source, target, threshold, delay })
+    if (resAim === ship.fire() && ally) return ship.idle()
+    return resAim
   }
-  return new Controller<Data>(shipId, getInstruction, {})
-}
 
-export default hold
+  return ship.idle()
+}

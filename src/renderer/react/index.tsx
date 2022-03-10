@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Engine as GameEngine } from '@/engine'
-import * as helpers from '@/helpers'
+import { engine, helpers } from '@svb-41/engine'
 import * as Controller from '@/components/controller'
 import * as Logger from '@/renderer/logger'
 import * as Speed from '@/renderer/speed'
@@ -38,7 +37,7 @@ const Pause = ({ state, onClick }: PauseProps) => {
   )
 }
 
-export type Props = { engine: GameEngine }
+export type Props = { engine: engine.Engine }
 export const Renderer = ({ engine }: Props) => {
   const [pausedState, setPausedState] = useState<PausedState>('resumed')
   const [running, setRunning] = useState(false)

@@ -1,6 +1,7 @@
 import { useRef, useEffect } from 'react'
 import Editor, { OnChange } from '@monaco-editor/react'
-import core from './core'
+import core from '@svb-41/core/types'
+import types from '@svb-41/engine/types'
 import styles from './monaco.module.css'
 
 export type Files = { [id: string]: File }
@@ -26,8 +27,10 @@ export const Monaco = (props: Props) => {
     editor.updateOptions({ scrollBeyondLastLine: false })
     editor.getModel().updateOptions({ tabSize: 2 })
     codeRef.current = editor
-    const file = '@starships/core.d.ts'
-    monaco.languages.typescript.typescriptDefaults.addExtraLib(core, file)
+    const engine = '@svb-41/engine.d.ts'
+    const coreDecl = '@svb-41/core.d.ts'
+    monaco.languages.typescript.typescriptDefaults.addExtraLib(types, engine)
+    monaco.languages.typescript.typescriptDefaults.addExtraLib(core, coreDecl)
   }
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {

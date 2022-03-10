@@ -1,13 +1,18 @@
-import {
+import { engine } from '@svb-41/engine'
+
+type Ship = engine.ship.Ship
+type SHIP_CLASS = engine.ship.SHIP_CLASS
+type BuildShipProps = engine.config.builder.BuildShipProps
+
+const { SHIP_CLASS } = engine.ship
+const {
   buildFighter,
   buildStealth,
   buildDestroyer,
   buildCruiser,
   buildBomber,
   buildScout,
-  BuildShipProps,
-} from '@/engine/config/builder'
-import { SHIP_CLASS, Ship } from '@/engine/ship'
+} = engine.config.builder
 
 const builders: Array<{
   id: SHIP_CLASS

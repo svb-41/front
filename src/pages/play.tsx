@@ -1,12 +1,12 @@
 import { useState, useEffect, Fragment } from 'react'
-import { Engine } from '@/engine'
+import { engine } from '@svb-41/engine'
 import { Renderer } from '@/renderer'
 import defaultEngine from '@/game-setups/default'
 import * as HUD from '@/components/hud'
 
 const App = () => {
   const [screen, setScreen] = useState<HUD.State>('game')
-  const [engine, setEngine] = useState<Engine>()
+  const [engine, setEngine] = useState<engine.Engine>()
 
   useEffect(() => {
     defaultEngine().then(setEngine)

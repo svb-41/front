@@ -1,6 +1,5 @@
 import * as PIXI from 'pixi.js'
-import { Engine as GameEngine } from '@/engine'
-import * as helpers from '@/helpers'
+import { engine, helpers } from '@svb-41/engine'
 import {
   sprites,
   getBulletSprite,
@@ -8,13 +7,12 @@ import {
   colorSprite,
   shipSprite,
 } from '@/renderer/sprites'
-import * as ship from '@/engine/ship'
 
 const STANDARD_ANIMATED_SPEED = 0.075
 
 const computeRotation = (rotation: number) => -rotation + Math.PI / 2
 
-type Info = { team?: string; size: number; shipClass?: ship.SHIP_CLASS }
+type Info = { team?: string; size: number; shipClass?: engine.ship.SHIP_CLASS }
 enum Type {
   SHIP,
   BULLET,
@@ -33,13 +31,17 @@ const selectTexture = (app: PIXI.Application, type: Type, sprite: Info) => {
 
 export class Engine extends EventTarget {
   #app: PIXI.Application
-  #engine: GameEngine
+  #engine: engine.Engine
   #animateds: Map<string, PIXI.AnimatedSprite>
   #sprites: Map<string, PIXI.Sprite>
   #ended: boolean
   #speed: number
 
-  constructor(canvas: HTMLCanvasElement, div: HTMLElement, engine: GameEngine) {
+  constructor(
+    canvas: HTMLCanvasElement,
+    div: HTMLElement,
+    engine: engine.Engine
+  ) {
     super()
     helpers.console.log('=> [RendererEngine] Start Engine')
     const view = canvas
@@ -87,7 +89,7 @@ export class Engine extends EventTarget {
   private updateSprite(
     type: Type,
     id: string,
-    position: ship.Position,
+    position: engine.ship.Position,
     sprite: Info
   ) {
     if (this.#sprites.has(id)) {
@@ -141,7 +143,10 @@ export class Engine extends EventTarget {
   }
 
   private onSpriteExplosion = (event: Event) => {
-    type OnSpriteExplosion = { ship: ship.Ship; bullet: ship.Bullet }
+    type OnSpriteExplosion = {
+      ship: engine.ship.Ship
+      bullet: engine.ship.Bullet
+    }
     const evt = event as CustomEvent<OnSpriteExplosion>
     const ship = this.#sprites.get(evt.detail.ship.id)
     if (ship) {

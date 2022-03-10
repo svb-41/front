@@ -1,4 +1,7 @@
-import { SHIP_CLASS } from '@/engine/ship'
+import { engine } from '@svb-41/engine'
+
+type SHIP_CLASS = engine.ship.SHIP_CLASS
+const { SHIP_CLASS } = engine.ship
 
 export type Sprite = { name: string; url: string }
 

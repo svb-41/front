@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Engine } from '@/engine'
+import { engine } from '@svb-41/engine'
 import styles from './Missions.module.css'
 import { useSelector, useDispatch } from '@/store/hooks'
 import * as selector from '@/store/selectors'
@@ -14,7 +14,7 @@ const PostMission = ({
   restart,
   mission,
 }: {
-  engine: Engine
+  engine: engine.Engine
   restart: () => void
   mission: Mission
 }) => {
