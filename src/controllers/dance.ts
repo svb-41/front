@@ -1,44 +1,52 @@
 import * as svb from '@svb-41/core'
 
-export type Data = {}
-export const initialData = {}
+type Data = {
+  inst: number
+  num: number
+  cptDist: number
+  cptTurn: number
+  wait: number
+}
+type ControllerArgs = svb.controller.ControllerArgs<Data>
 
-export default ({
-  stats,
-  radar,
-  memory,
-  ship,
-}: svb.controller.ControllerArgs<Data>) => {
-  const ally = radar.find(rad => {
-    const isSameTeam = rad.team === stats.team
-    if (!isSameTeam) return false
-    const source = stats.position
-    const target = svb.helpers.nextPosition(200)(rad.position)
-    const newAngle =
-      svb.helpers.angle({ source, target }) - stats.position.direction
-    return Math.abs(newAngle) < 0.1
-  })
-
-  const closeEnemy = radar
-    .filter(res => res.team !== stats.team && !res.destroyed)
-    .map(res => ({
-      res,
-      dist: svb.helpers.dist2(res.position, stats.position),
-    }))
-
-  if (closeEnemy.length > 0) {
-    const nearestEnemy = closeEnemy.reduce((acc, val) =>
-      acc.dist > val.dist ? val : acc
-    )
-    const source = stats.position
-    const target = nearestEnemy.res.position
-    const threshold = 1 / Math.sqrt(nearestEnemy.dist)
-    const delay =
-      Math.sqrt(nearestEnemy.dist) / stats.weapons[0].bullet.position.speed
-    const resAim = svb.helpers.aim({ ship, source, target, threshold, delay })
-    if (resAim === ship.fire() && ally) return ship.idle()
-    return resAim
+export const initialData = {
+  inst: Math.random() - 1,
+  num: Math.random() * 100,
+  cptDist: 40 + Math.random() * 40,
+  cptTurn: 20 + Math.random() * 20,
+  wait: 0,
+}
+export default ({ stats, radar, memory, ship }: ControllerArgs) => {
+  if (memory.wait < 0) {
+    const target = radar.find(res => {
+      const isDifferentTeam = res.team !== stats.team
+      if (!isDifferentTeam) return false
+      const source = stats.position
+      const target = res.position
+      const angle = svb.helpers.angle({ source, target })
+      const dir = angle - stats.position.direction
+      return Math.abs(dir) < 0.01
+    })
+    if (target) return ship.fire()
+  } else {
+    memory.wait--
   }
 
-  return ship.idle()
+  if (memory.num > 0) {
+    memory.num--
+    return memory.inst
+  }
+
+  if (memory.cptDist <= 0 && memory.cptTurn <= 0) {
+    memory.cptDist = 20 + Math.random() * 100
+    memory.cptTurn = 20 + Math.random() * 20
+  }
+
+  if (memory.cptDist < 0 && memory.cptTurn > 0) {
+    if (stats.position.speed) return ship.thrust(-1)
+    memory.cptTurn--
+    return ship.turn(memory.inst)
+  }
+  memory.cptDist--
+  return stats.position.speed < 11 ? ship.thrust() : ship.idle()
 }
