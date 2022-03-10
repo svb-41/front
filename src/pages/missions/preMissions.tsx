@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react'
 import Button from '@/components/button'
 import { engine } from '@svb-41/engine'
-import { Mission } from './mission'
+import { Mission } from '@/services/mission'
 import styles from './Missions.module.css'
 import { useSelector } from '@/store/hooks'
 import * as selector from '@/store/selectors'

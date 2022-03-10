@@ -1,0 +1,31 @@
+{
+  "id": "1",
+  "title": "defence",
+  "description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+  "credit": 100,
+  "size": { "height": 1000, "width": 1000 },
+  "rewards": {
+    "ships": ["CRUISER"],
+    "missions": ["2"]
+  },
+  "ships": [
+    {
+      "classShip": "FIGHTER",
+      "ai": "hold",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 1000, "y": 600 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "hold",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 1000, "y": 800 }
+      }
+    }
+  ]
+}
