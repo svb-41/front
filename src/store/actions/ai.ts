@@ -39,6 +39,7 @@ export const compileAI: (ai: AI) => Effect<void> =
       name: ai.file.path,
     }
     const compiledValue: string = await compile(params)
+    console.log(JSON.stringify(compiledValue))
     const updatedAt = new Date()
     dispatch({
       type: UPDATE_AI,

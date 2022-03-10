@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom'
 import { getImage } from '@/components/ships/display'
 import Button from '@/components/button'
 import { unlockRewards } from '@/store/actions/user'
-import { Mission } from './mission'
+import { Mission } from '@/services/mission'
 
 const PostMission = ({
   engine,

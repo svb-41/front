@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import missionsJSON from '@/missions/confs.json'
 import aisJson from '@/missions/ai.json'
 import { findBuilder } from '@/missions/builders'
 import * as HUD from '@/components/hud'
@@ -7,29 +6,16 @@ import { useLocation } from 'react-router-dom'
 import { useSelector } from '@/store/hooks'
 import * as selector from '@/store/selectors'
 import { Color } from '@/store/reducers/user'
-import { SHIP_CLASS, Position, Ship } from '@/engine/ship'
+import { Ship } from '@/engine/ship'
 import { State, Engine } from '@/engine'
 import { Channel } from '@/engine/comm'
 import { Renderer } from '@/renderer'
 import PreMissions, { PlayerData } from './preMissions'
 import PostMissions from './postMission'
+import { getMission } from '@/services/mission'
 
-//@ts-ignore fuck off TS
-const missions: { [k: string]: Mission } = missionsJSON
-const enemyControllers: { [k: string]: string } = aisJson
+const enemyControllers: Array<string> = aisJson
 type MissionState = 'pre' | 'mission' | 'post'
-
-type SerializedShip = { classShip: SHIP_CLASS; ai: string; position: Position }
-
-export type Mission = {
-  id: string
-  title: string
-  description: string
-  rewards?: { ships: Array<string>; missions: Array<string> }
-  size: { height: number; width: number }
-  ships: Array<SerializedShip>
-  credit: number
-}
 
 const colors = [Color.BLUE, Color.RED, Color.YELLOW, Color.GREEN, Color.WHITE]
   .map(value => ({ value, sort: Math.random() }))
@@ -42,7 +28,7 @@ const Mission = () => {
   const location = useLocation()
   const playerColor = useSelector(selector.userColor)
   const [missionId] = location.pathname.split('/').reverse()
-  const mission: Mission = missions[missionId]
+  const mission = getMission(missionId)
   const enemyColor: Color = colors.find(c => c !== playerColor)!
   const restart = () => {
     setMissionState('pre')
@@ -68,7 +54,7 @@ const Mission = () => {
     const ais = [
       ...shipsAndAi.map(({ ship, ai }) => ({
         shipId: ship.id,
-        code: enemyControllers[ai],
+        code: require(`@/missions/ais/${ai}.json`),
       })),
       ...data.AIs,
     ]

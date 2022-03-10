@@ -12,7 +12,8 @@ export const ships = [
 ]
 
 export const getImage = (ship: string, color: string) =>
-  require(`../../../public/assets/Tiles/${ship}-${color}.png`).default
+  require(`../../../public/assets/Tiles/${ship.toLowerCase()}-${color}.png`)
+    .default
 
 const Display = () => {
   const { color, unlockedShips } = useSelector(selectors.userData)

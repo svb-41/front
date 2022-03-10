@@ -1,14 +1,18 @@
 import { Controller, ControllerArgs } from '../engine/control'
-import { Ship, RadarResult, dist2 } from '../engine/ship'
+import { Ship, RadarResult, dist2, Position } from '../engine/ship'
 import * as helpers from '@/helpers'
 
-type Data = { initialDir?: number }
-const assault = (ship: Ship) => {
+type Data = {}
+const heavy = (ship: Ship) => {
   const shipId = ship.id
-  const getInstruction = ({ stats, radar, memory, ship }: ControllerArgs) => {
-    if (!memory.initialDir) memory.initialDir = stats.position.direction
-    if (stats.position.speed < 0.1) return ship.thrust()
-
+  const getInstruction = ({
+    stats,
+    radar,
+    memory,
+    ship,
+    comm,
+  }: ControllerArgs) => {
+    const messages = comm.getNewMessages()
     const ally = radar.find(
       (res: RadarResult) =>
         res.team === stats.team &&
@@ -19,6 +23,7 @@ const assault = (ship: Ship) => {
           }) - stats.position.direction
         ) < 0.1
     )
+
     const closeEnemy = radar
       .filter((res: RadarResult) => res.team !== stats.team && !res.destroyed)
       .map((res: RadarResult) => ({
@@ -34,20 +39,26 @@ const assault = (ship: Ship) => {
         ship,
         source: stats.position,
         target: nearestEnemy.res.position,
-        threshold: 4 / Math.sqrt(nearestEnemy.dist),
+        threshold: 1 / Math.sqrt(nearestEnemy.dist),
         delay:
-          Math.sqrt(nearestEnemy.dist) /
-          stats.weapons[0]?.bullet.position.speed,
+          Math.sqrt(nearestEnemy.dist) / stats.weapons[0].bullet.position.speed,
       })
-      if (resAim.id === 'FIRE' && ally) return ship.idle()
+      if (resAim === ship.fire() && ally) return ship.idle()
       return resAim
     }
-
-    if (memory.initialDir - stats.position.direction)
-      return ship.turn(memory.initialDir - stats.position.direction)
+    if (messages.length > 0) {
+      const targets = messages
+        .map(m => m.content.message.map((res: any) => res))
+        .reduce((acc, val) => [...acc, ...val]) as Array<Position>
+      memory.targets = targets
+    }
+    if (memory.targets.length > 0 && stats.weapons[1].coolDown === 0) {
+      const target = helpers.trigo.nextPosition(200)(memory.targets.pop())
+      return helpers.trigo.aim({ ship, source: stats.position, target })
+    }
     return ship.idle()
   }
   return new Controller<Data>(shipId, getInstruction, {})
 }
 
-export default assault
+export default heavy
