@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import aisJson from '@/missions/ai.json'
+// import aisJson from '@/missions/ai.json'
 import { findBuilder } from '@/missions/builders'
 import * as HUD from '@/components/hud'
 import { useLocation } from 'react-router-dom'
@@ -13,16 +13,13 @@ import PostMissions from './postMission'
 import { getMission } from '@/services/mission'
 
 type State = engine.State
-type SHIP_CLASS = engine.ship.SHIP_CLASS
-type Position = engine.ship.Position
+// type SHIP_CLASS = engine.ship.SHIP_CLASS
+// type Position = engine.ship.Position
 type Ship = engine.ship.Ship
 
 const { Engine } = engine
 const { Channel } = engine.comm
 
-//@ts-ignore fuck off TS
-const missions: { [k: string]: Mission } = missionsJSON
-const enemyControllers: Array<string> = aisJson
 type MissionState = 'pre' | 'mission' | 'post'
 
 const colors = [Color.BLUE, Color.RED, Color.YELLOW, Color.GREEN, Color.WHITE]

@@ -1,12 +1,12 @@
-import { SHIP_CLASS, Position } from '@/engine/ship'
+import { engine } from '@svb-41/engine'
 
 export const getMission = (id: string): Mission =>
   require(`@/missions/confs/mission-${id}.json`)
 
 export type SerializedShip = {
-  classShip: SHIP_CLASS
+  classShip: engine.ship.SHIP_CLASS
   ai: string
-  position: Position
+  position: engine.ship.Position
 }
 
 export type Mission = {
