@@ -1,15 +1,18 @@
-import { State, Engine } from '@/engine'
-import { Ship } from '@/engine/ship'
-import { Channel } from '@/engine/comm'
+import { engine } from '@svb-41/engine'
 import * as services from '@/services/compile'
 
-import {
+type Ship = engine.ship.Ship
+type State = engine.State
+
+const {
   buildFighter,
   // buildDestroyer,
   buildCruiser,
   buildBomber,
   buildStealth,
-} from '@/engine/config/builder'
+} = engine.config.builder
+const { Engine } = engine
+const { Channel } = engine.comm
 
 import controller from '@/default-controllers/assets.json'
 

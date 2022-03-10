@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react'
 import Button from '@/components/button'
-import { Ship, SHIP_CLASS } from '@/engine/ship'
+import { engine } from '@svb-41/engine'
 import { Mission } from './mission'
 import styles from './Missions.module.css'
 import { useSelector } from '@/store/hooks'
@@ -10,6 +10,9 @@ import List from '@/components/list'
 import background from '@/assets/backgrounds/darkPurple.png'
 import { AI } from '@/store/reducers/ai'
 import { findBuilder } from '@/missions/builders'
+
+type Ship = engine.ship.Ship
+type SHIP_CLASS = engine.ship.SHIP_CLASS
 
 export type PlayerData = {
   ships: Array<Ship>

@@ -1,4 +1,4 @@
-import * as helpers from '@/helpers'
+import { helpers } from '@svb-41/engine'
 import styles from './speed.module.css'
 
 export type Props = { speed: number; onSetSpeed: (value: number) => void }

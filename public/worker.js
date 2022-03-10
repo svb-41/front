@@ -62,8 +62,8 @@ onmessage = async function (event) {
   if (!code?.init && data.type === 'initialization') {
     try {
       initCode(data.code)
-      code = code.default({ id: params.id })
-      memory = data.initialMemory || {}
+      memory = code.initialData || {}
+      code = code.default
     } catch (e) {
       error = e.message
     }
@@ -75,7 +75,7 @@ onmessage = async function (event) {
         const { stats, radar, messages } = JSON.parse(data.data)
         comm.getNewMessages = () => messages
         const args = { stats, comm, radar, memory, ship: controlPanel(stats) }
-        const res = code.getInstruction(args)
+        const res = code(args)
         postMessage({ type: 'step', res })
       } catch (e) {
         console.error(e)

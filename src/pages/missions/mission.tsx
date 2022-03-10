@@ -7,12 +7,18 @@ import { useLocation } from 'react-router-dom'
 import { useSelector } from '@/store/hooks'
 import * as selector from '@/store/selectors'
 import { Color } from '@/store/reducers/user'
-import { SHIP_CLASS, Position, Ship } from '@/engine/ship'
-import { State, Engine } from '@/engine'
-import { Channel } from '@/engine/comm'
+import { engine } from '@svb-41/engine'
 import { Renderer } from '@/renderer'
 import PreMissions, { PlayerData } from './preMissions'
 import PostMissions from './postMission'
+
+type State = engine.State
+type SHIP_CLASS = engine.ship.SHIP_CLASS
+type Position = engine.ship.Position
+type Ship = engine.ship.Ship
+
+const { Engine } = engine
+const { Channel } = engine.comm
 
 //@ts-ignore fuck off TS
 const missions: { [k: string]: Mission } = missionsJSON
@@ -38,7 +44,7 @@ const colors = [Color.BLUE, Color.RED, Color.YELLOW, Color.GREEN, Color.WHITE]
 
 const Mission = () => {
   const [missionState, setMissionState] = useState<MissionState>('pre')
-  const [engine, setEngine] = useState<Engine>()
+  const [engine, setEngine] = useState<engine.Engine>()
   const location = useLocation()
   const playerColor = useSelector(selector.userColor)
   const [missionId] = location.pathname.split('/').reverse()
