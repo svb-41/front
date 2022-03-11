@@ -5,11 +5,13 @@ import { Color } from '@/store/reducers/user'
 const AI_KEY = 'ai'
 const UID_KEY = 'uid'
 const USER_KEY = 'user'
+const FAVORITE_AIS_KEY = 'favorite-ais'
 
 export type StoredData = {
   missions: Array<string>
   ships: Array<string>
   ais: Array<string>
+  favoriteAIS: Array<string>
   color: Color
 }
 
@@ -36,8 +38,21 @@ export const getAI = (uid: string): AI | undefined => {
   if (aiData) return JSON.parse(aiData)
 }
 
+export const favoriteAIS = (): string[] => {
+  const favoriteAIS = localStorage.getItem(`${FAVORITE_AIS_KEY}`)
+  if (favoriteAIS) {
+    return JSON.parse(favoriteAIS)
+  } else {
+    return []
+  }
+}
+
 export const setAI = (data: AI) =>
   localStorage.setItem(`${AI_KEY}-${data.id}`, JSON.stringify(data))
 
 export const deleteAI = (data: string) =>
   localStorage.removeItem(`${AI_KEY}-${data}`)
+
+export const setFavoriteAIS = (favoriteAIS: string[]) => {
+  localStorage.setItem(`${FAVORITE_AIS_KEY}`, JSON.stringify(favoriteAIS))
+}

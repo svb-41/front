@@ -3,8 +3,12 @@
 }
 
 .container {
+  flex: 1;
+  padding: 24px;
+  gap: 24px;
   display: flex;
-  flex-direction: row-reverse;
+  flex-direction: column;
+  align-items: center;
 }
 
 .list {
@@ -36,4 +40,90 @@
 .input {
   display: flex;
   align-items: center;
+}
+
+.title {
+  font-weight: 600;
+  font-size: 2rem;
+}
+
+.fileName {
+  display: flex;
+  gap: 6px;
+  padding: 12px;
+  background: #ddd;
+  align-items: center;
+}
+
+.logo {
+  width: 20px;
+  height: 20px;
+}
+
+.filePath {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.filesCard {
+  background: #eee;
+  padding: 12px;
+  border-radius: 10px;
+  gap: 12px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1600px;
+}
+
+.filesCardGrid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.fileCard {
+  display: flex;
+  flex-direction: column;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  overflow: hidden;
+  height: 200px;
+  cursor: pointer;
+}
+
+.modifs {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.modifsTitle {
+  font-size: 0.7rem;
+}
+
+.fileBody {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  padding: 12px;
+  gap: 12px;
+  flex-grow: 1;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tag {
+  padding: 3px 6px;
+  background: blue;
+  color: white;
+  font-weight: 700;
+  border-radius: 6px;
+}
+
+.fileDescription {
+  flex-grow: 1;
 }

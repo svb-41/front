@@ -1,10 +1,18 @@
 import { Reducer } from 'redux'
-import { LOAD_AI, UPDATE_AI, DELETE_AI } from '@/store/actions/ai'
+import {
+  LOAD_AI,
+  UPDATE_AI,
+  DELETE_AI,
+  LOAD_FAVORITE_AIS,
+  SET_FAVORITE,
+  DEL_FAVORITE,
+} from '@/store/actions/ai'
 import * as local from '@/services/localStorage'
 import { File } from '@/components/monaco'
 
 export type State = {
   ais: Array<AI>
+  favorites: string[]
 }
 
 export type AI = {
@@ -14,16 +22,21 @@ export type AI = {
   createdAt: Date | string
   compiledValue?: string
   tags: Array<string>
+  description?: string
 }
 
 const init: State = {
   ais: [],
+  favorites: [],
 }
 
 export type Action =
   | { type: 'ai/LOAD_AI'; ais: Array<AI> }
   | { type: 'ai/UPDATE_AI'; id: string; ai: AI }
   | { type: 'ai/DELETE_AI'; id: string }
+  | { type: 'ai/LOAD_FAVORITE_AIS'; favorites: string[] }
+  | { type: 'ai/SET_FAVORITE'; fav: string }
+  | { type: 'ai/DEL_FAVORITE'; fav: string }
 
 const setAllAIs = (ais: Array<AI>) => ais.map(local.setAI)
 
@@ -46,6 +59,21 @@ export const reducer: Reducer<State, Action> = (state = init, action) => {
       const ais = [...state.ais.filter(({ id }) => id !== action.id)]
       local.deleteAI(action.id)
       return { ...state, ais }
+    }
+    case LOAD_FAVORITE_AIS: {
+      const { favorites } = action
+      return { ...state, favorites }
+    }
+    case SET_FAVORITE: {
+      const { fav } = action
+      if (state.favorites.includes(fav)) return state
+      const favorites = [...state.favorites, fav]
+      return { ...state, favorites }
+    }
+    case DEL_FAVORITE: {
+      const { fav } = action
+      const favorites = state.favorites.filter(f => f !== fav)
+      return { ...state, favorites }
     }
     default:
       return state

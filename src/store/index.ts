@@ -19,6 +19,7 @@ const saveLocal = (store: any) => (next: any) => (action: any) => {
     ships: state.user.unlockedShips,
     color: state.user.color,
     ais: state.ai.ais.map(ai => ai.id),
+    favoriteAIS: state.ai.favorites,
   })
   return value
 }

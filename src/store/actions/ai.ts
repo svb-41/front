@@ -1,4 +1,4 @@
-import { Effect } from '@/store/types'
+import { Effect, Action } from '@/store/types'
 import { AI } from '@/store/reducers/ai'
 import { compile, Compile } from '@/services/compile'
 import templateAI from '@/default-controllers/assets.json'
@@ -6,6 +6,9 @@ import templateAI from '@/default-controllers/assets.json'
 export const LOAD_AI = 'ai/LOAD_AI'
 export const UPDATE_AI = 'ai/UPDATE_AI'
 export const DELETE_AI = 'ai/DELETE_AI'
+export const LOAD_FAVORITE_AIS = 'ai/LOAD_FAVORITE_AIS'
+export const SET_FAVORITE = 'ai/SET_FAVORITE'
+export const DEL_FAVORITE = 'ai/DEL_FAVORITE'
 
 const defaultAI = (id: string): AI => ({
   id,
@@ -47,3 +50,11 @@ export const compileAI: (ai: AI) => Effect<void> =
       ai: { ...ai, compiledValue, updatedAt },
     })
   }
+
+export const setFavorite = (fav: string): Action => {
+  return { type: SET_FAVORITE, fav }
+}
+
+export const delFavorite = (fav: string): Action => {
+  return { type: DEL_FAVORITE, fav }
+}

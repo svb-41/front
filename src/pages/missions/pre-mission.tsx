@@ -23,7 +23,7 @@ export type PreMissionsProps = {
 }
 export const PreMissions = ({ onSubmit, mission, teams }: PreMissionsProps) => {
   const playerData = useSelector(selector.userData)
-  const ais = useSelector(selector.ais)
+  const { ais } = useSelector(selector.ais)
   const [data, setData] = useState<Data | null>(null)
 
   const submitMission = () => {
