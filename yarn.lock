@@ -1684,6 +1684,18 @@
     ejs "^2.6.1"
     magic-string "^0.25.0"
 
+"@svb-41/core@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@svb-41/core/-/core-0.1.0.tgz#b6bb90ecccc4c7fb06be6e3ccf5b4d2fb347f51c"
+  integrity sha512-5Ekkr83rM9Co9PVoO3Di/w6wIVv+ypFGEnxeTvt1tYo52Ep08xFC5Bg6saBg4nUkV2ZklIY8uIakr40WIILBdw==
+
+"@svb-41/engine@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@svb-41/engine/-/engine-0.3.0.tgz#ca151454d059f10c028e741061db9881dad97813"
+  integrity sha512-qLIU6bZsZZPhRL3z8S1l9KiSKosMlSfGoV5XE+X6Awl2gVuyOjrEpPpfLNuzmyoq7VoDEukWG01JK0cfelig8g==
+  dependencies:
+    uuid "^8.3.2"
+
 "@svgr/babel-plugin-add-jsx-attribute@^5.4.0":
   version "5.4.0"
   resolved "https://registry.yarnpkg.com/@svgr/babel-plugin-add-jsx-attribute/-/babel-plugin-add-jsx-attribute-5.4.0.tgz#81ef61947bb268eb9d50523446f9c638fb355906"
