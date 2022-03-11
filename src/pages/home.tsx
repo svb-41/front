@@ -8,7 +8,7 @@ const Home = () => {
       <HUD.HUD title="SVB 41" />
       <HUD.Container>
         <div className={styles.container}>
-          <div className={styles.title}>Tableau de bord</div>
+          <div className={styles.title}>SVB 41</div>
           <div className={styles.col}>
             <Link to="/missions">
               <div className={styles.mainLink}>Missions</div>
