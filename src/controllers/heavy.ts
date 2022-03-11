@@ -8,6 +8,8 @@ const FIRE = svb.controller.Instruction.FIRE
 
 export const initialData: Data = { targets: [] }
 export default ({ stats, radar, memory, ship, comm }: ControllerArgs) => {
+  if (stats.position.speed < 0.08)
+    return ship.thrust(0.08 - stats.position.speed)
   const messages = comm.getNewMessages()
 
   const ally = radar.find(res => {
@@ -44,7 +46,13 @@ export default ({ stats, radar, memory, ship, comm }: ControllerArgs) => {
   }
 
   if (memory.targets.length > 0 && stats.weapons[1].coolDown === 0) {
-    const target = svb.helpers.nextPosition(200)(memory.targets.pop()!)
+    const target = svb.helpers.nextPosition(200)(
+      memory.targets
+        .map(res => ({ res, dist: dist2(res, stats.position) }))
+        .reduce((a, v) => (a.dist > v.dist ? v : a)).res
+    )
+    memory.targets = memory.targets.filter(t => t !== target)
+    //const target = svb.helpers.nextPosition(200)(memory.targets.pop()!)
     return svb.helpers.aim({ ship, source: stats.position, target })
   }
 
