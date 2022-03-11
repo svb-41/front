@@ -34,20 +34,7 @@ const Missions = () => {
               onClick={() => navigate('/mission/' + selected)}
               color="darkgreen"
             />
-            <div className={styles.description}>
-              Cillum o e veniam nescius eu cupidatat velit qui excepteur
-              voluptatibus. Aut qui magna ullamco, deserunt sed anim hic
-              deserunt quis noster hic legam sed te veniam tempor sint offendit.
-              Eiusmod duis offendit eiusmod, litteris amet fugiat eu irure.
-              Constias sunt et mandaremus cohaerescant, ab eram
-              consectetur.Ullamco quem possumus arbitror. Minim ullamco nam
-              mentitum a quamquam ut quorum, eu est magna aliqua quid, fabulas
-              qui incididunt ne hic noster pariatur si ut export litteris
-              firmissimum ita esse cernantur ita summis dolore, id minim illum
-              quorum excepteur. Si consequat sempiternum, illum probant
-              arbitror. In multos senserit illustriora an hic quorum summis aut
-              constias.
-            </div>
+            <div className={styles.description}>{mission.description}</div>
           </div>
         </div>
       </HUD.Container>
