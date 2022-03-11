@@ -5,7 +5,7 @@
   "credit": 320,
   "size": { "height": 1000, "width": 2000 },
   "rewards": {
-    "ships": [],
+    "ships": ["scout"],
     "missions": ["3"]
   },
   "ships": [

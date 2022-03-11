@@ -7,12 +7,13 @@ import * as HUD from '@/components/hud'
 import Carousel from '@/components/carousel'
 import styles from './Missions.module.css'
 import Button from '@/components/button'
+import { Mission, getMission } from '@/services/mission'
 
 const Missions = () => {
   const missions = useSelector(selectors.missions)
   const navigate = useNavigate()
   const [selected, setSelected] = useState<number>(0)
-
+  const mission = getMission(selected.toString())
   return (
     <>
       <HUD.HUD title="Missions" back="/" />
@@ -27,7 +28,7 @@ const Missions = () => {
             }))}
           />
           <div className={styles.info}>
-            Mission number {selected + 1}
+            {`${mission.title} (#${mission.id})`}
             <Button
               text="Start mission"
               onClick={() => navigate('/mission/' + selected)}

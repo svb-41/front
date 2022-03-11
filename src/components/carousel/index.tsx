@@ -55,7 +55,7 @@ const Carousel = ({ element, onChange }: Props) => {
       </div>
       <div className={styles.center}>
         <div className={styles.galleryCellActive}>
-          <img src={element[selected].img} />
+          {element[selected] && <img src={element[selected].img} />}
         </div>
       </div>
       <div className={styles.next}>
