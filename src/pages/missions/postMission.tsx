@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom'
 import { getImage } from '@/components/ships/display'
 import Button from '@/components/button'
 import { unlockRewards } from '@/store/actions/user'
-import { Mission } from '@/services/mission'
+import { Mission, getMission } from '@/services/mission'
 
 const PostMission = ({
   engine,
@@ -74,6 +74,40 @@ const PostMission = ({
           </div>
         </div>
       </div>
+      {mission.rewards && playerWin() && (
+        <div className={styles.shipsDestroyed}>
+          <div className={styles.subtitle}>Rewards</div>
+          <div className={styles.rewards}>
+            {mission.rewards.missions.length > 0 && (
+              <div className={styles.nextMission}>
+                Next mission:{' '}
+                {mission.rewards.missions
+                  .map(getMission)
+                  .map(m => `${m.title} (#${m.id})`)
+                  .join(', ')}
+              </div>
+            )}
+            {mission.rewards.ships.length > 0 && (
+              <div className={styles.shipsRewards}>
+                <div className={styles.nextMission}>
+                  Unlocked Ship{mission.ships.length < 1 && 's'} :
+                </div>
+                <div>
+                  {mission.rewards.ships.map((ship, i) => (
+                    <div key={i}>
+                      <img
+                        src={getImage(ship.toLowerCase(), playerData.color)}
+                        className={styles.img}
+                        alt={`${ship}-${playerData.color}`}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
       <div className={styles.actions}>
         <Button text="Restart mission" onClick={restart} color="orange" />
         <Button text="Watch replay" onClick={() => {}} />
