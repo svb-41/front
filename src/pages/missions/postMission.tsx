@@ -13,9 +13,11 @@ const PostMission = ({
   engine,
   restart,
   mission,
+  replay,
 }: {
   engine: engine.Engine
   restart: () => void
+  replay: () => void
   mission: Mission
 }) => {
   const playerData = useSelector(selector.userData)
@@ -117,7 +119,7 @@ const PostMission = ({
       )}
       <div className={styles.actions}>
         <Button text="Restart mission" onClick={restart} color="orange" />
-        <Button text="Watch replay" onClick={() => {}} />
+        <Button text="Watch replay" onClick={replay} />
         <Button
           text="Go back to missions"
           onClick={() => {

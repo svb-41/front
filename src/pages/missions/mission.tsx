@@ -30,6 +30,7 @@ const colors = [Color.BLUE, Color.RED, Color.YELLOW, Color.GREEN, Color.WHITE]
 const Mission = () => {
   const [missionState, setMissionState] = useState<MissionState>('pre')
   const [engine, setEngine] = useState<engine.Engine>()
+  const [data, setData] = useState<PlayerData>()
   const location = useLocation()
   const playerColor = useSelector(selector.userColor)
   const [missionId] = location.pathname.split('/').reverse()
@@ -38,6 +39,11 @@ const Mission = () => {
   const restart = () => {
     setMissionState('pre')
     setEngine(undefined)
+    setData(undefined)
+  }
+
+  const replay = () => {
+    if (data) playerSubmit(data)
   }
 
   const teams = [playerColor, enemyColor]
@@ -56,6 +62,7 @@ const Mission = () => {
     }))
 
   const playerSubmit = (data: PlayerData) => {
+    setData(data)
     const ais = [
       ...shipsAndAi.map(({ ship, ai }) => ({
         shipId: ship.id,
@@ -103,7 +110,7 @@ const Mission = () => {
         missionState === 'mission' ? (
           <Renderer {...{ engine }} />
         ) : (
-          <PostMissions {...{ engine, restart, mission }} />
+          <PostMissions {...{ engine, restart, mission, replay }} />
         )
       ) : (
         <PreMissions
