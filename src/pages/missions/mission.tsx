@@ -8,7 +8,7 @@ import * as selector from '@/store/selectors'
 import { Color } from '@/store/reducers/user'
 import { engine } from '@svb-41/engine'
 import { Renderer } from '@/renderer'
-import PreMissions, { PlayerData } from './preMissions'
+import { PreMissions, PlayerData } from './pre-mission'
 import PostMissions from './postMission'
 import { getMission } from '@/services/mission'
 
@@ -59,7 +59,7 @@ const Mission = () => {
     const ais = [
       ...shipsAndAi.map(({ ship, ai }) => ({
         shipId: ship.id,
-        code: require(`@/missions/ais/${ai}.json`),
+        code: require(`@/missions/ais/${ai}.json`) as string,
       })),
       ...data.AIs,
     ]
