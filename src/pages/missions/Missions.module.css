@@ -21,8 +21,9 @@
 
 .preMissions {
   display: grid;
-  grid-template-areas: 'ally enemy';
+  grid-template-areas: 'ally enemy' 'submit empty';
   grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr auto;
 }
 
 .enemy {

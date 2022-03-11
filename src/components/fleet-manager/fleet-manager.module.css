@@ -1,0 +1,96 @@
+.ally {
+  border-radius: 10px;
+  background: #ccc;
+  margin: 8px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 40px auto 2fr;
+  grid-template-areas:
+    'title title'
+    'ships ships'
+    'ai pos';
+}
+
+.ai {
+  grid-area: ai;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 12px;
+}
+
+.pos {
+  grid-area: pos;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+}
+
+.cell {
+  border: 1px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background 0.2s;
+}
+
+.gridCell {
+  display: flex;
+  padding: 1rem;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+
+.gridCell img {
+  cursor: pointer;
+  transform: rotate(90deg);
+}
+
+.title {
+  font-size: 24px;
+  font-family: var(--monospace);
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  grid-area: title;
+}
+
+.availableShip {
+  cursor: pointer;
+}
+
+.ships {
+  grid-area: ships;
+  padding: 0 1rem;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.subtitle {
+  margin-top: 1rem;
+}
+
+.shipSelector {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.ships img {
+  image-rendering: pixelated;
+  height: 120px;
+  margin: 1rem;
+}
+
+.aiButton {
+  display: flex;
+}
+
+.aiPath {
+  background: #aaa;
+  padding: 3px 6px;
+  border-radius: 10px;
+  cursor: pointer;
+}
