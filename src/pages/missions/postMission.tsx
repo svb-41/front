@@ -81,10 +81,17 @@ const PostMission = ({
             {mission.rewards.missions.length > 0 && (
               <div className={styles.nextMission}>
                 Next mission:{' '}
-                {mission.rewards.missions
-                  .map(getMission)
-                  .map(m => `${m.title} (#${m.id})`)
-                  .join(', ')}
+                {mission.rewards.missions.map(getMission).map(m => (
+                  <Button
+                    color="green"
+                    key={m.id}
+                    onClick={() => {
+                      restart()
+                      navigate('/mission/' + m.id)
+                    }}
+                    text={`${m.title} (#${m.id})`}
+                  />
+                ))}
               </div>
             )}
             {mission.rewards.ships.length > 0 && (
