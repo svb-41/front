@@ -16,7 +16,7 @@ const EmptyLine = () => {
 }
 
 export const Render = ({ logs }: Props) => {
-  const [visible, setVisible] = useState(true)
+  const [visible, setVisible] = useState(false)
   const text = visible ? 'Hide Logs' : 'Show Logs'
   return (
     <div className={styles.wrapper}>
