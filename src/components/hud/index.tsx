@@ -1,17 +1,6 @@
 import { Fragment } from 'react'
 import * as router from 'react-router-dom'
-import backArrow from '@/assets/icons/back-arrow.svg'
 import styles from './hud.module.css'
-
-export const BackArrow = () => {
-  const navigate = router.useNavigate()
-  const onClick = () => navigate(-1)
-  return (
-    <button className={styles.backArrow} onClick={onClick}>
-      <img className={styles.backArrowImg} src={backArrow} />
-    </button>
-  )
-}
 
 type LinkProps = { title: string; to: string }
 const Link = ({ title, to }: LinkProps) => (

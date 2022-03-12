@@ -8,18 +8,6 @@
   top: 0;
 }
 
-.backArrow {
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.backArrowImg {
-  max-width: 100%;
-}
-
 .navTitle {
   text-decoration: none;
   color: inherit;

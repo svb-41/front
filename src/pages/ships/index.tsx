@@ -28,21 +28,47 @@ const ShipDetails = ({ ship, stats, locked, color }: any) => (
   <div key={ship} className={styles.cell}>
     <div className={styles.infos}>
       <Labeled label="ID" content={stats.id} className={styles.id} />
-      <Labeled
-        label="Class"
-        content={stats.shipClass}
-        className={styles.class}
-      />
-      <Labeled label="Size" content={stats.stats.size} />
-      <Labeled label="Acceleration" content={stats.stats.acceleration} />
-      <Labeled label="Turn" content={stats.stats.turn} />
-      <Labeled label="Detection" content={stats.stats.detection} />
-      <Labeled label="Stealth" content={stats.stealth} />
-      {stats.weapons.map((weapon: any) => {
-        const vals: any = Object.entries(weapon)
-        // return <div>{JSON.stringify(vals)}</div>
-        return null
-      })}
+      <div style={{ display: 'flex', gap: 12 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          Infos
+          <div className={styles.infoCard}>
+            <Labeled
+              label="Class"
+              content={stats.shipClass}
+              className={styles.class}
+            />
+            <Labeled label="Size" content={stats.stats.size} />
+            <Labeled label="Acceleration" content={stats.stats.acceleration} />
+            <Labeled label="Turn" content={stats.stats.turn} />
+            <Labeled label="Detection" content={stats.stats.detection} />
+            <Labeled label="Stealth" content={stats.stealth} />
+          </div>
+        </div>
+        <div className={styles.weapons}>
+          {stats.weapons.map((weapon: any, index: number) => (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              Weapon #{index}
+              <div className={styles.infoCard}>
+                <Labeled label="ID" content={weapon.bullet.id} />
+                <Labeled label="Speed" content={weapon.bullet.position.speed} />
+                <Labeled label="Size" content={weapon.bullet.stats.size} />
+                <Labeled
+                  label="Acceleration"
+                  content={weapon.bullet.stats.acceleration}
+                />
+                <Labeled label="Turn" content={weapon.bullet.stats.turn} />
+                <Labeled
+                  label="Detection"
+                  content={weapon.bullet.stats.detection}
+                />
+                <Labeled label="Range" content={weapon.bullet.range} />
+                <Labeled label="Cool Down" content={weapon.bullet.coolDown} />
+                <Labeled label="Munitions" content={weapon.amo} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
     <img
       src={getImage(ship, color)}
@@ -53,12 +79,22 @@ const ShipDetails = ({ ship, stats, locked, color }: any) => (
   </div>
 )
 
+const empty = {}
+const emptyStats = new Proxy(empty, {
+  get(_, p) {
+    if (p === 'weapons') return []
+    if (p === 'stats') return new Proxy(empty, { get: () => '???' })
+    return '???'
+  },
+})
+
 const ShipsDetails = ({ color, unlockedShips }: any) => (
   <div className={styles.container}>
     {ships.map(ship => {
       const shipName = ship.toUpperCase()
-      const stats: any = (svb.engine.config.ship as any)[shipName]
+      const stats_: any = (svb.engine.config.ship as any)[shipName]
       const isUnlocked = unlockedShips.includes(ship)
+      const stats = isUnlocked ? stats_ : emptyStats
       return (
         <ShipDetails
           ship={ship}
