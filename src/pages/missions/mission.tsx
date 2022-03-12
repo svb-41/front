@@ -1,7 +1,7 @@
 import { useState } from 'react'
 // import aisJson from '@/missions/ai.json'
 import { findBuilder } from '@/missions/builders'
-import * as HUD from '@/components/hud'
+import { HUD } from '@/components/hud'
 import { useLocation } from 'react-router-dom'
 import { useSelector } from '@/store/hooks'
 import * as selector from '@/store/selectors'
@@ -27,7 +27,7 @@ const colors = [Color.BLUE, Color.RED, Color.YELLOW, Color.GREEN, Color.WHITE]
   .sort((a, b) => a.sort - b.sort)
   .map(({ value }) => value)
 
-const Mission = () => {
+export const Mission = () => {
   const [missionState, setMissionState] = useState<MissionState>('pre')
   const [engine, setEngine] = useState<engine.Engine>()
   const [data, setData] = useState<PlayerData>()
@@ -104,8 +104,7 @@ const Mission = () => {
   }
 
   return (
-    <>
-      <HUD.HUD title="Missions" back="/missions" />
+    <HUD>
       {engine ? (
         missionState === 'mission' ? (
           <Renderer {...{ engine }} />
@@ -119,8 +118,6 @@ const Mission = () => {
           teams={teams.map(c => c.toString())}
         />
       )}
-    </>
+    </HUD>
   )
 }
-
-export default Mission

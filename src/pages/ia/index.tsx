@@ -1,5 +1,5 @@
 import { v4 } from 'uuid'
-import * as HUD from '@/components/hud'
+import { HUD } from '@/components/hud'
 import Button from '@/components/button'
 import { useSelector, useDispatch } from '@/store/hooks'
 import List, { Col } from '@/components/list'
@@ -157,53 +157,50 @@ export const Ia = () => {
   }
 
   return (
-    <>
-      <HUD.HUD title="Artificial intelligence" back="/" />
-      <HUD.Container>
-        <div className={styles.container}>
-          <div className={styles.filesCard}>
-            <div className={styles.title}>Favorites</div>
-            <div className={styles.filesCardGrid}>
-              {favorites.map(favorite => {
-                const ai = ais.find(ai => ai.id === favorite)
-                if (!ai) return null
-                const onFavorite = () => dispatch(delFavorite(ai.id))
-                return (
-                  <FileCard
-                    onClick={() => navigate(`/ai/${ai.id}`)}
-                    key={favorite}
-                    ai={ai}
-                    onFavorite={onFavorite}
-                    favorite
-                  />
-                )
-              })}
-              {favorites.length === 0 && <FileCard favorite />}
-            </div>
-          </div>
-          <div className={styles.filesCard}>
-            <div className={styles.title}>Files</div>
-            <div className={styles.filesCardGrid}>
-              <Add />
-              {ais.map(ai => {
-                const favorite = favorites.includes(ai.id)
-                const onFavorite = favorite
-                  ? () => dispatch(delFavorite(ai.id))
-                  : () => dispatch(setFavorite(ai.id))
-                return (
-                  <FileCard
-                    onClick={() => navigate(`/ai/${ai.id}`)}
-                    key={ai.id}
-                    ai={ai}
-                    onFavorite={onFavorite}
-                    favorite={favorite}
-                  />
-                )
-              })}
-            </div>
+    <HUD>
+      <div className={styles.container}>
+        <div className={styles.filesCard}>
+          <div className={styles.title}>Favorites</div>
+          <div className={styles.filesCardGrid}>
+            {favorites.map(favorite => {
+              const ai = ais.find(ai => ai.id === favorite)
+              if (!ai) return null
+              const onFavorite = () => dispatch(delFavorite(ai.id))
+              return (
+                <FileCard
+                  onClick={() => navigate(`/ai/${ai.id}`)}
+                  key={favorite}
+                  ai={ai}
+                  onFavorite={onFavorite}
+                  favorite
+                />
+              )
+            })}
+            {favorites.length === 0 && <FileCard favorite />}
           </div>
         </div>
-      </HUD.Container>
-    </>
+        <div className={styles.filesCard}>
+          <div className={styles.title}>Files</div>
+          <div className={styles.filesCardGrid}>
+            <Add />
+            {ais.map(ai => {
+              const favorite = favorites.includes(ai.id)
+              const onFavorite = favorite
+                ? () => dispatch(delFavorite(ai.id))
+                : () => dispatch(setFavorite(ai.id))
+              return (
+                <FileCard
+                  onClick={() => navigate(`/ai/${ai.id}`)}
+                  key={ai.id}
+                  ai={ai}
+                  onFavorite={onFavorite}
+                  favorite={favorite}
+                />
+              )
+            })}
+          </div>
+        </div>
+      </div>
+    </HUD>
   )
 }

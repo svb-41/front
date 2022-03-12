@@ -1,36 +1,61 @@
-.hud {
-  padding: 12px;
-  border-bottom: 1px solid #2f2f2f;
-  background: #555;
-  color: white;
-  font-weight: bold;
-  font-family: var(--monospace);
+.nav {
+  display: flex;
+  align-items: baseline;
+  background: #eee;
+  padding: 24px;
+  gap: 30px;
+  position: sticky;
+  top: 0;
+}
+
+.backArrow {
+  width: 30px;
+  height: 30px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  grid-area: hud;
+  justify-content: center;
 }
 
-.button {
-  padding: 12px;
-  color: white;
-  border: 2px solid white;
-  border-radius: 10px;
-  background: darkblue;
-  font-size: 1rem;
-  font-family: var(--monospace);
-  font-weight: bold;
-  cursor: pointer;
+.backArrowImg {
+  max-width: 100%;
 }
 
-.gameContainer {
-  grid-area: game;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  width: 100vw;
+.navTitle {
+  text-decoration: none;
+  color: inherit;
+  outline: none;
 }
 
 .title {
-  cursor: pointer;
+  font-family: 'Neon Led';
+  font-size: 2rem;
+}
+
+.links {
+  display: flex;
+  appearance: none;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  gap: 18px;
+  flex: 1;
+}
+
+.link {
+  font-size: 1rem;
+  font-family: Silom;
+}
+
+.navLink {
+  text-decoration: none;
+  color: #888;
+}
+
+.navLink:global(.active) {
+  color: #222;
+}
+
+.main {
+  display: flex;
+  flex-grow: 1;
 }

@@ -1,3 +1,1 @@
-const Onboarding = () => <>onboarding</>
-
-export default Onboarding
+export const Onboarding = () => <>onboarding</>

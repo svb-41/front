@@ -25,5 +25,5 @@
 
 .fullHeight {
   position: relative;
-  grid-area: 'game';
+  flex: 1;
 }

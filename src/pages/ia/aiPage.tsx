@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import * as HUD from '@/components/hud'
+import { HUD } from '@/components/hud'
 import { useLocation } from 'react-router-dom'
 import * as Monaco from '@/components/monaco'
 import { useSelector, useDispatch } from '@/store/hooks'
@@ -29,7 +29,7 @@ const getLogo = (
   return [unknownLogo, '?']
 }
 
-const Mission = () => {
+export const AI = () => {
   const dispatch = useDispatch()
   const location = useLocation()
   const search = location.pathname.split('/')
@@ -69,23 +69,18 @@ const Mission = () => {
     return ''
   }
   return (
-    <>
-      <HUD.HUD title="Artificial intelligence" back="/ai" />
-      <HUD.Container>
-        <div className={styles.header}>
-          <div className={styles.input}>
-            <Input value={path} onChange={setPath} onSubmit={rename} />
-            <img src={logo} alt={alt} className={styles.languageLogo} />
-          </div>
-          <div className={styles.input}>
-            <div> {displayUpdatedAt()}</div>
-            <Button text="compile" onClick={compile} color="green" />
-          </div>
+    <HUD>
+      <div className={styles.header}>
+        <div className={styles.input}>
+          <Input value={path} onChange={setPath} onSubmit={rename} />
+          <img src={logo} alt={alt} className={styles.languageLogo} />
         </div>
-        <Monaco.Monaco onChange={saveFile} file={file} onSave={compile} />
-      </HUD.Container>
-    </>
+        <div className={styles.input}>
+          <div> {displayUpdatedAt()}</div>
+          <Button text="compile" onClick={compile} color="green" />
+        </div>
+      </div>
+      <Monaco.Monaco onChange={saveFile} file={file} onSave={compile} />
+    </HUD>
   )
 }
-
-export default Mission

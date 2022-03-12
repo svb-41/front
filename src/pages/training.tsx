@@ -1,12 +1,7 @@
-import * as HUD from '@/components/hud'
+import { HUD } from '@/components/hud'
 
-const Training = () => (
-  <>
-    <HUD.HUD title="Training" back="/" />
-    <HUD.Container>
-      <>{'Git gud'}</>
-    </HUD.Container>
-  </>
+export const Training = () => (
+  <HUD>
+    <>Git gud</>
+  </HUD>
 )
-
-export default Training
