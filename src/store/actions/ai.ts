@@ -1,5 +1,6 @@
 import { Effect, Action } from '@/store/types'
 import { AI } from '@/store/reducers/ai'
+import { File } from '@/components/monaco'
 import { compile, Compile } from '@/services/compile'
 import templateAI from '@/default-controllers/assets.json'
 
@@ -10,46 +11,42 @@ export const LOAD_FAVORITE_AIS = 'ai/LOAD_FAVORITE_AIS'
 export const SET_FAVORITE = 'ai/SET_FAVORITE'
 export const DEL_FAVORITE = 'ai/DEL_FAVORITE'
 
-const defaultAI = (id: string): AI => ({
-  id,
-  file: { language: 'typescript', code: templateAI.hold, path: 'new.ts', id },
-  updatedAt: new Date(),
-  createdAt: new Date(),
-  tags: [],
-})
+const defaultAI = (id: string): AI => {
+  const createdAt = new Date()
+  const code = templateAI.hold
+  const file: File = { language: 'typescript', code, path: 'new.ts', id }
+  return { id, file, updatedAt: createdAt, createdAt, tags: [] }
+}
 
-export const createAI: (id: string) => Effect<void> =
-  (id: string) => async dispatch => {
+export const createAI: (id: string) => Effect<void> = (id: string) => {
+  return async dispatch => {
     dispatch({ type: UPDATE_AI, id, ai: defaultAI(id) })
   }
+}
 
-export const updateAI: (ai: AI) => Effect<void> =
-  (ai: AI) => async dispatch => {
+export const updateAI: (ai: AI) => Effect<void> = (ai: AI) => {
+  return async dispatch => {
     ai.updatedAt = new Date()
     dispatch({ type: UPDATE_AI, id: ai.id, ai })
   }
+}
 
-export const deleteAI: (id: string) => Effect<void> =
-  (id: string) => async dispatch => {
+export const deleteAI: (id: string) => Effect<void> = (id: string) => {
+  return async dispatch => {
     dispatch({ type: DELETE_AI, id })
   }
+}
 
-export const compileAI: (ai: AI) => Effect<void> =
-  (ai: AI) => async dispatch => {
-    const params: Compile = {
-      code: ai.file.code,
-      uid: ai.id,
-      name: ai.file.path,
-    }
-    const compiledValue: string = await compile(params)
-    console.log(JSON.stringify(compiledValue))
+export const compileAI: (ai: AI) => Effect<void> = (ai: AI) => {
+  return async dispatch => {
+    const { code, path: name } = ai.file
+    const params: Compile = { code, uid: ai.id, name }
+    const compiledValue = await compile(params)
     const updatedAt = new Date()
-    dispatch({
-      type: UPDATE_AI,
-      id: ai.id,
-      ai: { ...ai, compiledValue, updatedAt },
-    })
+    const newAI = { ...ai, compiledValue, updatedAt }
+    dispatch({ type: UPDATE_AI, id: ai.id, ai: newAI })
   }
+}
 
 export const setFavorite = (fav: string): Action => {
   return { type: SET_FAVORITE, fav }

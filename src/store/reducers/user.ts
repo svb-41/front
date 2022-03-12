@@ -4,6 +4,7 @@ import {
   UPDATE_USER_ID,
   UPDATE_COLOR,
   UNLOCK_REWARDS,
+  Rewards,
 } from '@/store/actions/user'
 
 export type User = string | null
@@ -30,26 +31,16 @@ const init: State = {
 }
 
 export type Action =
-  | {
-      type: 'user/LOAD_ID'
-      id: string
-    }
+  | { type: 'user/LOAD_ID'; id: string }
+  | { type: 'user/UPDATE_COLOR'; color: Color }
+  | { type: 'user/UNLOCK_REWARDS'; rewards: Rewards }
   | {
       type: 'user/LOAD_USER'
       unlockedShips: Array<string>
       unlockedMissions: Array<string>
     }
-  | {
-      type: 'user/UPDATE_COLOR'
-      color: Color
-    }
-  | {
-      type: 'user/UNLOCK_REWARDS'
-      rewards: {
-        ships: Array<string>
-        missions: Array<string>
-      }
-    }
+
+const unique = <T>(arr: T[]): T[] => [...new Set(arr)]
 
 export const reducer: Reducer<State, Action> = (state = init, action) => {
   switch (action.type) {
@@ -67,13 +58,10 @@ export const reducer: Reducer<State, Action> = (state = init, action) => {
     }
     case UNLOCK_REWARDS: {
       const { rewards } = action
-      return {
-        ...state,
-        unlockedShips: [...new Set([...state.unlockedShips, ...rewards.ships])],
-        unlockedMissions: [
-          ...new Set([...state.unlockedMissions, ...rewards.missions]),
-        ],
-      }
+      const { ships, missions } = rewards
+      const unlockedShips = unique([...state.unlockedShips, ...ships])
+      const unlockedMissions = unique([...state.unlockedMissions, ...missions])
+      return { ...state, unlockedShips, unlockedMissions }
     }
     default:
       return state

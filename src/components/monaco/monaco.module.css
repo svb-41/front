@@ -3,8 +3,6 @@
   grid-template-areas: 'monaco';
   grid-template-columns: 1fr;
   grid-template-rows: 1fr;
-  height: 100%;
-  width: 100vw;
 }
 
 .tabs {
