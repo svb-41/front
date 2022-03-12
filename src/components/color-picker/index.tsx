@@ -1,16 +1,14 @@
 import { Color } from '@/store/reducers/user'
 import styles from './colorPicker.module.css'
 
-const ColorPicker = ({ onChange }: { onChange: (color: Color) => void }) => (
+export type Props = { onChange: (color: Color) => void; selected?: Color }
+export const ColorPicker = ({ onChange, selected }: Props) => (
   <div className={styles.colorPicker}>
-    {Object.values(Color).map((color: Color) => (
-      <div
-        key={color}
-        onClick={() => onChange(color)}
-        className={styles['tile-' + color]}
-      />
-    ))}
+    {Object.values(Color).map((color: Color) => {
+      const onClick = () => onChange(color)
+      const activeCl = selected === color ? ' ' + styles.active : ''
+      const className = styles['tile-' + color] + activeCl
+      return <div key={color} onClick={onClick} className={className} />
+    })}
   </div>
 )
-
-export default ColorPicker

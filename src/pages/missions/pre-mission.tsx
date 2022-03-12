@@ -5,7 +5,7 @@ import { Mission } from '@/services/mission'
 import styles from './Missions.module.css'
 import { useSelector } from '@/store/hooks'
 import * as selector from '@/store/selectors'
-import { getImage } from '@/components/ships/display'
+import { getImage } from '@/helpers/ships'
 import { FleetManager, Data } from '@/components/fleet-manager'
 import { findBuilder } from '@/missions/builders'
 

@@ -1,7 +1,7 @@
 import { useState, useRef, useMemo, useEffect } from 'react'
 import { engine } from '@svb-41/engine'
 import { AI } from '@/store/reducers/ai'
-import { getImage } from '@/components/ships/display'
+import { getImage } from '@/helpers/ships'
 import Button from '@/components/button'
 import background from '@/assets/backgrounds/darkPurple.png'
 import styles from './fleet-manager.module.css'

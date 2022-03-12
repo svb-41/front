@@ -1,0 +1,77 @@
+.wrapper {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  padding: 24px;
+  gap: 24px;
+  flex-direction: column;
+}
+
+.colorPicker {
+  display: flex;
+  flex-direction: column;
+  background: #eee;
+  padding: 24px;
+  border-radius: 10px;
+  font-family: 'Silom';
+  font-size: 2rem;
+  align-self: flex-start;
+  gap: 24px;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+  gap: 24px;
+  width: 100%;
+}
+
+.cell {
+  display: grid;
+  grid-template-areas: 'ship details';
+  background: #eee;
+  padding: 24px;
+  border-radius: 10px;
+  gap: 24px;
+  place-items: center;
+  /* min-width: 500px; */
+}
+
+.img {
+  image-rendering: pixelated;
+  height: 200px;
+  width: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: rotation 10s linear 0s infinite;
+}
+
+.infos {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--monospace);
+  gap: 6px;
+  justify-self: start;
+}
+
+.id {
+  text-transform: capitalize;
+  font-size: 2rem;
+}
+
+.label {
+  font-size: 1rem;
+  color: #888;
+}
+
+.class {
+  text-transform: capitalize;
+}
+
+/* prettier-ignore */
+@keyframes rotation {
+  0% { transform: rotate(0deg); }
+  50% { transform: rotate(180deg); }
+  100% { transform: rotate(360deg); }
+}

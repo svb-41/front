@@ -41,6 +41,7 @@ button {
   font-weight: inherit;
   background: inherit;
   outline: none;
+  cursor: pointer;
 }
 
 @font-face {
