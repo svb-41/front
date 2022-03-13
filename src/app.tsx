@@ -26,7 +26,7 @@ const App = () => {
       <Route path="sandbox" element={<Sandbox />} />
       <Route path="training" element={<Training />} />
       <Route path="missions" element={<Missions />} />
-      <Route path="mission/:id" element={<Mission />} />
+      <Route path="mission/:id" element={<Missions />} />
       <Route path="onboarding" element={<Onboarding />} />
     </Routes>
   )

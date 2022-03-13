@@ -26,12 +26,8 @@ export const MissionSelector = (props: any) => {
   const title = opened ? 'Select your mission' : 'Back to selection'
   return (
     <div
-      className={styles.missionsSelectorWrapper}
+      className={opened ? styles.mswOpened : styles.missionsSelectorWrapper}
       onClick={() => !opened && reset()}
-      style={{
-        gridRow: opened ? '1 / 3' : undefined,
-        cursor: opened ? undefined : 'pointer',
-      }}
     >
       <Title content={title} />
       {opened && (

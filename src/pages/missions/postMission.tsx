@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from '@/store/hooks'
 import * as selector from '@/store/selectors'
 import { useNavigate } from 'react-router-dom'
 import { getImage } from '@/helpers/ships'
-import Button from '@/components/button'
+import { Button } from '@/components/button'
 import { unlockRewards } from '@/store/actions/user'
 import { Mission, getMission } from '@/services/mission'
 
@@ -85,7 +85,6 @@ const PostMission = ({
                 Next mission:{' '}
                 {mission.rewards.missions.map(getMission).map(m => (
                   <Button
-                    color="green"
                     key={m!.id}
                     onClick={() => {
                       restart()
@@ -118,14 +117,13 @@ const PostMission = ({
         </div>
       )}
       <div className={styles.actions}>
-        <Button text="Restart mission" onClick={restart} color="orange" />
+        <Button text="Restart mission" onClick={restart} />
         <Button text="Watch replay" onClick={replay} />
         <Button
           text="Go back to missions"
           onClick={() => {
             navigate('/missions')
           }}
-          color="purple"
         />
       </div>
     </div>

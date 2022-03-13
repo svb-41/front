@@ -1,7 +1,9 @@
 import { useDispatch } from '@/store/hooks'
+import { Row } from '@/components/flex'
 import { HUD } from '@/components/hud'
 import { ColorPicker } from '@/components/color-picker'
 import { getImage, ships } from '@/helpers/ships'
+import * as Ship from '@/components/ship'
 import { Color } from '@/store/reducers/user'
 import { changeColor } from '@/store/actions/user'
 import { useSelector } from '@/store/hooks'
@@ -24,85 +26,20 @@ const Labeled = ({ label, content, className }: LabeledProps) => {
   )
 }
 
-const ShipDetails = ({ ship, stats, locked, color }: any) => (
-  <div key={ship} className={styles.cell}>
-    <div className={styles.infos}>
-      <Labeled label="ID" content={stats.id} className={styles.id} />
-      <div style={{ display: 'flex', gap: 12 }}>
-        <div className={styles.infoCardWrapper}>
-          Infos
-          <div className={styles.infoCard}>
-            <Labeled
-              label="Class"
-              content={stats.shipClass}
-              className={styles.class}
-            />
-            <Labeled label="Size" content={stats.stats.size} />
-            <Labeled label="Acceleration" content={stats.stats.acceleration} />
-            <Labeled label="Turn" content={stats.stats.turn} />
-            <Labeled label="Detection" content={stats.stats.detection} />
-            <Labeled label="Stealth" content={stats.stealth} />
-          </div>
-        </div>
-        <div className={styles.weapons}>
-          {stats.weapons.map((weapon: any, index: number) => (
-            <div key={index} className={styles.infoCardWrapper}>
-              Weapon #{index}
-              <div className={styles.infoCard}>
-                <Labeled label="ID" content={weapon.bullet.id} />
-                <Labeled label="Speed" content={weapon.bullet.position.speed} />
-                <Labeled label="Size" content={weapon.bullet.stats.size} />
-                <Labeled
-                  label="Acceleration"
-                  content={weapon.bullet.stats.acceleration}
-                />
-                <Labeled label="Turn" content={weapon.bullet.stats.turn} />
-                <Labeled
-                  label="Detection"
-                  content={weapon.bullet.stats.detection}
-                />
-                <Labeled label="Range" content={weapon.bullet.range} />
-                <Labeled label="Cool Down" content={weapon.bullet.coolDown} />
-                <Labeled label="Munitions" content={weapon.amo} />
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-    <img
-      src={getImage(ship, color)}
-      className={styles.img}
-      style={{ filter: locked ? 'brightness(0.2)' : undefined }}
-      alt="ship"
-    />
-  </div>
-)
-
-const empty = {}
-const emptyStats = new Proxy(empty, {
-  get(_, p) {
-    if (p === 'weapons') return []
-    if (p === 'stats') return new Proxy(empty, { get: () => '???' })
-    return '???'
-  },
-})
-
 const ShipsDetails = ({ color, unlockedShips }: any) => (
   <div className={styles.container}>
     {ships.map((ship, index) => {
-      const shipName = ship.toUpperCase()
-      const stats_: any = (svb.engine.config.ship as any)[shipName]
       const isUnlocked = unlockedShips.includes(ship)
-      const stats = isUnlocked ? stats_ : emptyStats
       return (
-        <ShipDetails
-          key={index}
-          ship={ship}
-          stats={stats}
-          locked={!isUnlocked}
-          color={color}
-        />
+        <Row background="#eee">
+          <Ship.Details
+            infoCard="#ddd"
+            key={index}
+            ship={ship}
+            locked={!isUnlocked}
+            color={color}
+          />
+        </Row>
       )
     })}
   </div>

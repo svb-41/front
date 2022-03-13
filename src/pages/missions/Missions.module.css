@@ -12,9 +12,19 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-  background: #eee;
   padding: 24px;
   font-family: var(--monospace);
+  cursor: pointer;
+  background: #a80000;
+  color: white;
+}
+
+.mswOpened {
+  background: #eee;
+  composes: missionsSelectorWrapper;
+  grid-row: 1 / 3;
+  cursor: auto;
+  color: inherit;
 }
 
 .missionsSelector {

@@ -3,6 +3,12 @@
     sans-serif, Apple Color Emoji, Segoe UI Emoji;
   --monospace: Silom, ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas,
     Liberation Mono, monospace;
+  --xs: 3px;
+  --s: 6px;
+  --m: 12px;
+  --l: 18px;
+  --xl: 24px;
+  --xxl: 36px;
 }
 
 body {
