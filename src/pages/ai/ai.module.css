@@ -105,6 +105,12 @@
   justify-content: space-between;
 }
 
+.indicators {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+}
+
 .monaco {
   flex: 1;
   display: grid;
@@ -170,4 +176,40 @@
 
 .loader {
   width: 15px;
+}
+
+/* Checkbox */
+.inputCheckbox {
+  width: 1px;
+  height: 1px;
+  visibility: hidden;
+  position: fixed;
+  top: -10000vh;
+  left: -10000vh;
+}
+
+.checkbox {
+  width: 15px;
+  height: 15px;
+  border: 2px solid #222;
+  cursor: pointer;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.uncheckedBox {
+  composes: checkbox;
+}
+
+.checkedBox {
+  composes: checkbox;
+  background: #222;
+}
+
+.checkedMark {
+  position: relative;
+  top: -1px;
+  left: 1px;
 }

@@ -19,7 +19,7 @@ const Labeled = ({ label, content, className }: LabeledProps) => {
   return (
     <div>
       <div className={styles.label}>{label}</div>
-      <div className={className}>{val}</div>
+      <div className={className}>{val ?? 'None'}</div>
     </div>
   )
 }
@@ -29,7 +29,7 @@ const ShipDetails = ({ ship, stats, locked, color }: any) => (
     <div className={styles.infos}>
       <Labeled label="ID" content={stats.id} className={styles.id} />
       <div style={{ display: 'flex', gap: 12 }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <div className={styles.infoCardWrapper}>
           Infos
           <div className={styles.infoCard}>
             <Labeled
@@ -46,7 +46,7 @@ const ShipDetails = ({ ship, stats, locked, color }: any) => (
         </div>
         <div className={styles.weapons}>
           {stats.weapons.map((weapon: any, index: number) => (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <div key={index} className={styles.infoCardWrapper}>
               Weapon #{index}
               <div className={styles.infoCard}>
                 <Labeled label="ID" content={weapon.bullet.id} />
@@ -90,13 +90,14 @@ const emptyStats = new Proxy(empty, {
 
 const ShipsDetails = ({ color, unlockedShips }: any) => (
   <div className={styles.container}>
-    {ships.map(ship => {
+    {ships.map((ship, index) => {
       const shipName = ship.toUpperCase()
       const stats_: any = (svb.engine.config.ship as any)[shipName]
       const isUnlocked = unlockedShips.includes(ship)
       const stats = isUnlocked ? stats_ : emptyStats
       return (
         <ShipDetails
+          key={index}
           ship={ship}
           stats={stats}
           locked={!isUnlocked}

@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
+import prettier from 'prettier'
+import parserTypescript from 'prettier/parser-babel'
 import { HUD } from '@/components/hud'
 import { useLocation } from 'react-router-dom'
 import * as Monaco from '@/components/monaco'
@@ -14,7 +16,26 @@ import valid from '@/assets/icons/valid.svg'
 import error from '@/assets/icons/error.svg'
 import styles from './ai.module.css'
 
-const NameInput = ({ path, updatePath, rename, logo, alt }: any) => {
+type CheckboxProps = { checked: boolean; onChange?: (value: boolean) => void }
+const Checkbox = ({ checked, onChange }: CheckboxProps) => {
+  return (
+    <label>
+      <input
+        className={styles.inputCheckbox}
+        type="checkbox"
+        checked={checked}
+        onChange={() => onChange?.(!checked)}
+      />
+      <div className={checked ? styles.checkedBox : styles.uncheckedBox}>
+        {checked && <div className={styles.checkedMark}>x</div>}
+      </div>
+    </label>
+  )
+}
+
+const NameInput = ({ data, methods }: any) => {
+  const { path, logo, alt } = data
+  const { updatePath, rename } = methods
   const inputRef = useRef<any>()
   const p = path ?? ''
   const [_, ...vals] = p.split('.').reverse()
@@ -41,19 +62,27 @@ const NameInput = ({ path, updatePath, rename, logo, alt }: any) => {
   )
 }
 
-const CompileStatus = ({ updatedAt, onClick, loading }: any) => {
-  return (
-    <div className={styles.compileStatus}>
-      {loading && <img className={styles.loader} src={loader} />}
-      {!loading && updatedAt && <img className={styles.loader} src={valid} />}
-      {!loading && !updatedAt && <img className={styles.loader} src={error} />}
-      {updatedAt && <div className={styles.updatedAt}>{updatedAt}</div>}
-      <button className={styles.compileButton} onClick={onClick}>
-        Compile
-      </button>
-    </div>
-  )
-}
+const CompileStatus = ({ updatedAt, onClick, loading }: any) => (
+  <div className={styles.compileStatus}>
+    {loading && <img className={styles.loader} src={loader} />}
+    {!loading && updatedAt && <img className={styles.loader} src={valid} />}
+    {!loading && !updatedAt && <img className={styles.loader} src={error} />}
+    {updatedAt && <div className={styles.updatedAt}>{updatedAt}</div>}
+    <button className={styles.compileButton} onClick={onClick}>
+      Compile
+    </button>
+  </div>
+)
+
+const FormatStatus = ({ formatOnSave, onClick, onChange }: any) => (
+  <div className={styles.compileStatus}>
+    <Checkbox checked={formatOnSave} onChange={onChange} />
+    <div className={styles.updatedAt}>Format on save</div>
+    <button className={styles.compileButton} onClick={onClick}>
+      Format
+    </button>
+  </div>
+)
 
 const getExtension = (name: string) => {
   const [extension] = name.split('.').reverse()
@@ -73,6 +102,15 @@ const getLogo = (
 
 const useAI = (id: string) => {
   const dispatch = useDispatch()
+  const [formatOnSave, setFormatOnSave] = useState<boolean>(() => {
+    const value = localStorage.getItem('svb41.config.formatOnSave')
+    if (value) return JSON.parse(value)
+    return true
+  })
+  useEffect(() => {
+    const value = JSON.stringify(formatOnSave)
+    localStorage.setItem('svb41.config.formatOnSave', value)
+  }, [formatOnSave])
   const [file, setFile] = useState<Monaco.File>()
   const [path, setPath] = useState<string>()
   const ai = useSelector(selectors.ai(id))
@@ -83,12 +121,31 @@ const useAI = (id: string) => {
       setPath(ai.file.path)
     }
   }, [ai])
+  const format = async () => {
+    if (ai && formatOnSave) {
+      const code = prettier.format(ai.file.code, {
+        parser: 'babel',
+        plugins: [parserTypescript],
+        semi: false,
+        singleQuote: true,
+        trailingComma: 'all',
+        tabWidth: 2,
+      })
+      const file = { ...ai.file, code }
+      const action = updateAI({ ...ai, file })
+      const newAI = await dispatch(action)
+      setFile(file)
+      return newAI
+    }
+    return ai
+  }
   const save = async (file: Monaco.File) => {
     const action = ai ? updateAI({ ...ai, file }) : createAI(id)
     await dispatch(action)
     setFile(file)
   }
   const compile = async () => {
+    const ai = await format()
     if (ai) {
       const action = compileAI(ai)
       await dispatch(action)
@@ -101,12 +158,15 @@ const useAI = (id: string) => {
       dispatch(action)
     }
   }
+  const toggleFormat = () => setFormatOnSave(f => !f)
   const updatedAt =
     ai?.updatedAt &&
     ai?.updatedAt !== ai?.createdAt &&
     toLocale(new Date(ai.updatedAt))
   const updatePath = setPath
-  return { file, path, save, compile, rename, updatedAt, logo, alt, updatePath }
+  const data = { file, path, logo, alt, updatedAt, formatOnSave }
+  const methods = { save, compile, rename, updatePath, format, toggleFormat }
+  return { data, methods }
 }
 
 export const AIEditor = () => {
@@ -117,17 +177,32 @@ export const AIEditor = () => {
   const [loading, setLoading] = useState(false)
   const onClick = async () => {
     setLoading(true)
-    await ai.compile().catch(console.error)
+    await ai.methods.compile().catch(console.error)
     setLoading(false)
   }
   return (
     <HUD>
       <div className={styles.header}>
         <NameInput {...ai} />
-        <CompileStatus {...ai} loading={loading} onClick={onClick} />
+        <div className={styles.indicators}>
+          <FormatStatus
+            formatOnSave={ai.data.formatOnSave}
+            onChange={ai.methods.toggleFormat}
+            onClick={ai.methods.format}
+          />
+          <CompileStatus
+            updatedAt={ai.data.updatedAt}
+            loading={loading}
+            onClick={onClick}
+          />
+        </div>
       </div>
       <div className={styles.monaco} style={{ background: '#1e1e1e' }}>
-        <Monaco.Monaco onChange={ai.save} file={ai.file} onSave={onClick} />
+        <Monaco.Monaco
+          onChange={ai.methods.save}
+          file={ai.data.file}
+          onSave={onClick}
+        />
       </div>
     </HUD>
   )

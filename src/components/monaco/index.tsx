@@ -3,6 +3,8 @@ import Editor, { OnChange } from '@monaco-editor/react'
 import core from '@svb-41/core/types'
 import types from '@svb-41/engine/types'
 import styles from './monaco.module.css'
+import loader from '@/assets/icons/loader.gif'
+import tomorrow from 'monaco-themes/themes/Tomorrow-Night-Eighties.json'
 
 export type Files = { [id: string]: File }
 export type File = {
@@ -18,14 +20,24 @@ export type Props = {
   onSave: () => void
 }
 export const Monaco = (props: Props) => {
-  const codeRef = useRef()
+  const codeRef = useRef<any>()
   const onChange: OnChange = code => {
     const { file, onChange } = props
     if (file) onChange({ ...file, code: code ? code : file.code })
   }
+  useEffect(() => {
+    document.fonts.ready.then(() => {
+      if (codeRef.current) {
+        codeRef.current.remeasureFonts()
+      }
+    })
+  }, [])
   const onMount = (editor: any, monaco: any) => {
     editor.updateOptions({ scrollBeyondLastLine: false })
     editor.getModel().updateOptions({ tabSize: 2 })
+    setTimeout(() => monaco.editor.remeasureFonts(), 500)
+    monaco.editor.defineTheme('tomorrow', tomorrow)
+    monaco.editor.setTheme('tomorrow')
     codeRef.current = editor
     const engine = '@svb-41/engine.d.ts'
     const coreDecl = '@svb-41/core.d.ts'
@@ -43,7 +55,6 @@ export const Monaco = (props: Props) => {
     document.addEventListener('keydown', handler)
     return () => document.removeEventListener('keydown', handler)
   }, [props.onSave])
-
   return (
     <div className={styles.grid}>
       <Editor
@@ -55,6 +66,12 @@ export const Monaco = (props: Props) => {
         onMount={onMount}
         onChange={onChange}
         className={styles.monaco}
+        options={{
+          fontFamily: 'Unifont',
+          fontSize: 14,
+          'semanticHighlighting.enabled': true,
+        }}
+        loading={<img className={styles.loader} src={loader} />}
       />
     </div>
   )

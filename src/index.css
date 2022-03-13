@@ -53,3 +53,8 @@ button {
   font-family: 'Silom';
   src: url('./assets/fonts/silom.ttf');
 }
+
+@font-face {
+  font-family: 'Unifont';
+  src: url('./assets/fonts/unifont.ttf');
+}

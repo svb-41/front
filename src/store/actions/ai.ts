@@ -18,16 +18,19 @@ const defaultAI = (id: string): AI => {
   return { id, file, updatedAt: createdAt, createdAt, tags: [] }
 }
 
-export const createAI: (id: string) => Effect<void> = (id: string) => {
+export const createAI: (id: string) => Effect<AI> = (id: string) => {
   return async dispatch => {
-    dispatch({ type: UPDATE_AI, id, ai: defaultAI(id) })
+    const ai = defaultAI(id)
+    dispatch({ type: UPDATE_AI, id, ai })
+    return ai
   }
 }
 
-export const updateAI: (ai: AI) => Effect<void> = (ai: AI) => {
+export const updateAI: (ai: AI) => Effect<AI> = (ai: AI) => {
   return async dispatch => {
     ai.updatedAt = new Date()
     dispatch({ type: UPDATE_AI, id: ai.id, ai })
+    return ai
   }
 }
 

@@ -76,10 +76,16 @@
 
 .infoCard {
   display: flex;
-  gap: 12;
+  gap: 3px;
   flex-direction: column;
   background: #ddd;
-  padding: 12px;
+  padding: 9px;
+}
+
+.infoCardWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 /* prettier-ignore */

@@ -15,8 +15,9 @@
     "@types/react-dom": "^17.0.9",
     "craco": "^0.0.3",
     "craco-alias": "^3.0.1",
-    "monaco-themes": "^0.3.3",
+    "monaco-themes": "^0.4.0",
     "pixi.js": "^6.1.2",
+    "prettier": "^2.3.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.6",
@@ -58,7 +59,6 @@
   },
   "devDependencies": {
     "@types/uuid": "^8.3.1",
-    "node-fetch": "^3.2.2",
-    "prettier": "^2.3.2"
+    "node-fetch": "^3.2.2"
   }
 }
