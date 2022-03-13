@@ -34,7 +34,7 @@ export const Mission = () => {
   const location = useLocation()
   const playerColor = useSelector(selector.userColor)
   const [missionId] = location.pathname.split('/').reverse()
-  const mission = getMission(missionId)
+  const mission = getMission(missionId)!
   const enemyColor: Color = colors.find(c => c !== playerColor)!
   const restart = () => {
     setMissionState('pre')

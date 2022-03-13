@@ -86,12 +86,12 @@ const PostMission = ({
                 {mission.rewards.missions.map(getMission).map(m => (
                   <Button
                     color="green"
-                    key={m.id}
+                    key={m!.id}
                     onClick={() => {
                       restart()
-                      navigate('/mission/' + m.id)
+                      navigate('/mission/' + m!.id)
                     }}
-                    text={`${m.title} (#${m.id})`}
+                    text={`${m!.title} (#${m!.id})`}
                   />
                 ))}
               </div>
