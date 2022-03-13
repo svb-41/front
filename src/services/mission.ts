@@ -21,4 +21,5 @@ export type Mission = {
   size: { height: number; width: number }
   ships: Array<SerializedShip>
   credit: number
+  constraints?: string
 }

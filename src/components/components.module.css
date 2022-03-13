@@ -1,0 +1,26 @@
+.title {
+  display: block;
+  font-family: var(--monospace);
+  padding: 0;
+  margin: 0;
+}
+
+.h1 {
+  composes: title;
+  font-size: 2rem;
+}
+
+.h2 {
+  composes: title;
+  font-size: 1.5rem;
+}
+
+.blinking {
+  animation: blinking 1s linear 0s infinite alternate;
+}
+
+/* prettier-ignore */
+@keyframes blinking {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
