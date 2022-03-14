@@ -1,5 +1,6 @@
 import * as PIXI from 'pixi.js'
 import { engine, helpers } from '@svb-41/engine'
+import * as svb from '@svb-41/core'
 import {
   sprites,
   getBulletSprite,
@@ -7,6 +8,8 @@ import {
   colorSprite,
   shipSprite,
 } from '@/renderer/sprites'
+
+const { dist2 } = svb.geometry
 
 const STANDARD_ANIMATED_SPEED = 0.075
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST
@@ -114,9 +117,14 @@ export class Engine extends EventTarget {
           const scale = this.#scale
           const pos = {
             x: Math.floor(x / scale - this.#pos.x),
-            y: Math.floor(y / scale - this.#pos.y),
+            y: this.computeY(Math.floor(y / scale - this.#pos.y)),
           }
-          console.log(engine)
+          const selectedShip = this.#engine.state.ships.find(
+            s =>
+              dist2(s.position, { pos, direction: 0, speed: 0 }) <
+              Math.pow(s.stats.size, 2)
+          )
+          console.log(selectedShip)
         }
       },
       onDragEnd: (e: any) => (this.#drag = false),
