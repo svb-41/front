@@ -1,5 +1,5 @@
 import { Effect } from '@/store/types'
-import { Color } from '@/store/reducers/user'
+import { Color } from '@/lib/color'
 
 export const UPDATE_USER_ID = 'user/LOAD_ID'
 export const UPDATE_USER = 'user/LOAD_USER'

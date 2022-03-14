@@ -1,5 +1,5 @@
 import { Effect, Action } from '@/store/types'
-import { AI } from '@/store/reducers/ai'
+import { AI } from '@/lib/ai'
 import { File } from '@/components/monaco'
 import { compile, Compile } from '@/services/compile'
 import templateAI from '@/default-controllers/assets.json'

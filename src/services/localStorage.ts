@@ -1,6 +1,6 @@
 import { v4 } from 'uuid'
-import { AI } from '@/store/reducers/ai'
-import { Color } from '@/store/reducers/user'
+import { AI } from '@/lib/ai'
+import { Color } from '@/lib/color'
 
 const AI_KEY = 'ai'
 const UID_KEY = 'uid'

@@ -1,9 +1,9 @@
 import { UPDATE_USER_ID, UPDATE_USER } from '@/store/actions/user'
 import * as local from '@/services/localStorage'
 import { LOAD_AI, LOAD_FAVORITE_AIS } from '@/store/actions/ai'
-import { AI } from '@/store/reducers/ai'
+import { AI } from '@/lib/ai'
 import { Effect } from '@/store/types'
-import { Color } from '@/store/reducers/user'
+import { Color } from '@/lib/color'
 
 const defaultUser: local.StoredData = {
   missions: ['0'],

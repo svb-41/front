@@ -1,4 +1,4 @@
-import { Color } from '@/store/reducers/user'
+import { Color } from '@/lib/color'
 
 export const ships = [
   'fighter',

@@ -8,21 +8,11 @@ import {
   DEL_FAVORITE,
 } from '@/store/actions/ai'
 import * as local from '@/services/localStorage'
-import { File } from '@/components/monaco'
+import { AI } from '@/lib/ai'
 
 export type State = {
   ais: Array<AI>
   favorites: string[]
-}
-
-export type AI = {
-  id: string
-  file: File
-  updatedAt: Date | string
-  createdAt: Date | string
-  compiledValue?: string
-  tags: Array<string>
-  description?: string
 }
 
 const init: State = {

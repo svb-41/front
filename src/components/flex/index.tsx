@@ -9,17 +9,19 @@ export type Align =
   | 'center'
   | 'flex-end'
 
-type Classes = { [key: string]: string | boolean | number | undefined }
+type Value = string | boolean | number | undefined
+type Classes = { [key: string]: Value }
+
+const flatten = ([key, value]: [string, Value]) => {
+  if (typeof value === 'boolean') return [styles[key]]
+  if (value) return [styles[`${key}-${value}`]]
+  return []
+}
+
 const classesNames = (values: Classes) => {
-  return Object.entries(values)
-    .flatMap(([key, value]) => {
-      if (value) {
-        if (typeof value === 'boolean') return [styles[key]]
-        return [styles[`${key}-${value}`]]
-      }
-      return []
-    })
-    .join(' ')
+  const entries = Object.entries(values)
+  const classes = entries.flatMap(flatten)
+  return classes.join(' ')
 }
 
 export type Props = {
@@ -28,12 +30,13 @@ export type Props = {
   background?: string
   align?: Align
   justify?: Align
+  width?: number | string
 }
 
 export const Row: FC<Props> = props => {
-  const { gap, padding, background, align, justify, children } = props
+  const { gap, padding, background, align, justify, children, width } = props
   const cl = classesNames({ row: true, gap, padding, align, justify })
-  const st = { background }
+  const st = { background, width }
   return (
     <div className={cl} style={st}>
       {children}
@@ -42,9 +45,9 @@ export const Row: FC<Props> = props => {
 }
 
 export const Column: FC<Props> = props => {
-  const { gap, padding, background, align, justify, children } = props
+  const { gap, padding, background, align, justify, children, width } = props
   const cl = classesNames({ col: true, gap, padding, align, justify })
-  const st = { background }
+  const st = { background, width }
   return (
     <div className={cl} style={st}>
       {children}

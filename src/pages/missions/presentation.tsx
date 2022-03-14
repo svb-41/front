@@ -1,7 +1,11 @@
 import { Fragment, useState, useEffect, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Column } from '@/components/flex'
+import { Button } from '@/components/button'
 import { Title, SubTitle } from '@/components/title'
 import * as services from '@/services/mission'
 import styles from './Missions.module.css'
+import s from './missions.strings.json'
 
 const useTitle = (mission: services.Mission, selected: number) => {
   const [title, setTitle] = useState('')
@@ -23,28 +27,23 @@ const useTitle = (mission: services.Mission, selected: number) => {
 
 export const MissionSelector = (props: any) => {
   const { missions, selected, setSelected, opened, reset } = props
-  const title = opened ? 'Select your mission' : 'Back to selection'
+  const cl = opened ? styles.mswOpened : styles.missionsSelectorWrapper
   return (
-    <div
-      className={opened ? styles.mswOpened : styles.missionsSelectorWrapper}
-      onClick={() => !opened && reset()}
-    >
-      <Title content={title} />
+    <div className={cl} onClick={() => !opened && reset()}>
+      <Title content={opened ? s.mission.select : s.mission.back} />
       {opened && (
         <div className={styles.missionsSelector}>
           {services.missions.map((miss, index) => {
             const unlocked = missions.includes(miss.id)
-            const clName = unlocked
-              ? selected === index
-                ? styles.selectedMissionSelector
-                : styles.unlockedMissionSelector
-              : styles.lockedMissionSelector
+            const isSelected = selected === index
+            const sel = isSelected
+              ? styles.selectedMissionSelector
+              : styles.unlockedMissionSelector
+            const clName = unlocked ? sel : styles.lockedMissionSelector
+            const st = { cursor: unlocked ? 'pointer' : 'auto' }
+            const onClick = () => unlocked && setSelected(index)
             return (
-              <button
-                className={clName}
-                onClick={() => unlocked && setSelected(index)}
-                style={{ cursor: unlocked ? 'pointer' : 'auto' }}
-              >
+              <button className={clName} onClick={onClick} style={st}>
                 {index + 1}
               </button>
             )
@@ -62,27 +61,38 @@ const MessageInformationsLabeled = ({ title, content }: any) => (
   </div>
 )
 
+const Description = ({ title, description: desc, constraints }: any) => {
+  const constr = constraints || s.info.none
+  return (
+    <Fragment>
+      <div className={styles.typing}>{title}</div>
+      <MessageInformationsLabeled title={s.info.content} content={desc} />
+      <MessageInformationsLabeled title={s.info.problems} content={constr} />
+    </Fragment>
+  )
+}
+
 export const MissionInformations = ({ mission, selected, opened }: any) => {
   const title = useTitle(mission, selected)
   return (
     <div className={styles.info}>
-      <div>
-        <Title content={`Mission ${mission.id}`} />
+      <Column>
+        <Title content={`${s.mission.title} ${mission.id}`} />
         {opened && <SubTitle blinking content="HQ message incoming!" />}
-      </div>
-      {opened && (
-        <Fragment>
-          <div className={styles.typing}>{title}</div>
-          <MessageInformationsLabeled
-            title="Message content"
-            content={mission.description}
-          />
-          <MessageInformationsLabeled
-            title="Problems & constraints"
-            content={mission.constraints ?? 'None'}
-          />
-        </Fragment>
-      )}
+      </Column>
+      {opened && <Description title={title} {...mission} />}
     </div>
+  )
+}
+
+export type SubmitProps = { opened: boolean; selected: number }
+export const Submit = ({ opened, selected }: SubmitProps) => {
+  const navigate = useNavigate()
+  if (!opened) return null
+  const onPrepare = () => navigate(`/mission/${selected}`)
+  return (
+    <Column>
+      <Button onClick={onPrepare} primary text={s.submit} />
+    </Column>
   )
 }

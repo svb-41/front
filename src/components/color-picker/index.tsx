@@ -1,4 +1,4 @@
-import { Color } from '@/store/reducers/user'
+import { Color } from '@/lib/color'
 import styles from './colorPicker.module.css'
 
 export type Props = { onChange: (color: Color) => void; selected?: Color }

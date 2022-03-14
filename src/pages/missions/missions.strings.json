@@ -1,0 +1,15 @@
+{
+  "mission": {
+    "select": "Select your mission",
+    "back": "Back to selection",
+    "title": "Mission",
+    "preparation": "Mission Preparation"
+  },
+  "info": {
+    "content": "Message content",
+    "problems": "Problems & constraints",
+    "none": "None"
+  },
+  "submit": "PREPARE FOR THE MISSION",
+  "launch": "Launch the mission"
+}

@@ -6,15 +6,9 @@ import {
   UNLOCK_REWARDS,
   Rewards,
 } from '@/store/actions/user'
+import { Color } from '@/lib/color'
 
 export type User = string | null
-export enum Color {
-  BLUE = 'blue',
-  RED = 'red',
-  YELLOW = 'yellow',
-  GREEN = 'green',
-  WHITE = 'white',
-}
 
 export type State = {
   id: User | null

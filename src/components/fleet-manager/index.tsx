@@ -1,6 +1,6 @@
 import { useState, useRef, useMemo, useEffect } from 'react'
 import { engine } from '@svb-41/engine'
-import { AI } from '@/store/reducers/ai'
+import { AI } from '@/lib/ai'
 import { getImage } from '@/helpers/ships'
 import { Button } from '@/components/button'
 import { Title, SubTitle, Explanations } from '@/components/title'
