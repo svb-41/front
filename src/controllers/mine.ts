@@ -1,13 +1,13 @@
 import * as svb from '@svb-41/core'
-const { dist2 } = svb.helpers
+const { dist2 } = svb.geometry
 
 type Data = { targets: Array<{ x: number; y: number }> }
-type ControllerArgs = svb.controller.ControllerArgs<Data>
 
 const t = (x: number, y: number) => ({ x, y })
 const targets = [t(500, 300), t(500, 500), t(500, 700), t(500, 700)]
-export const initialData = { targets }
-export default ({ stats, radar, memory, ship }: ControllerArgs) => {
+
+export const data = { targets }
+export const ai: svb.AI<Data> = ({ stats, radar, memory, ship }) => {
   if (radar.length > 0) {
     const closeEnemy = radar
       .filter(res => res.team !== stats.team && !res.destroyed)
@@ -16,7 +16,7 @@ export default ({ stats, radar, memory, ship }: ControllerArgs) => {
       const nearEnmy = closeEnemy.reduce((a, v) => (a.dist > v.dist ? v : a))
       if (nearEnmy) {
         const dist = Math.sqrt(nearEnmy.dist) / 0.6
-        const target = svb.helpers.nextPosition(dist)(nearEnmy.res.position)
+        const target = svb.geometry.nextPosition(dist)(nearEnmy.res.position)
         return ship.fire(stats.weapons[0].coolDown === 0 ? 0 : 1, {
           target: target.pos,
           armedTime: nearEnmy.dist - 100,

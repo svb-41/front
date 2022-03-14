@@ -1,23 +1,21 @@
 import * as svb from '@svb-41/core'
-const { dist2 } = svb.helpers
+const { dist2 } = svb.geometry
 
 type Position = svb.ship.Position
 type Data = { targets: Array<Position> }
-type ControllerArgs = svb.controller.ControllerArgs<Data>
-const FIRE = svb.controller.Instruction.FIRE
 
-export const initialData: Data = { targets: [] }
-export default ({ stats, radar, memory, ship, comm }: ControllerArgs) => {
+export const data: Data = { targets: [] }
+export const ai: svb.AI<Data> = ({ stats, radar, memory, ship, comm }) => {
   if (stats.position.speed < 0.08)
     return ship.thrust(0.08 - stats.position.speed)
-  const messages = comm.getNewMessages()
+  const messages = comm.messagesSince(0)
 
   const ally = radar.find(res => {
     const isSameTeam = res.team === stats.team
     if (!isSameTeam) return false
     const source = stats.position
-    const target = svb.helpers.nextPosition(200)(res.position)
-    const finalAngle = svb.helpers.angle({ source, target })
+    const target = svb.geometry.nextPosition(200)(res.position)
+    const finalAngle = svb.geometry.angle({ source, target })
     const direction = finalAngle - stats.position.direction
     return Math.abs(direction) < 0.1
   })
@@ -33,8 +31,8 @@ export default ({ stats, radar, memory, ship, comm }: ControllerArgs) => {
     const threshold = 4 / Math.sqrt(nearestEnemy.dist)
     const speed = stats.weapons[0]?.bullet.position.speed
     const delay = Math.sqrt(nearestEnemy.dist) / speed
-    const resAim = svb.helpers.aim({ ship, source, target, threshold, delay })
-    if (resAim.id === FIRE && ally) return ship.idle()
+    const resAim = svb.geometry.aim({ ship, source, target, threshold, delay })
+    if (resAim.id === svb.Instruction.FIRE && ally) return ship.idle()
     return resAim
   }
 
@@ -46,14 +44,14 @@ export default ({ stats, radar, memory, ship, comm }: ControllerArgs) => {
   }
 
   if (memory.targets.length > 0 && stats.weapons[1].coolDown === 0) {
-    const target = svb.helpers.nextPosition(200)(
+    const target = svb.geometry.nextPosition(200)(
       memory.targets
         .map(res => ({ res, dist: dist2(res, stats.position) }))
         .reduce((a, v) => (a.dist > v.dist ? v : a)).res
     )
     memory.targets = memory.targets.filter(t => t !== target)
-    //const target = svb.helpers.nextPosition(200)(memory.targets.pop()!)
-    return svb.helpers.aim({ ship, source: stats.position, target })
+    //const target = svb.geometry.nextPosition(200)(memory.targets.pop()!)
+    return svb.geometry.aim({ ship, source: stats.position, target })
   }
 
   return ship.idle()

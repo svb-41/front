@@ -1,10 +1,9 @@
 import * as svb from '@svb-41/core'
 
 type Data = { initialDir?: number }
-type ControllerArgs = svb.controller.ControllerArgs<Data>
 
-export const initialData = {}
-export default ({ stats, comm, radar, ship }: ControllerArgs) => {
+export const data = {}
+export const ai: svb.AI<Data> = ({ stats, comm, radar, ship }) => {
   if (radar.length > 0) {
     const enemies = radar
       .filter(res => res.team !== stats.team && !res.destroyed)

@@ -62,8 +62,8 @@ onmessage = async function (event) {
   if (!code?.init && data.type === 'initialization') {
     try {
       initCode(data.code)
-      memory = code.initialData || {}
-      code = code.default
+      memory = code.data || code.initialData || {}
+      code = code.ai || code.default
     } catch (e) {
       error = e.message
     }

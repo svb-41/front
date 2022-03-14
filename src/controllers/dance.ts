@@ -7,23 +7,22 @@ type Data = {
   cptTurn: number
   wait: number
 }
-type ControllerArgs = svb.controller.ControllerArgs<Data>
 
-export const initialData = {
+export const data = {
   inst: Math.random() - 1,
   num: Math.random() * 100,
   cptDist: 40 + Math.random() * 40,
   cptTurn: 20 + Math.random() * 20,
   wait: 0,
 }
-export default ({ stats, radar, memory, ship }: ControllerArgs) => {
+export const ai: svb.AI<Data> = ({ stats, radar, memory, ship }) => {
   if (memory.wait < 0) {
     const target = radar.find(res => {
       const isDifferentTeam = res.team !== stats.team
       if (!isDifferentTeam) return false
       const source = stats.position
       const target = res.position
-      const angle = svb.helpers.angle({ source, target })
+      const angle = svb.geometry.angle({ source, target })
       const dir = angle - stats.position.direction
       return Math.abs(dir) < 0.01
     })
@@ -34,7 +33,7 @@ export default ({ stats, radar, memory, ship }: ControllerArgs) => {
 
   if (memory.num > 0) {
     memory.num--
-    return memory.inst
+    return ship.idle()
   }
 
   if (memory.cptDist <= 0 && memory.cptTurn <= 0) {

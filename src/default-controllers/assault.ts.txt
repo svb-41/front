@@ -1,12 +1,10 @@
-import * as svb from '@svb-41/core'
-const { dist2 } = svb.helpers
+assaultimport * as svb from '@svb-41/core'
+const { dist2 } = svb.geometry
 
 type Data = { initialDir?: number }
-type ControllerArgs = svb.controller.ControllerArgs<Data>
-const FIRE = svb.controller.Instruction.FIRE
 
-export const initialData: Data = {}
-export default ({ stats, radar, memory, ship }: ControllerArgs) => {
+export const data: Data = {}
+export const ai: svb.AI<Data> = ({ stats, radar, memory, ship }) => {
   if (!memory.initialDir) memory.initialDir = stats.position.direction
   if (stats.position.speed < 0.1) return ship.thrust()
 
@@ -14,8 +12,8 @@ export default ({ stats, radar, memory, ship }: ControllerArgs) => {
     const isSameTeam = res.team === stats.team
     if (!isSameTeam) return false
     const source = stats.position
-    const target = svb.helpers.nextPosition(200)(res.position)
-    const finalAngle = svb.helpers.angle({ source, target })
+    const target = svb.geometry.nextPosition(200)(res.position)
+    const finalAngle = svb.geometry.angle({ source, target })
     const direction = finalAngle - stats.position.direction
     return Math.abs(direction) < 0.1
   })
@@ -31,8 +29,8 @@ export default ({ stats, radar, memory, ship }: ControllerArgs) => {
     const threshold = 4 / Math.sqrt(nearestEnemy.dist)
     const speed = stats.weapons[0]?.bullet.position.speed
     const delay = Math.sqrt(nearestEnemy.dist) / speed
-    const resAim = svb.helpers.aim({ ship, source, target, threshold, delay })
-    if (resAim.id === FIRE && ally) return ship.idle()
+    const resAim = svb.geometry.aim({ ship, source, target, threshold, delay })
+    if (resAim.id === svb.Instruction.FIRE && ally) return ship.idle()
     return resAim
   }
 
