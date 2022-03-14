@@ -98,7 +98,6 @@
 
 /* editor.tsx */
 .header {
-  border-top: 2px solid #ddd;
   padding: 6px;
   background: #eee;
   display: flex;
