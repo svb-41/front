@@ -27,5 +27,6 @@ export const initStore: Effect<void> = async dispatch => {
     type: UPDATE_USER,
     unlockedShips: data.ships,
     unlockedMissions: data.missions,
+    color: data.color,
   })
 }
