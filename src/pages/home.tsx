@@ -70,7 +70,7 @@ const InfoTabs = () => {
           <Column background="#ddd" padding="m" gap="xs">
             <SubTitle color="#666" content="Camille Laurent" />
             <p className={styles.p}>
-              {`Official mascot of the SVB-41, she found the name, the visual identity and she’s the best at sending cat pictures. In front of her, even the strongest generals can’t resist.
+              {`Official mascot of the SVB-41, she found the name, the visual identity and she’s the best at sending dog pictures. In front of her, even the strongest generals can’t resist.
                 She’s currently checking that everyone are properly working and contiuously send them more work to do.`}
             </p>
           </Column>
