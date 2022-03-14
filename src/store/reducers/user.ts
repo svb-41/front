@@ -32,6 +32,7 @@ export type Action =
       type: 'user/LOAD_USER'
       unlockedShips: Array<string>
       unlockedMissions: Array<string>
+      color: Color
     }
 
 const unique = <T>(arr: T[]): T[] => [...new Set(arr)]
@@ -43,8 +44,8 @@ export const reducer: Reducer<State, Action> = (state = init, action) => {
       return { ...state, id }
     }
     case UPDATE_USER: {
-      const { unlockedShips, unlockedMissions } = action
-      return { ...state, unlockedShips, unlockedMissions }
+      const { unlockedShips, unlockedMissions, color } = action
+      return { ...state, unlockedShips, unlockedMissions, color }
     }
     case UPDATE_COLOR: {
       const { color } = action
