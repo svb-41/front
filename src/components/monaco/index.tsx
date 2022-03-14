@@ -26,16 +26,20 @@ export const Monaco = (props: Props) => {
     if (file) onChange({ ...file, code: code ? code : file.code })
   }
   useEffect(() => {
-    document.fonts.ready.then(() => {
-      if (codeRef.current) {
+    const remeasure = (times = 0) => {
+      if (times >= 10) return
+      if (codeRef.current?.remeasureFonts) {
         codeRef.current.remeasureFonts()
+      } else {
+        setTimeout(() => remeasure(times + 1), 5000)
       }
-    })
+    }
+    document.fonts.ready.then(() => remeasure())
   }, [])
   const onMount = (editor: any, monaco: any) => {
     editor.updateOptions({ scrollBeyondLastLine: false })
     editor.getModel().updateOptions({ tabSize: 2 })
-    setTimeout(() => monaco.editor.remeasureFonts(), 500)
+    setTimeout(() => monaco.editor.remeasureFonts(), 1000)
     monaco.editor.defineTheme('tomorrow', tomorrow)
     monaco.editor.setTheme('tomorrow')
     codeRef.current = editor
