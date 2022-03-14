@@ -9,6 +9,7 @@ import {
 } from '@/renderer/sprites'
 
 const STANDARD_ANIMATED_SPEED = 0.075
+PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST
 
 const computeRotation = (rotation: number) => -rotation + Math.PI / 2
 
@@ -35,7 +36,13 @@ export class Engine extends EventTarget {
   #animateds: Map<string, PIXI.AnimatedSprite>
   #sprites: Map<string, PIXI.Sprite>
   #ended: boolean
+  #paused: boolean
   #speed: number
+  #scale: number
+  #pos: { x: number; y: number }
+  #dragStart: { x: number; y: number }
+  #drag: boolean
+  #downTS: number
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -46,12 +53,29 @@ export class Engine extends EventTarget {
     helpers.console.log('=> [RendererEngine] Start Engine')
     const view = canvas
     const antialias = true
+    this.#scale = 1
+    this.#pos = { x: 0, y: 0 }
+    this.#dragStart = { x: 0, y: 0 }
+    this.#downTS = Date.now()
+    this.#drag = false
     this.#sprites = new Map()
     this.#animateds = new Map()
     this.#engine = engine
     this.#ended = false
+    this.#paused = false
     this.#speed = helpers.settings.getInitialSpeed()
     this.#app = new PIXI.Application({ view, antialias, resizeTo: div })
+    const { scroll, onClick, onDragMove, onDragEnd, onDragStart } =
+      this.moveFunctions()
+    this.#app.view.addEventListener('wheel', scroll)
+    this.#app.view.addEventListener('mouseup', onClick)
+    this.#app.view.addEventListener('mousemove', onDragMove)
+    this.#app.view.addEventListener('mousedown', onDragStart)
+    this.#app.view.addEventListener('touchstart', onDragStart)
+    this.#app.view.addEventListener('mouseup', onDragEnd)
+    this.#app.view.addEventListener('touchend', onDragEnd)
+    this.#app.view.addEventListener('mousemove', onDragMove)
+    this.#app.view.addEventListener('touchmove', onDragMove)
     this.#engine.addEventListener('sprite.remove', this.onSpriteRemove)
     this.#engine.addEventListener('sprite.explosion', this.onSpriteExplosion)
     this.#engine.addEventListener('log.add', this.onLog)
@@ -82,6 +106,55 @@ export class Engine extends EventTarget {
     this.#app.destroy()
   }
 
+  private moveFunctions() {
+    return {
+      onClick: (e: any) => {
+        if (Date.now() - this.#downTS < 200) {
+          const { offsetX: x, offsetY: y } = e
+          const scale = this.#scale
+          const pos = {
+            x: Math.floor(x / scale - this.#pos.x),
+            y: Math.floor(y / scale - this.#pos.y),
+          }
+          console.log(engine)
+        }
+      },
+      onDragEnd: (e: any) => (this.#drag = false),
+      onDragMove: (e: any) => {
+        if (this.#drag) {
+          const { x, y } = e
+          const scale = this.#scale
+          const pos = this.#pos
+          this.#pos = {
+            x: (x - this.#dragStart.x) / scale + pos.x,
+            y: (y - this.#dragStart.y) / scale + pos.y,
+          }
+          this.#dragStart = { x, y }
+        }
+      },
+      onDragStart: (e: any) => {
+        const { x, y } = e
+        this.#dragStart = { x, y }
+        this.#drag = true
+        this.#downTS = Date.now()
+      },
+      scroll: (e: any) => {
+        const { offsetX, offsetY, deltaY } = e
+        const zoomFactor = 0.96
+        if (this.#scale > 0.5 || deltaY < 0) {
+          const factor = deltaY > 0 ? zoomFactor : 1 / zoomFactor
+          this.#scale = this.#scale * factor
+          const dx = (offsetX / this.#scale) * (factor - 1)
+          const dy = (offsetY / this.#scale) * (factor - 1)
+          this.#pos = {
+            x: this.#pos.x - dx,
+            y: this.#pos.y - dy,
+          }
+        }
+      },
+    }
+  }
+
   private computeY(y: number) {
     return -y + this.#app.screen.height
   }
@@ -94,14 +167,14 @@ export class Engine extends EventTarget {
   ) {
     if (this.#sprites.has(id)) {
       const existing = this.#sprites.get(id)!
-      existing.x = position.pos.x
-      existing.y = this.computeY(position.pos.y)
+      existing.x = position.pos.x + this.#pos.x
+      existing.y = this.computeY(position.pos.y) + this.#pos.y
       existing.rotation = computeRotation(position.direction)
     } else {
       const texture = selectTexture(this.#app, type, sprite)
       const sprite_ = new PIXI.Sprite(texture)
       const y = this.computeY(position.pos.y)
-      sprite_.position.set(position.pos.x, y)
+      sprite_.position.set(position.pos.x + this.#pos.x, y + this.#pos.y)
       sprite_.anchor.set(0.5, 0.5)
       sprite_.rotation = computeRotation(position.direction)
       this.#app.stage.addChild(sprite_)
@@ -124,6 +197,7 @@ export class Engine extends EventTarget {
 
   private run = (deltaTime: number) => {
     if (!this.#ended) {
+      this.#app.stage.scale.set(this.#scale, this.#scale)
       for (let i = 0; i < this.#speed; i++) this.#engine.step(deltaTime)
       this.updateDisplay()
     } else {
@@ -174,10 +248,12 @@ export class Engine extends EventTarget {
     if (evt.detail.paused) {
       helpers.console.log('=> [RendererEngine] Pause the game')
       this.#animateds.forEach(sprite => sprite.stop())
+      this.#paused = true
       this.#app.ticker.stop()
     } else {
       helpers.console.log('=> [RendererEngine] Resume the game')
       this.#animateds.forEach(sprite => sprite.play())
+      this.#paused = false
       this.#app.ticker.start()
     }
   }
@@ -239,13 +315,13 @@ export class Engine extends EventTarget {
     helpers.console.log('=> [RendererEngine] Preload assets')
     await this.loadSprites()
     await this.loadSpriteSheets()
-    const background = this.#app.loader?.resources?.background?.texture
-    if (background) {
-      const width = window.innerWidth
-      const height = window.innerHeight
-      const back = new PIXI.TilingSprite(background, width, height)
-      this.#app.stage.addChild(back)
-    }
+    // const background = this.#app.loader?.resources?.background?.texture
+    // if (background) {
+    //   const width = window.innerWidth
+    //   const height = window.innerHeight
+    //   const back = new PIXI.TilingSprite(background, width, height)
+    //   this.#app.stage.addChild(back)
+    // }
     this.updateDisplay()
   }
 
