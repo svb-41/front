@@ -1,43 +1,20 @@
-.title {
-  font-family: var(--monospace);
-  font-weight: bold;
-  text-align: center;
-  font-size: 64px;
-  padding-bottom: 10rem;
+.p {
+  white-space: pre-line;
+  margin: 0;
+  padding: 0;
+  line-height: 1.1;
 }
 
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-  gap: 2rem;
+.tab {
+  padding: var(--l);
+  background: #ddd;
 }
 
-.col {
-  display: flex;
-  flex-direction: row;
-  gap: 2rem;
+.activeTab {
+  composes: tab;
+  background: #eee;
 }
 
-.mainLink {
-  border: solid 3px var(--grey);
-  background: #efefef;
-  border-radius: 16px;
-  cursor: pointer;
-  font-size: 48px;
-  padding: 2rem;
-  width: 16rem;
-  text-align: center;
-}
-
-.container a {
-  color: black;
-  text-decoration: none;
-}
-
-.secondaryLink {
-  font-size: 32px;
-  cursor: pointer;
+.link {
+  color: var(--ts-blue);
 }
