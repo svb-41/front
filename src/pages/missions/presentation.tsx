@@ -77,7 +77,9 @@ export const MissionInformations = ({ mission, selected, opened }: any) => {
   return (
     <div className={styles.info}>
       <Column>
-        <Title content={`${s.mission.title} ${mission.id}`} />
+        <Title
+          content={`${s.mission.title} ${mission.id} – ${mission.shortTitle}`}
+        />
         {opened && <SubTitle blinking content="HQ message incoming!" />}
       </Column>
       {opened && <Description title={title} {...mission} />}

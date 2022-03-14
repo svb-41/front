@@ -23,3 +23,9 @@
 .justify-flex-start { justify-content: flex-start; }
 .justify-flex-end { justify-content: flex-end; }
 .justify-baseline { justify-content: baseline; }
+.justify-space-around { justify-content: space-around; }
+.justify-space-between { justify-content: space-between; }
+.justify-space-evenly { justify-content: space-evenly; }
+.wrap-wrap { flex-wrap: wrap; }
+.wrap-no-wrap { flex-wrap: nowrap; }
+.wrap-wrap-reverse { flex-wrap: wrap-reverse; }

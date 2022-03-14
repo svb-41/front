@@ -10,7 +10,6 @@ import { AIEditor } from '@/pages/ai/editor'
 import { Training } from '@/pages/training'
 import { Missions } from '@/pages/missions'
 import { Onboarding } from '@/pages/onboarding'
-import { Mission } from '@/pages/missions/mission'
 
 const App = () => {
   const dispatch = useDispatch()

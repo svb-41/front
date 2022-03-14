@@ -127,5 +127,12 @@ export const useEngine = (props: UseEngine) => {
     setState('engine')
   }
 
-  return { engine, start, fleet: fleetData, setFleet: setFleetData }
+  const reset = () => {
+    setEngine(undefined)
+    setFleetData(undefined)
+  }
+
+  const fleet = fleetData
+  const setFleet = setFleetData
+  return { engine, start, reset, fleet, setFleet }
 }

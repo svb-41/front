@@ -15,6 +15,7 @@ export type SerializedShip = {
 
 export type Mission = {
   id: string
+  shortTitle: string
   title: string
   description: string
   rewards?: { ships: Array<string>; missions: Array<string> }

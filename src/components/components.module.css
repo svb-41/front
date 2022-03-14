@@ -44,6 +44,8 @@
 
 .secondaryButton {
   composes: button;
+  background: var(--orange);
+  color: white;
 }
 
 .button:disabled {

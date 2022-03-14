@@ -2,6 +2,7 @@ import { FC } from 'react'
 import styles from './flex.module.css'
 
 export type Size = 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl'
+export type Wrap = 'wrap' | 'no-wrap' | 'wrap-reverse'
 export type Align =
   | 'flex-start'
   | 'baseline'
@@ -29,14 +30,35 @@ export type Props = {
   padding?: Size
   background?: string
   align?: Align
-  justify?: Align
+  justify?: Align | 'space-between' | 'space-around' | 'space-evenly'
   width?: number | string
+  flex?: number
+  wrap?: Wrap
+  maxWidth?: number
 }
 
 export const Row: FC<Props> = props => {
-  const { gap, padding, background, align, justify, children, width } = props
-  const cl = classesNames({ row: true, gap, padding, align, justify })
-  const st = { background, width }
+  const {
+    gap,
+    padding,
+    background,
+    align,
+    justify,
+    children,
+    width,
+    flex,
+    wrap,
+    maxWidth,
+  } = props
+  const cl = classesNames({
+    row: true,
+    gap,
+    padding,
+    align,
+    justify,
+    wrap,
+  })
+  const st = { background, width, flex, maxWidth }
   return (
     <div className={cl} style={st}>
       {children}
@@ -45,9 +67,27 @@ export const Row: FC<Props> = props => {
 }
 
 export const Column: FC<Props> = props => {
-  const { gap, padding, background, align, justify, children, width } = props
-  const cl = classesNames({ col: true, gap, padding, align, justify })
-  const st = { background, width }
+  const {
+    gap,
+    padding,
+    background,
+    align,
+    justify,
+    children,
+    width,
+    flex,
+    wrap,
+    maxWidth,
+  } = props
+  const cl = classesNames({
+    col: true,
+    gap,
+    padding,
+    align,
+    justify,
+    wrap,
+  })
+  const st = { background, width, flex, maxWidth }
   return (
     <div className={cl} style={st}>
       {children}

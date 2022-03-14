@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useSelector } from '@/store/hooks'
 import { useNavigate, useLocation } from 'react-router-dom'
 import * as presentation from './presentation'
+import * as summary from './summary'
 import * as selectors from '@/store/selectors'
 import { HUD } from '@/components/hud'
 import { Title } from '@/components/title'
@@ -53,9 +54,24 @@ export const Missions = () => {
   const [state, setState] = useState<State>('preparation')
   const navigate = useNavigate()
   const reset = () => navigate('/missions')
-  console.log(engine.fleet)
   return (
-    <HUD links={state !== 'engine'}>
+    <HUD links={state === 'preparation'}>
+      {state === 'end' && (
+        <summary.Summary
+          engine={engine.engine!}
+          restart={() => {
+            engine.reset()
+            setState('preparation')
+          }}
+          replay={() => engine.start(setState)}
+          mission={details.mission}
+          back={() => {
+            navigate('/missions')
+            setState('preparation')
+            engine.reset()
+          }}
+        />
+      )}
       {state === 'engine' && <Renderer engine={engine.engine!} />}
       {state === 'preparation' && (
         <div className={styles.missions}>
