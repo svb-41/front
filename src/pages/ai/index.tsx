@@ -1,3 +1,4 @@
+import { useRef, useState, useEffect } from 'react'
 import { v4 } from 'uuid'
 import { HUD } from '@/components/hud'
 import { useSelector, useDispatch } from '@/store/hooks'
@@ -15,6 +16,41 @@ const emptyDescription =
 const favoriteDescription =
   'Add a file to your favorite to see it displayed here.'
 
+const InputDescription = (props: any) => {
+  const inputRef = useRef<any>()
+  const [value, setValue] = useState(props.value)
+  useEffect(() => {
+    if (props.value) {
+      setValue(props.value)
+    }
+  }, [props.value])
+  const onFocus = (event: any) => event.stopPropagation()
+  const onChange = (event: any) => setValue(event.target.value)
+  const onSubmit = (event: any) => {
+    event.preventDefault()
+    inputRef.current && inputRef.current.blur()
+  }
+  return (
+    <form className={styles.inputName} onSubmit={onSubmit}>
+      <textarea
+        ref={inputRef}
+        rows={8}
+        className={styles.input}
+        value={value}
+        onKeyDown={event => {
+          const isCmd = event.ctrlKey || event.metaKey || event.altKey
+          if (isCmd && event.key === 'Enter') onSubmit(event)
+        }}
+        onFocus={onFocus}
+        onClick={onFocus}
+        onChange={onChange}
+        onBlur={() => props.onSubmit(value)}
+        style={{ resize: 'none', fontSize: '1rem', width: '100%' }}
+      />
+    </form>
+  )
+}
+
 type FileCardProps = {
   ai?: AI
   favorite?: boolean
@@ -22,13 +58,13 @@ type FileCardProps = {
   onClick?: () => void
 }
 const FileCard = ({ ai, favorite, onFavorite, onClick }: FileCardProps) => {
+  const dispatch = useDispatch()
   const tags = ai?.tags ?? ['example']
   const createdAt = new Date(ai?.createdAt ?? Date.now())
   const updatedAt = new Date(ai?.updatedAt ?? Date.now())
   const description =
-    ai?.description ?? (favorite && !ai)
-      ? favoriteDescription
-      : emptyDescription
+    ai?.description ??
+    (favorite && !ai ? favoriteDescription : emptyDescription)
   const opacity = { opacity: ai ? 1 : 0.3 }
   return (
     <div
@@ -51,7 +87,12 @@ const FileCard = ({ ai, favorite, onFavorite, onClick }: FileCardProps) => {
         </div>
       </div>
       <div className={styles.fileBody}>
-        <div className={styles.fileDescription}>{description}</div>
+        <InputDescription
+          value={description}
+          onSubmit={(description: string) =>
+            ai && dispatch(actions.updateAI({ ...ai, description }))
+          }
+        />
         <div className={styles.tags} style={opacity}>
           {tags.map(tag => (
             <div key={tag} className={styles.tag}>
