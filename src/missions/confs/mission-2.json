@@ -1,7 +1,7 @@
 {
   "id": "2",
-  "shortTitle": "The good, the bad and the ugly",
-  "title": "scout",
+  "title": "The good, the bad and the ugly",
+  "subtitle": "scout",
   "description": "A bigger ship is in formation with two scouts ships. The scouts communicate every enemy their larger radar can detect to the cruiser.",
   "credit": 320,
   "size": { "height": 1000, "width": 2000 },

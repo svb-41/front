@@ -148,7 +148,7 @@ export const Summary = ({ engine, restart, mission, replay, back }: Props) => {
                           restart()
                           navigate('/mission/' + m!.id)
                         }}
-                        text={`#${m!.id} – ${m!.shortTitle}`}
+                        text={`#${m!.id} – ${m!.title}`}
                       />
                     ))}
                   </Column>

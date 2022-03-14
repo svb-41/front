@@ -25,8 +25,8 @@ export const HUD = ({ children, links = true }: Props) => (
           <Link title="AI" to="/ai" />
           <Link title="Ships" to="/ships" />
           <div style={{ flexGrow: 1 }} />
-          <Link title="Training" to="/training" />
-          <Link title="Sandbox" to="/sandbox" />
+          {false && <Link title="Training" to="/training" />}
+          {false && <Link title="Sandbox" to="/sandbox" />}
         </ul>
       )}
     </nav>

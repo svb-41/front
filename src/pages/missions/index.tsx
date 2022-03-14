@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useSelector } from '@/store/hooks'
 import { useNavigate, useLocation } from 'react-router-dom'
 import * as presentation from './presentation'
@@ -22,7 +22,6 @@ const useMission = () => {
   const matchedID = matched[1]
   const id_ = matchedID ? parseInt(matchedID) : null
   const id = id_ && isNaN(id_) ? null : id_
-  console.log(id)
   const [selected, setSelected] = useState(id ?? 0)
   useEffect(() => {
     if (id && !isNaN(id)) setSelected(id)

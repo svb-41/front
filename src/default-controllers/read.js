@@ -8,7 +8,6 @@ const main = async () => {
   const values = await Promise.all(asStrings)
   const res = Object.fromEntries(values)
   await fs.promises.writeFile('./assets.json', JSON.stringify(res))
-  console.log(res)
 }
 
 main()

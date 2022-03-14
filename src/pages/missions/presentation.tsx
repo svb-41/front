@@ -13,8 +13,8 @@ const useTitle = (mission: services.Mission, selected: number) => {
   useEffect(() => {
     if (timer.current) clearTimeout(timer.current)
     const fun = (slice: number) => {
-      if (slice <= mission.title.length) {
-        setTitle(mission.title.slice(0, slice))
+      if (slice <= mission.subtitle.length) {
+        setTitle(mission.subtitle.slice(0, slice))
         const value = Math.round(Math.random() * 50)
         const speed = Math.max(20, value)
         timer.current = setTimeout(() => fun(slice + 1), speed)
@@ -77,12 +77,10 @@ export const MissionInformations = ({ mission, selected, opened }: any) => {
   return (
     <div className={styles.info}>
       <Column>
-        <Title
-          content={`${s.mission.title} ${mission.id} – ${mission.shortTitle}`}
-        />
+        <Title content={`${mission.id} – ${mission.title}`} />
         {opened && <SubTitle blinking content="HQ message incoming!" />}
       </Column>
-      {opened && <Description title={title} {...mission} />}
+      {opened && <Description {...mission} title={title} />}
     </div>
   )
 }

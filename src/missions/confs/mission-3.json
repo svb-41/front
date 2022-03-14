@@ -1,7 +1,7 @@
 {
   "id": "3",
-  "shortTitle": "I want more",
-  "title": "more enemies",
+  "title": "I want more",
+  "subtitle": "more enemies",
   "description": "A larger fleet is cruising toward you. Shoot them before they do.",
   "credit": 320,
   "size": { "height": 1000, "width": 2000 },

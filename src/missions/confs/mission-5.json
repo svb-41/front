@@ -1,7 +1,7 @@
 {
   "id": "5",
-  "shortTitle": "The dolphin tactics",
-  "title": "scout assisted cruisers",
+  "title": "The dolphin tactics",
+  "subtitle": "scout assisted cruisers",
   "description": "A large fleet of cruisers are coming, they team up with scout to increase their detection range. Good luck!",
   "credit": 320,
   "size": { "height": 1000, "width": 2000 },
