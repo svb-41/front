@@ -10,9 +10,7 @@
 }
 
 .speed {
-  border: 2px solid white;
   appearance: none;
-  border-radius: 10px;
   padding: 12px;
   display: flex;
   align-items: center;
@@ -20,12 +18,12 @@
   font-family: var(--monospace);
   font-weight: bold;
   font-size: 1rem;
-  background: orange;
+  background: #888;
   color: white;
 }
 
 .button {
   composes: speed;
   cursor: pointer;
-  background: coral;
+  background: var(--ts-blue);
 }

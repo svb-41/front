@@ -9,18 +9,11 @@
   position: fixed;
   bottom: 0;
   color: white;
-  background: green;
   right: 0;
-  margin: 12px;
-  padding: 12px;
+  margin: var(--m);
+  padding: var(--m);
   z-index: 1000;
-  border: 2px solid white;
-  border-radius: 10px;
-  appearance: none;
-  cursor: pointer;
   font-family: var(--monospace);
-  font-size: 1rem;
-  font-weight: bold;
 }
 
 .fullHeight {

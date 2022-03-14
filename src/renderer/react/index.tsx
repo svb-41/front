@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 import { engine, helpers } from '@svb-41/engine'
-import * as Controller from '@/components/controller'
 import * as Logger from '@/renderer/logger'
 import * as Speed from '@/renderer/speed'
 import { Engine } from '@/renderer/engine'
@@ -30,8 +29,9 @@ const Pause = ({ state, onClick }: PauseProps) => {
     return () => document.removeEventListener('keydown', handler)
   }, [onClick])
   const text = state === 'paused' ? 'Resume' : 'Pause'
+  const background = state === 'resumed' ? 'var(--ts-blue)' : 'var(--green)'
   return (
-    <button className={styles.pause} onClick={onClick}>
+    <button className={styles.pause} style={{ background }} onClick={onClick}>
       {text}
     </button>
   )
@@ -78,7 +78,6 @@ export const Renderer = ({ engine }: Props) => {
   }, [engine])
   return (
     <div className={styles.fullHeight} ref={div}>
-      <Controller.Overlay.Controller />
       <Logger.Render logs={logs} />
       <Speed.Render speed={speed} onSetSpeed={onSetSpeed} />
       {running && <Pause state={pausedState} onClick={updater} />}

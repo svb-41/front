@@ -38,7 +38,7 @@
 
 .primaryButton {
   composes: button;
-  background: rgb(66, 119, 192);
+  background: var(--ts-blue);
   color: white;
 }
 
