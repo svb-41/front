@@ -25,6 +25,7 @@ body {
   --white: #959ab1;
   --grey: #959ab1;
   --ts-blue: #4176c1;
+  line-height: 1.2;
 }
 
 #root {

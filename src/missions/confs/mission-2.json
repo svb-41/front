@@ -1,8 +1,8 @@
 {
   "id": "2",
   "title": "The good, the bad and the ugly",
-  "subtitle": "scout",
-  "description": "A bigger ship is in formation with two scouts ships. The scouts communicate every enemy their larger radar can detect to the cruiser.",
+  "subtitle": "Impressive commander! Let’s be honest, for someone back in game recently,\nyou’re doing a pretty good job!\nWe’re happy to have you there. It’s time to continue to shine, commander.\nAre you ready for more? I hope so. Because we detected a new threat.",
+  "description": "A bigger ship has been seen in the centaurus belt during the last couple of hours. Its in formation with two scouts ships. Are you used to scouts ships? They're tiny ships without any weapon, but those bitches have huge radars. Almost three times your fighters and one and half of your cruisers. Be careful, the scouts also have powerful communications engine. As soon as one of them detect one of us, it will transmit all the informations to the others. Good luck commander.",
   "credit": 320,
   "size": { "height": 1000, "width": 2000 },
   "rewards": {

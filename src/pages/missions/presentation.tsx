@@ -79,7 +79,7 @@ export const MissionInformations = ({ mission, selected, opened }: any) => {
   return (
     <div className={styles.info}>
       <Column>
-        <Title content={`${mission.id} – ${mission.title}`} />
+        <Title content={`${parseInt(mission.id) + 1} – ${mission.title}`} />
         {opened && <SubTitle blinking content="HQ message incoming!" />}
       </Column>
       {opened && <Description {...mission} title={title} />}
