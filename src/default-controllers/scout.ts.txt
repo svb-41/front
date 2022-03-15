@@ -2,7 +2,7 @@ scoutimport * as svb from '@svb-41/core'
 
 type Data = { initialDir?: number }
 
-export const data = {}
+export const data: Data = {}
 export const ai: svb.AI<Data> = ({ stats, comm, radar, ship }) => {
   if (radar.length > 0) {
     const enemies = radar
@@ -10,9 +10,8 @@ export const ai: svb.AI<Data> = ({ stats, comm, radar, ship }) => {
       .map(res => res.position)
     if (enemies.length > 0) comm.sendMessage(enemies)
   }
-  if (stats.position.speed < 0.1) return ship.thrust(0.1 - stats.position.speed)
-  if (stats.position.speed - 0.1 >= 0.01)
-    return ship.thrust(stats.position.speed - 0.1)
-
+  const { speed } = stats.position
+  if (speed < 0.1) return ship.thrust(0.1 - speed)
+  if (speed - 0.1 >= 0.01) return ship.thrust(speed - 0.1)
   return ship.idle()
 }

@@ -32,7 +32,7 @@ const INSTRUCTION = {
 const idle = () => ({ id: INSTRUCTION.IDLE })
 const turn = arg => ({ id: INSTRUCTION.TURN, arg })
 const thrust = arg => ({ id: INSTRUCTION.THRUST, arg })
-const fire = (arg, conf) => ({ id: INSTRUCTION.FIRE, arg, conf })
+const fire = (arg, target) => ({ id: INSTRUCTION.FIRE, arg, target })
 const controlPanel = ship => ({
   idle: () => idle(),
   turn: arg => turn(arg ? arg : ship.stats.turn),

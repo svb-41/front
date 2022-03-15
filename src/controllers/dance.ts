@@ -8,7 +8,7 @@ type Data = {
   wait: number
 }
 
-export const data = {
+export const data: Data = {
   inst: Math.random() - 1,
   num: Math.random() * 100,
   cptDist: 40 + Math.random() * 40,
