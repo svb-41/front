@@ -73,7 +73,7 @@ onmessage = async function (event) {
     } else if (code) {
       try {
         const { stats, radar, messages } = JSON.parse(data.data)
-        comm.getNewMessages = () => messages
+        comm.messagesSince = () => messages
         const args = { stats, comm, radar, memory, ship: controlPanel(stats) }
         const res = code(args)
         postMessage({ type: 'step', res })
