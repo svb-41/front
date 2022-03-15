@@ -1,0 +1,41 @@
+{
+  "id": "6",
+  "title": "torpedo",
+  "subtitle": "torpedo",
+  "description": "Good luck!",
+  "credit": 320,
+  "size": { "height": 1000, "width": 2000 },
+  "rewards": {
+    "ships": [],
+    "missions": ["bomber"]
+  },
+  "ships": [
+    {
+      "classShip": "SCOUT",
+      "ai": "staticScout",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 1900, "y": 700 }
+      }
+    },
+    {
+      "classShip": "SCOUT",
+      "ai": "staticScout",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 1900, "y": 900 }
+      }
+    },
+    {
+      "classShip": "BOMBER",
+      "ai": "torpedo",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 800 }
+      }
+    }
+  ]
+}

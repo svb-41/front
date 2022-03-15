@@ -26,9 +26,9 @@ export const ai: svb.AI<Data> = ({ stats, radar, memory, ship, comm }) => {
   }
 
   if (messages.length > 0) {
-    const targets = messages
+    const targets: Array<Position> = messages
       .map(m => m.content.message.map((res: any) => res))
-      .reduce((acc, val) => [...acc, ...val]) as Array<Position>
+      .reduce((acc, val) => [...acc, ...val])
     memory.targets = targets
   }
 
