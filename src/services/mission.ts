@@ -1,6 +1,6 @@
 import { engine } from '@svb-41/engine'
 
-export const missions: Mission[] = new Array(6).fill(0).map((_, index) => {
+export const missions: Mission[] = new Array(8).fill(0).map((_, index) => {
   return require(`@/missions/confs/mission-${index}.json`)
 })
 

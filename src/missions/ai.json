@@ -1,1 +1,10 @@
-["assault", "heavy", "hold", "scout", "stealth", "staticScout", "torpedo"]
+[
+  "assault",
+  "heavy",
+  "hold",
+  "scout",
+  "stealth",
+  "staticScout",
+  "torpedo",
+  "destroyer"
+]

@@ -6,8 +6,8 @@
   "credit": 320,
   "size": { "height": 1000, "width": 2000 },
   "rewards": {
-    "ships": [],
-    "missions": ["bomber"]
+    "ships": ["bomber"],
+    "missions": ["7"]
   },
   "ships": [
     {
