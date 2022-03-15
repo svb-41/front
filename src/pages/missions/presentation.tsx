@@ -34,7 +34,9 @@ export const MissionSelector = (props: any) => {
       {opened && (
         <div className={styles.missionsSelector}>
           {services.missions.map((miss, index) => {
-            const unlocked = missions.includes(miss.id) || true
+            const unlocked =
+              missions.includes(miss.id) ||
+              process.env.NODE_ENV === 'development'
             const isSelected = selected === index
             const sel = isSelected
               ? styles.selectedMissionSelector
