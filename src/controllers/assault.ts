@@ -2,7 +2,13 @@ import * as svb from '@svb-41/core'
 const { dist2 } = svb.geometry
 
 type Data = { initialDir?: number }
-
+const weaponType = (stats: svb.ship.Ship) => {
+  const weapon = stats.weapons
+    .map((w, i) => ({ w, i }))
+    .find(({ w }) => w.coolDown === 0 && w.amo > 0)
+  if (weapon) return weapon.i
+  return 0
+}
 export const data: Data = {}
 export const ai: svb.AI<Data> = ({ stats, radar, memory, ship }) => {
   if (!memory.initialDir) memory.initialDir = stats.position.direction
@@ -29,7 +35,14 @@ export const ai: svb.AI<Data> = ({ stats, radar, memory, ship }) => {
     const threshold = 4 / Math.sqrt(nearestEnemy.dist)
     const speed = stats.weapons[0]?.bullet.position.speed
     const delay = Math.sqrt(nearestEnemy.dist) / speed
-    const resAim = svb.geometry.aim({ ship, source, target, threshold, delay })
+    const resAim = svb.geometry.aim({
+      ship,
+      source,
+      target,
+      threshold,
+      delay,
+      weapon: weaponType(stats),
+    })
     if (resAim.id === svb.Instruction.FIRE && ally) return ship.idle()
     return resAim
   }
