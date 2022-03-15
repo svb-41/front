@@ -44,7 +44,7 @@ const controlPanel = ship => ({
 
 //TODO comm
 const comm = {
-  getNewMessages: () => [],
+  messagesSince: () => [],
   sendMessage: message => {
     postMessage({
       type: 'comm',
