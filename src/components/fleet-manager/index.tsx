@@ -205,15 +205,15 @@ const ShipSelectorTabs = ({ state, setState }: any) => {
 const RenderShips = ({ ships, setShipDetails, onDragStart, team }: any) => (
   <Column gap="m">
     <Ships
-      ships={ships.slice(0, 4)}
+      ships={ships.slice(0, 3)}
       onClick={setShipDetails}
       onDragStart={onDragStart}
       team={team}
     />
     {ships.length >= 5 && (
       <Ships
-        ships={ships.slice(4, 9)}
-        onClick={setShipDetails}
+        ships={ships.slice(3, 9)}
+        onClick={(i: number) => setShipDetails(i + 3)}
         onDragStart={onDragStart}
         team={team}
       />
