@@ -5,6 +5,13 @@
       "subtitle": "Oh, we found this here…",
       "back": "Back to previous page",
       "backToHome": "Back to home page"
+    },
+    "overlay": {
+      "readingData": "Reading your data…",
+      "polishingPixels": "Polishing pixels…",
+      "preparingSpaceships": "Preparing spaceships…",
+      "settingsUpWormholes": "Setting up Wormholes…",
+      "firingEngine": "Firing engines…"
     }
   }
 }

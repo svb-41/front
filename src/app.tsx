@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { initStore } from '@/store/actions/init'
 import { Routes, Route } from 'react-router-dom'
 import { useDispatch } from '@/store/hooks'
@@ -11,25 +11,41 @@ import { Training } from '@/pages/training'
 import { Missions } from '@/pages/missions'
 import { Onboarding } from '@/pages/onboarding'
 import { NotFound } from '@/pages/not-found'
+import { Overlay } from '@/pages/overlay'
 
 const App = () => {
+  const [visible, setVisible] = useState(true)
   const dispatch = useDispatch()
   useEffect(() => {
-    dispatch(initStore)
+    const run = async () => {
+      const time = Date.now()
+      await dispatch(initStore)
+      await document.fonts.ready
+      const delta = Date.now() - time
+      const temp = 5000 - delta
+      const timeout = temp < 0 ? 0 : temp
+      setTimeout(() => {
+        setVisible(false)
+      }, timeout)
+    }
+    run()
   }, [])
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="ai" element={<Ia />} />
-      <Route path="ships" element={<Ships />} />
-      <Route path="ai/:id" element={<AIEditor />} />
-      <Route path="sandbox" element={<Sandbox />} />
-      <Route path="training" element={<Training />} />
-      <Route path="missions" element={<Missions />} />
-      <Route path="mission/:id" element={<Missions />} />
-      <Route path="onboarding" element={<Onboarding />} />
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="ai" element={<Ia />} />
+        <Route path="ships" element={<Ships />} />
+        <Route path="ai/:id" element={<AIEditor />} />
+        <Route path="sandbox" element={<Sandbox />} />
+        <Route path="training" element={<Training />} />
+        <Route path="missions" element={<Missions />} />
+        <Route path="mission/:id" element={<Missions />} />
+        <Route path="onboarding" element={<Onboarding />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+      <Overlay visible={visible} />
+    </>
   )
 }
 
