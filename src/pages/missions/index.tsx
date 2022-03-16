@@ -22,7 +22,7 @@ const useMission = () => {
   const matchedID = matched[1]
   const id_ = matchedID ? parseInt(matchedID) : null
   const id = id_ && isNaN(id_) ? null : id_
-  const lastMissionIndex = Math.max(missions.length, missions.length - 1)
+  const lastMissionIndex = Math.max(0, missions.length - 1)
   const [selected, setSelected] = useState(id ?? lastMissionIndex ?? 0)
   useEffect(() => {
     setSelected(lastMissionIndex)
