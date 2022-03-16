@@ -10,6 +10,7 @@ import { AIEditor } from '@/pages/ai/editor'
 import { Training } from '@/pages/training'
 import { Missions } from '@/pages/missions'
 import { Onboarding } from '@/pages/onboarding'
+import { NotFound } from '@/pages/not-found'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -27,6 +28,7 @@ const App = () => {
       <Route path="missions" element={<Missions />} />
       <Route path="mission/:id" element={<Missions />} />
       <Route path="onboarding" element={<Onboarding />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   )
 }

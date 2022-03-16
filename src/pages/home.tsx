@@ -3,7 +3,7 @@ import { HUD } from '@/components/hud'
 import { Row, Column } from '@/components/flex'
 import { Title, SubTitle, Jumbotron } from '@/components/title'
 import * as button from '@/components/button'
-import styles from './Pages.module.css'
+import styles from './pages.module.css'
 import { Link } from 'react-router-dom'
 
 const InfoTabs = () => {

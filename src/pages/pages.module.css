@@ -18,3 +18,8 @@
 .link {
   color: var(--ts-blue);
 }
+
+.notFound {
+  font-size: 30rem;
+  text-align: center;
+}
