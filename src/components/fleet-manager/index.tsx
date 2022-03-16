@@ -102,7 +102,7 @@ const Grid = (props: GridProps) => {
   const filler = useMemo(() => {
     return new Array(width * height).fill(0).map((_, index) => {
       const x = index % width
-      const y = Math.round(index / width)
+      const y = Math.floor(index / width)
       return { x, y }
     })
   }, [width, height])
