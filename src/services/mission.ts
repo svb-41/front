@@ -3,9 +3,7 @@ import missionConf from '@/missions/mission.json'
 
 export const missions: Mission[] = new Array(missionConf.numberOfmissions)
   .fill(0)
-  .map((_, index) => {
-    return require(`@/missions/confs/mission-${index}.json`)
-  })
+  .map((_, index) => require(`@/missions/confs/mission-${index}.json`))
 
 export const getMission = (id: string): Mission | undefined =>
   missions.find(m => m.id === id)
