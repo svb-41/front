@@ -56,7 +56,7 @@ export const Details = ({ ship, locked, color, infoCard }: DetailsProps) => {
               />
               <Labeled label="Turn" content={stats.stats.turn} />
               <Labeled label="Detection" content={stats.stats.detection} />
-              <Labeled label="Stealth" content={stats.stealth} />
+              <Labeled label="Visibility" content={stats.stealth} />
             </div>
           </div>
           <div className={styles.weapons}>
