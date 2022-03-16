@@ -25,7 +25,7 @@ const useMission = () => {
   const lastMissionIndex = Math.max(0, missions.length - 1)
   const [selected, setSelected] = useState(id ?? lastMissionIndex ?? 0)
   useEffect(() => {
-    setSelected(lastMissionIndex)
+    setSelected(id ?? lastMissionIndex ?? 0)
   }, [missions])
   useEffect(() => {
     if (id && !isNaN(id)) setSelected(id)
