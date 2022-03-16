@@ -263,6 +263,7 @@ const RenderAIs = ({
           {ais.map(ai => (
             <div
               className={styles.cursor}
+              key={ai.id}
               draggable
               onDragStart={() => onAIDragStart(ai.id)}
               onClick={() => setAIDetails(ai.id)}
