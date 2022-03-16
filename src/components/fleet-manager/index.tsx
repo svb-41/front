@@ -258,8 +258,8 @@ const RenderAIs = ({
   const final = [...cols, remaining]
   return (
     <Column gap="s">
-      {final.map(ais => (
-        <Row gap="s">
+      {final.map((ais, i) => (
+        <Row gap="s" key={i}>
           {ais.map(ai => (
             <div
               className={styles.cursor}
