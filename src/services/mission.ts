@@ -1,8 +1,11 @@
 import { engine } from '@svb-41/engine'
+import missionConf from '@/missions/mission.json'
 
-export const missions: Mission[] = new Array(8).fill(0).map((_, index) => {
-  return require(`@/missions/confs/mission-${index}.json`)
-})
+export const missions: Mission[] = new Array(missionConf.numberOfmissions)
+  .fill(0)
+  .map((_, index) => {
+    return require(`@/missions/confs/mission-${index}.json`)
+  })
 
 export const getMission = (id: string): Mission | undefined =>
   missions.find(m => m.id === id)
