@@ -1,0 +1,23 @@
+{
+  "id": "0",
+  "title": "",
+  "subtitle": "",
+  "description": "",
+  "credit": 0,
+  "size": { "height": 1000, "width": 1000 },
+  "rewards": {
+    "ships": [],
+    "missions": ["1"]
+  },
+  "ships": [
+    {
+      "classShip": "FIGHTER",
+      "ai": "assault",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 500, "y": 500 }
+      }
+    }
+  ]
+}

@@ -69,7 +69,8 @@
     "editor": {
       "compile": "Compile",
       "format": "Format",
-      "formatOnSave": "Format on save"
+      "formatOnSave": "Format on save",
+      "test": "test"
     },
     "ais": {
       "createdAt": "Created at",

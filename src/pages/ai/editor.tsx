@@ -7,6 +7,7 @@ import { Row } from '@/components/flex'
 import { Checkbox } from '@/components/checkbox'
 import { useLocation } from 'react-router-dom'
 import * as Monaco from '@/components/monaco'
+import { Simulation } from '@/pages/ai/simulation'
 import { useSelector, useDispatch } from '@/store/hooks'
 import * as selectors from '@/store/selectors'
 import { createAI, updateAI, compileAI } from '@/store/actions/ai'
@@ -157,11 +158,16 @@ export const AIEditor = () => {
   const search = location.pathname.split('/')
   const id = search[search.length - 1]
   const ai = useAI(id)
+  const selectedAI = useSelector(selectors.ai(id))
   const [loading, setLoading] = useState(false)
+  const [test, setTest] = useState(true)
   const onClick = async () => {
     setLoading(true)
     await ai.methods.compile().catch(console.error)
     setLoading(false)
+  }
+  const toggleTest = () => {
+    setTest(test => true)
   }
   return (
     <HUD>
@@ -178,14 +184,31 @@ export const AIEditor = () => {
             loading={loading}
             onClick={onClick}
           />
+
+          <Button
+            {...(test ? { primary: true } : { secondary: true })}
+            small
+            onClick={toggleTest}
+            text={s.pages.editor.test}
+          />
         </Row>
       </Row>
-      <div className={styles.monaco} style={{ background: '#1e1e1e' }}>
-        <Monaco.Monaco
-          onChange={ai.methods.save}
-          file={ai.data.file}
-          onSave={onClick}
-        />
+      <div
+        className={test ? styles.monacoAndTest : styles.monaco}
+        style={{ background: '#1e1e1e' }}
+      >
+        <div className={styles.editor}>
+          <Monaco.Monaco
+            onChange={ai.methods.save}
+            file={ai.data.file}
+            onSave={onClick}
+          />
+        </div>
+        {test && (
+          <div className={styles.test}>
+            {selectedAI && <Simulation ai={selectedAI} />}
+          </div>
+        )}
       </div>
     </HUD>
   )

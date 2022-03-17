@@ -60,23 +60,21 @@ export const Monaco = (props: Props) => {
     return () => document.removeEventListener('keydown', handler)
   }, [props.onSave])
   return (
-    <div className={styles.grid}>
-      <Editor
-        value={props.file?.code}
-        path={props.file?.path}
-        defaultLanguage={props.file?.language}
-        defaultValue={props.file?.code}
-        theme="vs-dark"
-        onMount={onMount}
-        onChange={onChange}
-        className={styles.monaco}
-        options={{
-          fontFamily: 'Unifont',
-          fontSize: 14,
-          'semanticHighlighting.enabled': true,
-        }}
-        loading={<img className={styles.loader} src={loader} />}
-      />
-    </div>
+    <Editor
+      value={props.file?.code}
+      path={props.file?.path}
+      defaultLanguage={props.file?.language}
+      defaultValue={props.file?.code}
+      theme="vs-dark"
+      onMount={onMount}
+      onChange={onChange}
+      className={styles.monaco}
+      options={{
+        fontFamily: 'Unifont',
+        fontSize: 14,
+        'semanticHighlighting.enabled': true,
+      }}
+      loading={<img className={styles.loader} src={loader} />}
+    />
   )
 }

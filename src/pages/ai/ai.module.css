@@ -67,8 +67,28 @@
   flex: 1;
   display: grid;
   grid-template-areas: 'monaco';
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+}
+.monacoAndTest {
+  flex: 1;
+  display: grid;
+  grid-template-areas: 'monaco test';
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
 }
 
+.test {
+  grid-area: test;
+}
+
+.editor {
+  grid-area: monaco;
+}
+.testRenderer {
+  display: flex;
+  flex-direction: column;
+}
 .inputName {
   display: flex;
   align-items: center;
