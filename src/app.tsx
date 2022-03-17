@@ -30,22 +30,20 @@ const App = () => {
     }
     run()
   }, [])
+  if (visible) return <Overlay />
   return (
-    <>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="ai" element={<Ia />} />
-        <Route path="ships" element={<Ships />} />
-        <Route path="ai/:id" element={<AIEditor />} />
-        <Route path="sandbox" element={<Sandbox />} />
-        <Route path="training" element={<Training />} />
-        <Route path="missions" element={<Missions />} />
-        <Route path="mission/:id" element={<Missions />} />
-        <Route path="onboarding" element={<Onboarding />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-      <Overlay visible={visible} />
-    </>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="ai" element={<Ia />} />
+      <Route path="ships" element={<Ships />} />
+      <Route path="ai/:id" element={<AIEditor />} />
+      <Route path="sandbox" element={<Sandbox />} />
+      <Route path="training" element={<Training />} />
+      <Route path="missions" element={<Missions />} />
+      <Route path="mission/:id" element={<Missions />} />
+      <Route path="onboarding" element={<Onboarding />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   )
 }
 

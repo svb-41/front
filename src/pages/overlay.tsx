@@ -55,9 +55,8 @@ const InsideTitle = () => {
   return <SubTitle color="var(--999)" content={sentence} />
 }
 
-export const Overlay = ({ visible = true }: { visible?: boolean }) => {
+export const Overlay = () => {
   if (process.env.NODE_ENV === 'development') return null
-  if (!visible) return null
   return (
     <div className={styles.overlay}>
       <Column gap="m">
