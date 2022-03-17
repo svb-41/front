@@ -1,26 +1,12 @@
 /* index.tsx */
-.container {
-  font-family: var(--monospace);
-  flex: 1;
-  padding: 24px;
-  gap: 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.title {
-  font-weight: 600;
-  font-size: 2rem;
+.filesCardGrid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 }
 
 .fileName {
-  display: flex;
-  gap: 6px;
-  padding: 12px;
-  background: #ddd;
-  align-items: center;
-  border-bottom: 2px solid #ccc;
+  border-bottom: 2px solid var(--ccc);
 }
 
 .logo {
@@ -28,13 +14,8 @@
   height: 20px;
 }
 
-.filePath {
-  font-weight: 600;
-  font-size: 1rem;
-}
-
 .filesCard {
-  background: #eee;
+  background: var(--eee);
   padding: 12px;
   /* border-radius: 10px; */
   gap: 12px;
@@ -44,19 +25,18 @@
   max-width: 1500px;
 }
 
-.filesCardGrid {
-  display: grid;
-  gap: 12px;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+.fileCard {
+  border: 2px solid var(--ccc);
+  overflow: hidden;
 }
 
-.fileCard {
-  display: flex;
-  flex-direction: column;
-  border: 2px solid #ccc;
-  /* border-radius: 10px; */
-  overflow: hidden;
-  cursor: pointer;
+.addCard {
+  composes: fileCard;
+  border-style: dashed;
+  background: var(--fff);
+  font-weight: bold;
+  font-size: 3rem;
+  color: var(--ccc);
 }
 
 .modifs {
@@ -67,15 +47,6 @@
 
 .modifsTitle {
   font-size: 0.7rem;
-}
-
-.fileBody {
-  display: flex;
-  flex-direction: column;
-  background: #fff;
-  padding: 12px;
-  gap: 12px;
-  flex-grow: 1;
 }
 
 .tags {
@@ -91,24 +62,7 @@
   /* border-radius: 6px; */
 }
 
-.fileDescription {
-  flex-grow: 1;
-}
-
 /* editor.tsx */
-.header {
-  padding: 6px;
-  background: #eee;
-  display: flex;
-  justify-content: space-between;
-}
-
-.indicators {
-  display: flex;
-  align-items: center;
-  gap: 36px;
-}
-
 .monaco {
   flex: 1;
   display: grid;
@@ -118,27 +72,28 @@
 .inputName {
   display: flex;
   align-items: center;
-  font-family: var(--monospace);
 }
 
+/* prettier-ignore */
 .input {
   font-family: inherit;
-  padding: 6px 0px;
+  padding: var(--s) 0px;
   padding-right: 0;
-  /* border-radius: 6px; */
   margin: 0;
   font-size: 1.3rem;
   outline: none;
-  background: rgba(255, 255, 255, 0);
+  background: var(--fff0);
   transition: all 0.2s;
-  border: 1px solid rgba(221, 221, 221, 0);
+  border: 1px solid;
+  border-color: var(--ddd0);
 }
 
+/* prettier-ignore */
 .inputName:hover .input,
 .input:focus {
-  background: rgba(255, 255, 255, 1);
+  background: var(--ffff);
   padding: 6px 6px;
-  border: 1px solid rgba(221, 221, 221, 1);
+  border-color: var(--dddf);
 }
 
 .inputExtension {
@@ -156,59 +111,10 @@
 }
 
 .updatedAt {
-  background: #ccc;
+  background: var(--ccc);
   padding: 3px 6px;
-  /* border-radius: 6px; */
-}
-
-.compileButton {
-  background: rgb(66, 119, 192);
-  color: white;
-  padding: 3px 6px;
-  /* border-radius: 6px; */
-}
-
-.compileStatus {
-  composes: inputName;
-  gap: 6px;
 }
 
 .loader {
   width: 15px;
-}
-
-/* Checkbox */
-.inputCheckbox {
-  width: 1px;
-  height: 1px;
-  visibility: hidden;
-  position: fixed;
-  top: -10000vh;
-  left: -10000vh;
-}
-
-.checkbox {
-  width: 15px;
-  height: 15px;
-  border: 2px solid #222;
-  cursor: pointer;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.uncheckedBox {
-  composes: checkbox;
-}
-
-.checkedBox {
-  composes: checkbox;
-  background: #222;
-}
-
-.checkedMark {
-  position: relative;
-  top: -1px;
-  left: 1px;
 }

@@ -2,6 +2,9 @@ import { useState, useEffect, useRef } from 'react'
 import prettier from 'prettier'
 import parserTypescript from 'prettier/parser-babel'
 import { HUD } from '@/components/hud'
+import { Button } from '@/components/button'
+import { Row } from '@/components/flex'
+import { Checkbox } from '@/components/checkbox'
 import { useLocation } from 'react-router-dom'
 import * as Monaco from '@/components/monaco'
 import { useSelector, useDispatch } from '@/store/hooks'
@@ -15,23 +18,7 @@ import loader from '@/assets/icons/loader.gif'
 import valid from '@/assets/icons/valid.svg'
 import error from '@/assets/icons/error.svg'
 import styles from './ai.module.css'
-
-type CheckboxProps = { checked: boolean; onChange?: (value: boolean) => void }
-const Checkbox = ({ checked, onChange }: CheckboxProps) => {
-  return (
-    <label>
-      <input
-        className={styles.inputCheckbox}
-        type="checkbox"
-        checked={checked}
-        onChange={() => onChange?.(!checked)}
-      />
-      <div className={checked ? styles.checkedBox : styles.uncheckedBox}>
-        {checked && <div className={styles.checkedMark}>x</div>}
-      </div>
-    </label>
-  )
-}
+import s from '@/strings.json'
 
 const NameInput = ({ data, methods }: any) => {
   const { path, logo, alt } = data
@@ -63,25 +50,21 @@ const NameInput = ({ data, methods }: any) => {
 }
 
 const CompileStatus = ({ updatedAt, onClick, loading }: any) => (
-  <div className={styles.compileStatus}>
+  <Row align="center" gap="s">
     {loading && <img className={styles.loader} src={loader} />}
     {!loading && updatedAt && <img className={styles.loader} src={valid} />}
     {!loading && !updatedAt && <img className={styles.loader} src={error} />}
     {updatedAt && <div className={styles.updatedAt}>{updatedAt}</div>}
-    <button className={styles.compileButton} onClick={onClick}>
-      Compile
-    </button>
-  </div>
+    <Button primary small onClick={onClick} text={s.pages.editor.compile} />
+  </Row>
 )
 
 const FormatStatus = ({ formatOnSave, onClick, onChange }: any) => (
-  <div className={styles.compileStatus}>
+  <Row align="center" gap="s">
     <Checkbox checked={formatOnSave} onChange={onChange} />
-    <div className={styles.updatedAt}>Format on save</div>
-    <button className={styles.compileButton} onClick={onClick}>
-      Format
-    </button>
-  </div>
+    <div className={styles.updatedAt}>{s.pages.editor.formatOnSave}</div>
+    <Button primary small onClick={onClick} text={s.pages.editor.format} />
+  </Row>
 )
 
 const getExtension = (name: string) => {
@@ -182,9 +165,9 @@ export const AIEditor = () => {
   }
   return (
     <HUD>
-      <div className={styles.header}>
+      <Row justify="space-between" padding="s" background="var(--eee)">
         <NameInput {...ai} />
-        <div className={styles.indicators}>
+        <Row align="center" gap="xxl">
           <FormatStatus
             formatOnSave={ai.data.formatOnSave}
             onChange={ai.methods.toggleFormat}
@@ -195,8 +178,8 @@ export const AIEditor = () => {
             loading={loading}
             onClick={onClick}
           />
-        </div>
-      </div>
+        </Row>
+      </Row>
       <div className={styles.monaco} style={{ background: '#1e1e1e' }}>
         <Monaco.Monaco
           onChange={ai.methods.save}

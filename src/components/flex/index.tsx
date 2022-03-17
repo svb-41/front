@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, CSSProperties, createElement } from 'react'
 import styles from './flex.module.css'
 
 export type Size = 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl'
@@ -10,15 +10,14 @@ export type Align =
   | 'center'
   | 'flex-end'
 
-type Value = string | boolean | number | undefined
-type Classes = { [key: string]: Value }
-
 const flatten = ([key, value]: [string, Value]) => {
-  if (typeof value === 'boolean') return [styles[key]]
+  if (typeof value === 'boolean' && value) return [styles[key]]
   if (value) return [styles[`${key}-${value}`]]
   return []
 }
 
+type Value = string | boolean | number | undefined
+type Classes = { [key: string]: Value }
 const classesNames = (values: Classes) => {
   const entries = Object.entries(values)
   const classes = entries.flatMap(flatten)
@@ -35,62 +34,33 @@ export type Props = {
   flex?: number
   wrap?: Wrap
   maxWidth?: number
+  tag?: string
+  className?: string
+  color?: string
+  onClick?: () => void
+  style?: CSSProperties
 }
 
-export const Row: FC<Props> = props => {
-  const {
-    gap,
-    padding,
-    background,
-    align,
-    justify,
-    children,
-    width,
-    flex,
-    wrap,
-    maxWidth,
-  } = props
-  const cl = classesNames({
-    row: true,
-    gap,
-    padding,
-    align,
-    justify,
-    wrap,
-  })
-  const st = { background, width, flex, maxWidth }
-  return (
-    <div className={cl} style={st}>
-      {children}
-    </div>
-  )
+const Flex = (r: { row: boolean; col: boolean }): FC<Props> => {
+  return props => {
+    const { children, tag = 'div', onClick } = props
+    const { gap, padding = 'none', align, justify, wrap } = props
+    const { background, width, flex, maxWidth, color } = props
+    const cursor = onClick ? 'pointer' : undefined
+    const cl = classesNames({
+      ...r,
+      gap,
+      padding,
+      align,
+      justify,
+      wrap,
+      cursor,
+    })
+    const className = props.className ? `${cl} ${props.className}` : cl
+    const style = { ...props.style, background, width, flex, maxWidth, color }
+    return createElement(tag, { className, style, onClick }, children)
+  }
 }
 
-export const Column: FC<Props> = props => {
-  const {
-    gap,
-    padding,
-    background,
-    align,
-    justify,
-    children,
-    width,
-    flex,
-    wrap,
-    maxWidth,
-  } = props
-  const cl = classesNames({
-    col: true,
-    gap,
-    padding,
-    align,
-    justify,
-    wrap,
-  })
-  const st = { background, width, flex, maxWidth }
-  return (
-    <div className={cl} style={st}>
-      {children}
-    </div>
-  )
-}
+export const Row = Flex({ row: true, col: false })
+export const Column = Flex({ row: false, col: true })

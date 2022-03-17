@@ -5,7 +5,7 @@ import { Button } from '@/components/button'
 import { Title, SubTitle } from '@/components/title'
 import * as services from '@/services/mission'
 import styles from './Missions.module.css'
-import s from './missions.strings.json'
+import s from '@/strings.json'
 
 const useTitle = (mission: services.Mission, selected: number) => {
   const [title, setTitle] = useState('')
@@ -27,10 +27,19 @@ const useTitle = (mission: services.Mission, selected: number) => {
 
 export const MissionSelector = (props: any) => {
   const { missions, selected, setSelected, opened, reset } = props
-  const cl = opened ? styles.mswOpened : styles.missionsSelectorWrapper
+  const title = opened
+    ? s.pages.missions.mission.select
+    : s.pages.missions.mission.back
   return (
-    <div className={cl} onClick={() => !opened && reset()}>
-      <Title content={opened ? s.mission.select : s.mission.back} />
+    <Column
+      background={opened ? 'var(--eee)' : 'var(--warn-red)'}
+      gap="xl"
+      padding="xl"
+      color={!opened ? 'var(--white)' : undefined}
+      className={opened ? styles.mswOpened : undefined}
+      onClick={opened ? undefined : () => reset()}
+    >
+      <Title content={title} />
       {opened && (
         <div className={styles.missionsSelector}>
           {services.missions.map((miss, index) => {
@@ -52,38 +61,41 @@ export const MissionSelector = (props: any) => {
           })}
         </div>
       )}
-    </div>
+    </Column>
   )
 }
 
 const MessageInformationsLabeled = ({ title, content }: any) => (
-  <div className={styles.message}>
+  <Column padding="m" gap="s" background="var(--ddd)">
     <div className={styles.messageContent}>{title}</div>
-    <p className={styles.description}>{content}</p>
-  </div>
+    <p>{content}</p>
+  </Column>
 )
 
-const Description = ({ title, description: desc, constraints }: any) => {
-  const constr = constraints || s.info.none
-  return (
-    <Fragment>
-      <div className={styles.typing}>{title}</div>
-      <MessageInformationsLabeled title={s.info.content} content={desc} />
-      <MessageInformationsLabeled title={s.info.problems} content={constr} />
-    </Fragment>
-  )
-}
+const Description = ({ title, description, constraints }: any) => (
+  <Fragment>
+    <p>{title}</p>
+    <MessageInformationsLabeled
+      title={s.pages.missions.info.content}
+      content={description}
+    />
+    <MessageInformationsLabeled
+      title={s.pages.missions.info.problems}
+      content={constraints || s.none}
+    />
+  </Fragment>
+)
 
 export const MissionInformations = ({ mission, selected, opened }: any) => {
   const title = useTitle(mission, selected)
   return (
-    <div className={styles.info}>
+    <Column padding="xl" gap="xl" background="var(--eee)">
       <Column>
         <Title content={`${parseInt(mission.id) + 1} – ${mission.title}`} />
         {opened && <SubTitle blinking content="HQ message incoming!" />}
       </Column>
       {opened && <Description {...mission} title={title} />}
-    </div>
+    </Column>
   )
 }
 
@@ -94,7 +106,7 @@ export const Submit = ({ opened, selected }: SubmitProps) => {
   const onPrepare = () => navigate(`/mission/${selected}`)
   return (
     <Column>
-      <Button onClick={onPrepare} primary text={s.submit} />
+      <Button onClick={onPrepare} primary text={s.pages.missions.submit} />
     </Column>
   )
 }

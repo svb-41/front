@@ -11,7 +11,7 @@ export const NotFound = () => {
   return (
     <HUD>
       <Column padding="xxl" align="center">
-        <Column padding="xxl" background="#eee" maxWidth={1500}>
+        <Column padding="xxl" background="var(--eee)" maxWidth={1500}>
           <Column>
             <Title content={s.pages.notFound.title} />
             <SubTitle content={s.pages.notFound.subtitle} />

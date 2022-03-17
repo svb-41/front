@@ -1,5 +1,82 @@
 {
+  "svb": "SVB-41",
+  "incomingMessage": "Incoming message from HQ",
+  "loading": "Loading…",
+  "none": "None",
   "pages": {
+    "home": {
+      "welcome": "Welcome commander, on",
+      "message": "We’re glad to see you there, commander. It’s been a while, since the last time. In case you need to refresh your mind, you can try the virtualized environments. We made a fully-working training mode, and a perfectly working sandbox. We know you’ll make good use of it.\n\nYou should immediately try to create or use your first AI if you didn’t already. We also have some AI for you, ready to use. Remember, you won’t control your ships directly.\n\nOtherwise, you are awaited on the steering deck of your mothership. You missed your crew during your absence. Oh, and we’ll occasionally send you some message, directly here, in your room. Keep an eye of it. Or maybe you want to be notified directly? Well, our messaging system is broken at that time, but our engineers are working on it. We expect to put it back online in a couple of weeks at most. Covering the entire galaxy is not as easy as pie.",
+      "tabs": {
+        "news": "News",
+        "credits": "Credits"
+      },
+      "news": {
+        "nothingHere": "Nothing here… yet!",
+        "moreInfoSoon": "More informations soon…"
+      },
+      "creators": {
+        "findHim": "Find him on GitHub",
+        "arthur": "The author, creator and ideator. He thought & built SVB-41. He’s the master of physics, and a crazy tinkerer. He does some magic stuff with code, and handles servers like one.\nHe’s actually occupied to fix the galaxy-wide messaging system.",
+        "guillaume": "The one behind the UX, UI and all the graphical stuff you can see. CSS wizard, he bends the rules of the web to its will. He’s always trying to improve designs and to decentralize things.\nHe loves emojis and tries hard to discover hidden spots in the universe.",
+        "camille": "Official mascot of the SVB-41, she found the name, the visual identity and she’s the best at sending dog pictures. In front of her, even the strongest generals can’t resist.\nShe’s currently checking that everyone are properly working and contiuously send them more work to do.",
+        "titles": {
+          "arthur": "Arthur Escriou",
+          "guillaume": "Guillaume Hivert",
+          "camille": "Camille Laurent"
+        }
+      }
+    },
+    "ships": {
+      "chooseColor": "Choose your team color"
+    },
+    "missions": {
+      "submit": "PREPARE FOR THE MISSION",
+      "launch": "Launch the mission",
+      "mission": {
+        "select": "Select your mission",
+        "back": "Back to selection",
+        "title": "Mission",
+        "preparation": "Mission Preparation"
+      },
+      "info": {
+        "content": "Message content",
+        "problems": "Problems & constraints"
+      }
+    },
+    "summary": {
+      "yours": "Yours",
+      "theirs": "Theirs",
+      "someStats": "Some statistics",
+      "elapsedTime": "Elapsed time:",
+      "seconds": "seconds",
+      "shipsDestroyed": "Ships destroyed",
+      "survivingShips": "Surviving ships",
+      "rewards": "Rewards",
+      "nextMission": "Next mission:",
+      "unlockedShips": "`Unlocked Ships:",
+      "unlockedShip": "`Unlocked Ship:",
+      "returnToMissionPreparation": "Return to mission preparation",
+      "replay": "Watch replay",
+      "goBack": "Go back to missions",
+      "congratsOrCry": {
+        "congrats": "Congratulations",
+        "tooBad": "Too bad for your defeat",
+        "brilliantVictory": "For your brilliant victory!",
+        "youLost": "You lost, but it will be for the next time!"
+      }
+    },
+    "editor": {
+      "compile": "Compile",
+      "format": "Format",
+      "formatOnSave": "Format on save"
+    },
+    "ais": {
+      "createdAt": "Created at",
+      "updatedAt": "Updated at",
+      "emptyDescription": "Enter your description here. Use it to remember easily what the controller do.",
+      "favoriteDescription": "Add a file to your favorite to see it displayed here."
+    },
     "notFound": {
       "title": "Unfortunately, it looks like there’s nothing here…",
       "subtitle": "Oh, we found this here…",

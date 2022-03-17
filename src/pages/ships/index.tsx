@@ -1,39 +1,25 @@
 import { useDispatch } from '@/store/hooks'
-import { Row } from '@/components/flex'
+import { Row, Column } from '@/components/flex'
 import { HUD } from '@/components/hud'
+import { Title } from '@/components/title'
 import { ColorPicker } from '@/components/color-picker'
-import { getImage, ships } from '@/helpers/ships'
+import { ships } from '@/helpers/ships'
 import * as Ship from '@/components/ship'
 import { Color } from '@/lib/color'
 import { changeColor } from '@/store/actions/user'
 import { useSelector } from '@/store/hooks'
 import * as selectors from '@/store/selectors'
 import styles from './ships.module.css'
-import * as svb from '@svb-41/engine'
-
-type LabeledProps = {
-  label: string
-  content: string | number
-  className?: string
-}
-const Labeled = ({ label, content, className }: LabeledProps) => {
-  const val = typeof content === 'number' ? content.toFixed(2) : content
-  return (
-    <div>
-      <div className={styles.label}>{label}</div>
-      <div className={className}>{val ?? 'None'}</div>
-    </div>
-  )
-}
+import s from '@/strings.json'
 
 const ShipsDetails = ({ color, unlockedShips }: any) => (
   <div className={styles.container}>
     {ships.map((ship, index) => {
       const isUnlocked = unlockedShips.includes(ship)
       return (
-        <Row background="#eee">
+        <Row background="var(--eee)">
           <Ship.Details
-            infoCard="#ddd"
+            infoCard="var(--ddd)"
             key={index}
             ship={ship}
             locked={!isUnlocked}
@@ -51,13 +37,13 @@ export const Ships = () => {
   const onColorChange = (color: Color) => dispatch(changeColor(color))
   return (
     <HUD>
-      <div className={styles.wrapper}>
-        <div className={styles.colorPicker}>
-          <div>Choose your team color</div>
+      <Column flex={1} align="flex-start" padding="xl" gap="xl">
+        <Column background="var(--eee)" padding="xl" gap="xl">
+          <Title content={s.pages.ships.chooseColor} />
           <ColorPicker onChange={onColorChange} selected={color} />
-        </div>
+        </Column>
         <ShipsDetails color={color} unlockedShips={unlockedShips} />
-      </div>
+      </Column>
     </HUD>
   )
 }

@@ -7,6 +7,7 @@
 .gap-l { gap: var(--l); }
 .gap-xl { gap: var(--xl); }
 .gap-xxl { gap: var(--xxl); }
+.padding-none { padding: 0px; }
 .padding-xs { padding: var(--xs); }
 .padding-s { padding: var(--s); }
 .padding-m { padding: var(--m); }
@@ -29,3 +30,4 @@
 .wrap-wrap { flex-wrap: wrap; }
 .wrap-no-wrap { flex-wrap: nowrap; }
 .wrap-wrap-reverse { flex-wrap: wrap-reverse; }
+.cursor-pointer { cursor: pointer; }

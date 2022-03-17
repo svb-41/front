@@ -1,20 +1,20 @@
 import { useRef, useState, useEffect } from 'react'
-import { v4 } from 'uuid'
-import { HUD } from '@/components/hud'
-import { useSelector, useDispatch } from '@/store/hooks'
 import { useNavigate } from 'react-router-dom'
-import * as selectors from '@/store/selectors'
-import styles from './ai.module.css'
+import { v4 } from 'uuid'
+import { Title } from '@/components/title'
+import { Row, Column } from '@/components/flex'
+import { HUD } from '@/components/hud'
 import * as actions from '@/store/actions/ai'
+import { useSelector, useDispatch } from '@/store/hooks'
+import * as selectors from '@/store/selectors'
 import { AI } from '@/lib/ai'
-import tsLogo from '@/components/monaco/ts.svg'
 import { toLocale } from '@/helpers/dates'
 import { Star } from './star'
+import tsLogo from '@/components/monaco/ts.svg'
+import styles from './ai.module.css'
+import s from '@/strings.json'
 
-const emptyDescription =
-  'Enter your description here. Use it to remember easily what the controller do.'
-const favoriteDescription =
-  'Add a file to your favorite to see it displayed here.'
+const { emptyDescription, favoriteDescription } = s.pages.ais
 
 const InputDescription = (props: any) => {
   const inputRef = useRef<any>()
@@ -72,9 +72,16 @@ const FileCard = ({ ai, favorite, onFavorite, onClick }: FileCardProps) => {
       className={styles.fileCard}
       style={{ borderStyle: ai ? 'solid' : 'dashed' }}
     >
-      <div className={styles.fileName} style={opacity}>
+      <Row
+        align="center"
+        padding="m"
+        gap="s"
+        background="var(-ddd)"
+        className={styles.fileName}
+        style={opacity}
+      >
         <img src={tsLogo} className={styles.logo} />
-        <div className={styles.filePath}>{ai?.file?.path ?? 'example.ts'}</div>
+        <div>{ai?.file?.path ?? 'example.ts'}</div>
         <div style={{ flex: 1 }} />
         <div
           style={{ width: 20, height: 20, cursor: 'pointer' }}
@@ -83,10 +90,10 @@ const FileCard = ({ ai, favorite, onFavorite, onClick }: FileCardProps) => {
             onFavorite?.()
           }}
         >
-          <Star color="rgb(255, 176, 0)" filled={favorite} />
+          <Star color="var(--space-yellow)" filled={favorite} />
         </div>
-      </div>
-      <div className={styles.fileBody}>
+      </Row>
+      <Column flex={1} background="var(--fff)" padding="m" gap="m">
         <InputDescription
           value={description}
           onSubmit={(description: string) =>
@@ -100,15 +107,15 @@ const FileCard = ({ ai, favorite, onFavorite, onClick }: FileCardProps) => {
             </div>
           ))}
         </div>
-        <div className={styles.modifs} style={opacity}>
+        <Column align="flex-end" style={opacity}>
           <div className={styles.modifsTitle}>
-            Created at {toLocale(createdAt)}
+            {s.pages.ais.createdAt} {toLocale(createdAt)}
           </div>
           <div className={styles.modifsTitle}>
-            Updated at {toLocale(updatedAt)}
+            {s.pages.ais.updatedAt} {toLocale(updatedAt)}
           </div>
-        </div>
-      </div>
+        </Column>
+      </Column>
     </div>
   )
 }
@@ -123,22 +130,14 @@ const Add = () => {
     navigate('/ai/' + uuid)
   }
   return (
-    <div
+    <Column
+      align="center"
+      justify="center"
       onClick={newAI}
-      className={styles.fileCard}
-      style={{
-        borderStyle: 'dashed',
-        background: 'white',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontWeight: 'bold',
-        fontSize: '3rem',
-        color: '#ccc',
-        cursor: 'pointer',
-      }}
+      className={styles.addCard}
     >
       +
-    </div>
+    </Column>
   )
 }
 
@@ -154,7 +153,7 @@ const AICards = ({ title, ais, favorites, before, after }: AICardsProps) => {
   const dispatch = useDispatch()
   return (
     <div className={styles.filesCard}>
-      <div className={styles.title}>{title}</div>
+      <Title content={title} />
       <div className={styles.filesCardGrid}>
         {before ?? null}
         {ais.map(ai => {
@@ -183,7 +182,7 @@ export const Ia = () => {
   const onlyFavs = ais.filter(ai => favorites.includes(ai.id))
   return (
     <HUD>
-      <div className={styles.container}>
+      <Column padding="xl" gap="xl" align="center">
         <AICards
           title="Favorites"
           ais={onlyFavs}
@@ -196,7 +195,7 @@ export const Ia = () => {
           favorites={favorites}
           before={<Add />}
         />
-      </div>
+      </Column>
     </HUD>
   )
 }

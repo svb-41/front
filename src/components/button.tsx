@@ -1,4 +1,4 @@
-import React from 'react'
+import type { CSSProperties } from 'react'
 import styles from './components.module.css'
 
 export type Props = {
@@ -7,7 +7,8 @@ export type Props = {
   primary?: boolean
   secondary?: boolean
   disabled?: boolean
-  style?: React.CSSProperties
+  style?: CSSProperties
+  small?: boolean
 }
 export const Button = ({ onClick, text, ...props }: Props) => {
   const cl = style(props)
@@ -23,16 +24,17 @@ export const Button = ({ onClick, text, ...props }: Props) => {
   )
 }
 
-export const style = ({
-  secondary,
-  primary,
-}: {
-  secondary?: boolean
-  primary?: boolean
-}) => {
-  return secondary
-    ? styles.secondaryButton
-    : primary
-    ? styles.primaryButton
-    : styles.button
+export type Style = { secondary?: boolean; primary?: boolean; small?: boolean }
+export const style = ({ secondary, primary, small = false }: Style) => {
+  const state = (() => {
+    if (secondary) {
+      return styles.secondaryButton
+    } else if (primary) {
+      return styles.primaryButton
+    } else {
+      return styles.button
+    }
+  })()
+  if (small) return `${state} ${styles.smallButton}`
+  return state
 }

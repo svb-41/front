@@ -8,12 +8,13 @@ import { HUD } from '@/components/hud'
 import { Title } from '@/components/title'
 import { FleetManager } from '@/components/fleet-manager'
 import { Button } from '@/components/button'
+import { Column } from '@/components/flex'
 import { Renderer } from '@/renderer'
 import * as color from '@/lib/color'
 import { useEngine, State } from '@/lib/engine'
 import * as services from '@/services/mission'
 import styles from './Missions.module.css'
-import s from './missions.strings.json'
+import s from '@/strings.json'
 
 const useMission = () => {
   const missions = useSelector(selectors.missions)
@@ -31,7 +32,13 @@ const useMission = () => {
     if (id && !isNaN(id)) setSelected(id)
   }, [id])
   const mission = services.getMission(selected.toString())!
-  return { selected, missions, mission, setSelected, opened: !((id ?? -1) + 1) }
+  return {
+    selected,
+    missions,
+    mission,
+    setSelected,
+    opened: typeof id !== 'number',
+  }
 }
 
 const usePreferences = () => {
@@ -82,8 +89,13 @@ export const Missions = () => {
           <presentation.MissionInformations {...details} />
           <presentation.Submit {...details} />
           {!details.opened && (
-            <div className={styles.prepareMission}>
-              <Title content={s.mission.preparation} />
+            <Column
+              background="var(--eee)"
+              padding="xl"
+              gap="xl"
+              className={styles.prepareMission}
+            >
+              <Title content={s.pages.missions.mission.preparation} />
               <FleetManager
                 team={preferences.player.color}
                 ships={preferences.player.unlockedShips}
@@ -96,9 +108,9 @@ export const Missions = () => {
                 primary
                 disabled={!engine.fleet}
                 onClick={() => engine.start(setState)}
-                text={s.launch}
+                text={s.pages.missions.launch}
               />
-            </div>
+            </Column>
           )}
         </div>
       )}

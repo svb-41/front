@@ -3,20 +3,37 @@
     sans-serif, Apple Color Emoji, Segoe UI Emoji;
   --monospace: Silom, ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas,
     Liberation Mono, monospace;
+
   --xs: 3px;
   --s: 6px;
   --m: 12px;
   --l: 18px;
   --xl: 24px;
   --xxl: 36px;
-}
 
-body {
-  margin: 0;
-  padding: 0;
-  font-family: var(--monospace);
-  height: 100vh;
-  overscroll-behavior: none;
+  --000: #fff;
+  --111: #fff;
+  --222: #eee;
+  --333: #ddd;
+  --444: #ccc;
+  --555: #bbb;
+  --666: #aaa;
+  --777: #999;
+  --888: #888;
+  --999: #777;
+  --aaa: #666;
+  --bbb: #555;
+  --ccc: #444;
+  --ddd: #333;
+  --eee: #222;
+  --fff: #111;
+  --fff0: #1110;
+  --ffff: #111f;
+  --ddd0: #3330;
+  --dddf: #333f;
+  --background-color: #000;
+  --text-color: #fff;
+  --space-yellow: #ffb000;
   --orange: orange;
   --blue: #11a5d4;
   --green: #92b115;
@@ -25,7 +42,19 @@ body {
   --white: #959ab1;
   --grey: #959ab1;
   --ts-blue: #4176c1;
-  line-height: 1.2;
+  --white: white;
+  --warn-red: #a80000;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--monospace);
+  line-height: 1.1;
+  height: 100vh;
+  overscroll-behavior: none;
+  background: var(--background-color);
+  color: var(--text-color);
 }
 
 #root {
@@ -36,6 +65,7 @@ body {
 
 * {
   box-sizing: border-box;
+  margin: 0;
 }
 
 .monaco-editor.rename-box {
@@ -51,11 +81,25 @@ button {
   background: inherit;
   outline: none;
   cursor: pointer;
+  color: inherit;
 }
 
-@font-face {
-  font-family: 'Neon Led';
-  src: url('./assets/fonts/neon-led-light.otf');
+a {
+  text-decoration: none;
+  color: inherit;
+  outline: none;
+}
+
+p {
+  white-space: pre-line;
+}
+
+input {
+  color: inherit;
+}
+
+textarea {
+  color: inherit;
 }
 
 @font-face {

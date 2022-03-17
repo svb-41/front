@@ -1,5 +1,5 @@
 .ally {
-  background: #ccc;
+  background: var(--ccc);
 }
 
 .ai {
@@ -19,7 +19,7 @@
 }
 
 .cell {
-  border: 2px solid #ddd;
+  border: 2px solid var(--ddd);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -43,7 +43,7 @@
 
 .availableShip {
   padding: var(--m);
-  background: #ccc;
+  background: var(--ccc);
   cursor: pointer;
   text-transform: capitalize;
   gap: var(--m);
@@ -84,7 +84,7 @@
 }
 
 .aiPath {
-  background: #aaa;
+  background: var(--aaa);
   padding: 3px 6px;
   border-radius: 10px;
   cursor: pointer;
@@ -97,13 +97,13 @@
 
 .tab {
   padding: var(--m);
-  background: #ddd;
+  background: var(--ddd);
   cursor: pointer;
 }
 
 .inactiveTab {
   composes: tab;
-  background: #ccc;
+  background: var(--ccc);
 }
 
 .logo {
@@ -116,7 +116,7 @@
 }
 
 .dates {
-  color: #888;
+  color: var(--888);
   font-size: 0.7rem;
 }
 

@@ -12,52 +12,116 @@ import { Mission, getMission } from '@/services/mission'
 import styles from './Missions.module.css'
 import trophy from '@/assets/icons/trophy.svg'
 import cry from '@/assets/icons/cry.svg'
+import s from '@/strings.json'
 
-const ShipsSummary = ({
-  ships,
-  team,
-  name,
-}: {
-  ships: svb.engine.ship.Ship[]
-  team: string
-  name: string
-}) => {
+type RSSProps = { content: string; ships: svb.engine.ship.Ship[] }
+const RenderShipsSummary = ({ ships, content }: RSSProps) => (
+  <Column background="var(--ddd)" padding="m">
+    <SubTitle color="var(--555)" content={content} />
+    <Row gap="m" wrap="wrap">
+      {ships.map((ship, i) => {
+        const src = getImage(ship.shipClass.toLowerCase(), ship.team)
+        const alt = `${ship.shipClass}-${ship.team}`
+        const cl = styles.summaryShipImage
+        return <img key={i} src={src} className={cl} alt={alt} />
+      })}
+    </Row>
+  </Column>
+)
+
+type SSProps = { ships: svb.engine.ship.Ship[]; team: string; name: string }
+const ShipsSummary = ({ ships, team, name }: SSProps) => {
   const yours = ships.filter(ship => ship.team === team)
-  const theirs = ships.filter(ship => ship.team !== team)
+  const their = ships.filter(ship => ship.team !== team)
+  const yText = s.pages.summary.yours
+  const tText = s.pages.summary.theirs
   return (
-    <Column background="#eee" gap="s" padding="xl" flex={1}>
+    <Column background="var(--eee)" gap="s" padding="xl" flex={1}>
       <SubTitle content={name} />
-      {yours.length > 0 && (
-        <Column background="#ddd" padding="m">
-          <SubTitle color="#555" content="Yours" />
-          <Row gap="m" wrap="wrap">
-            {yours.map((ship, i) => (
-              <div key={i} className={styles.availableShip}>
-                <img
-                  src={getImage(ship.shipClass.toLowerCase(), ship.team)}
-                  className={styles.summaryShipImage}
-                  alt={`${ship.shipClass}-${ship.team}`}
-                />
-              </div>
+      {yours.length > 0 && <RenderShipsSummary ships={yours} content={yText} />}
+      {their.length > 0 && <RenderShipsSummary ships={their} content={tText} />}
+    </Column>
+  )
+}
+
+const CongratsOrCry = ({ won }: { won: boolean }) => {
+  const { congratsOrCry } = s.pages.summary
+  const { congrats, tooBad, brilliantVictory, youLost } = congratsOrCry
+  return (
+    <Row align="center" gap="xl">
+      <img src={won ? trophy : cry} style={{ width: 100 }} />
+      <Column>
+        <Jumbotron content={won ? congrats : tooBad} />
+        <Title content={won ? brilliantVictory : youLost} />
+      </Column>
+    </Row>
+  )
+}
+
+const MissionsRewards = ({ mission, onMissionClick }: RProps) => {
+  if ((mission.rewards?.missions?.length ?? 0) <= 0) return null
+  return (
+    <Row
+      gap="m"
+      padding="l"
+      wrap="wrap"
+      maxWidth={800}
+      justify="space-between"
+      background="var(--ddd)"
+    >
+      <Column align="flex-start" gap="s">
+        <SubTitle color="var(--555)" content={s.pages.summary.nextMission} />
+        {mission.rewards!.missions.map(getMission).map(m => {
+          const t = `#${m!.id} – ${m!.title}`
+          const cl = () => onMissionClick(m!)
+          return <Button primary key={m!.id} onClick={cl} text={t} />
+        })}
+      </Column>
+    </Row>
+  )
+}
+
+type RProps = {
+  mission: Mission
+  won: boolean
+  onMissionClick: (m: Mission) => void
+  team: string
+}
+const Rewards = (props: RProps) => {
+  const { mission, won, team } = props
+  if (!(mission.rewards && won)) return null
+  return (
+    <Column background="var(--eee)" padding="xl" gap="xl">
+      <SubTitle content={s.pages.summary.rewards} />
+      <MissionsRewards {...props} />
+      {mission.rewards.ships.length > 0 && (
+        <Row
+          gap="m"
+          padding="l"
+          wrap="wrap"
+          maxWidth={800}
+          justify="space-between"
+          background="var(--ddd)"
+        >
+          <Column align="flex-start" gap="s">
+            <SubTitle
+              color="var(--555)"
+              content={
+                mission.ships.length > 1
+                  ? s.pages.summary.unlockedShips
+                  : s.pages.summary.unlockedShip
+              }
+            />
+            {mission.rewards.ships.map((ship, i) => (
+              <img
+                key={i}
+                src={getImage(ship.toLowerCase(), team)}
+                className={styles.summaryShipImage}
+                alt={`${ship}-${team}`}
+              />
             ))}
-          </Row>
-        </Column>
-      )}
-      {theirs.length > 0 && (
-        <Column background="#ddd" padding="m">
-          <SubTitle color="#555" content="Theirs" />
-          <Row gap="m" wrap="wrap">
-            {theirs.map((ship, i) => (
-              <div key={i} className={styles.availableShip}>
-                <img
-                  src={getImage(ship.shipClass.toLowerCase(), ship.team)}
-                  className={styles.summaryShipImage}
-                  alt={`${ship.shipClass}-${ship.team}`}
-                />
-              </div>
-            ))}
-          </Row>
-        </Column>
+          </Column>
+        </Row>
       )}
     </Column>
   )
@@ -75,127 +139,59 @@ export const Summary = ({ engine, restart, mission, replay, back }: Props) => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const state = engine.state
-
-  const playerWin = () =>
-    state.ships
-      .filter(s => s.team === playerData.color)
-      .map(s => !s.destroyed)
-      .reduce((acc, val) => acc || val, false)
-
+  const playerWin = state.ships
+    .filter(s => s.team === playerData.color)
+    .map(s => !s.destroyed)
+    .reduce((acc, val) => acc || val, false)
   useEffect(() => {
-    if (mission.rewards && playerWin()) {
-      dispatch(unlockRewards(mission.rewards))
+    if (mission.rewards && playerWin) {
+      const action = unlockRewards(mission.rewards)
+      dispatch(action)
     }
-  }, [mission])
+  }, [mission, playerWin])
   return (
     <Column align="center" justify="center" padding="xxl" gap="xxl">
-      <Row align="center" gap="xl">
-        <img src={playerWin() ? trophy : cry} style={{ width: 100 }} />
-        <Column>
-          <Jumbotron
-            content={
-              playerWin() ? 'Congratulations' : 'Too bad for your defeat'
-            }
-          />
-          <Title
-            content={
-              playerWin()
-                ? 'For your brilliant victory!'
-                : 'You lost, but it will be for the next time'
-            }
-          />
-        </Column>
-      </Row>
+      <CongratsOrCry won={playerWin} />
       <Row gap="xxl">
         <Column gap="m">
-          <Title content="Some statistics" />
-          <Row padding="xl" background="#eee">
+          <Title content={s.pages.summary.someStats} />
+          <Row padding="xl" background="var(--eee)">
             <SubTitle
-              content={`Elapsed time: ${state.timeElapsed / 1000} seconds`}
+              content={`${s.pages.summary.elapsedTime} ${
+                state.timeElapsed / 1000
+              } ${s.pages.summary.seconds}`}
             />
           </Row>
           <Row gap="m">
             <ShipsSummary
-              name="Ships destroyed"
+              name={s.pages.summary.shipsDestroyed}
               ships={state.ships.filter(s => s.destroyed)}
               team={playerData.color}
             />
             <ShipsSummary
-              name="Surviving ships"
+              name={s.pages.summary.survivingShips}
               ships={state.ships.filter(s => !s.destroyed)}
               team={playerData.color}
             />
           </Row>
-          {mission.rewards && playerWin() && (
-            <Column background="#eee" padding="xl" gap="xl">
-              <SubTitle content="Rewards" />
-              {mission.rewards.missions.length > 0 && (
-                <Row
-                  gap="m"
-                  padding="l"
-                  wrap="wrap"
-                  maxWidth={800}
-                  justify="space-between"
-                  background="#ddd"
-                >
-                  <Column align="flex-start" gap="s">
-                    <SubTitle color="#555" content="Next mission:" />
-                    {mission.rewards.missions.map(getMission).map(m => (
-                      <Button
-                        primary
-                        key={m!.id}
-                        onClick={() => {
-                          restart()
-                          navigate('/mission/' + m!.id)
-                        }}
-                        text={`#${m!.id} – ${m!.title}`}
-                      />
-                    ))}
-                  </Column>
-                </Row>
-              )}
-              {mission.rewards.ships.length > 0 && (
-                <Row
-                  gap="m"
-                  padding="l"
-                  wrap="wrap"
-                  maxWidth={800}
-                  justify="space-between"
-                  background="#ddd"
-                >
-                  <Column align="flex-start" gap="s">
-                    <SubTitle
-                      color="#555"
-                      content={`Unlocked Ship${
-                        mission.ships.length < 1 ? 's' : ''
-                      }:`}
-                    />
-                    {mission.rewards.ships.map((ship, i) => (
-                      <img
-                        key={i}
-                        src={getImage(ship.toLowerCase(), playerData.color)}
-                        className={styles.summaryShipImage}
-                        alt={`${ship}-${playerData.color}`}
-                      />
-                    ))}
-                  </Column>
-                  <div className={styles.shipsRewards}>
-                    <div className={styles.nextMission}></div>
-                    <div></div>
-                  </div>
-                </Row>
-              )}
-            </Column>
-          )}
+          <Rewards
+            mission={mission}
+            won={playerWin}
+            team={playerData.color}
+            onMissionClick={(m: Mission) => {
+              restart()
+              navigate('/mission/' + m.id)
+            }}
+          />
         </Column>
         <Column justify="center" gap="xl">
           <Button
             secondary
-            text="Return to mission preparation"
+            text={s.pages.summary.returnToMissionPreparation}
             onClick={restart}
           />
-          <Button secondary text="Watch replay" onClick={replay} />
-          <Button text="Go back to missions" onClick={back} />
+          <Button secondary text={s.pages.summary.replay} onClick={replay} />
+          <Button text={s.pages.summary.goBack} onClick={back} />
         </Column>
       </Row>
     </Column>

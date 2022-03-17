@@ -1,22 +1,12 @@
-.title {
-  display: block;
-  font-family: var(--monospace);
-  padding: 0;
-  margin: 0;
-}
-
 .h1 {
-  composes: title;
   font-size: 2rem;
 }
 
 .h2 {
-  composes: title;
   font-size: 1.5rem;
 }
 
 .h3 {
-  composes: title;
   font-size: 1rem;
 }
 
@@ -31,24 +21,28 @@
 }
 
 .button {
-  text-decoration: none;
   padding: 12px;
   font-size: 1.5rem;
-  background: #ddd;
+  background: var(--ddd);
 }
 
 .primaryButton {
   composes: button;
   background: var(--ts-blue);
-  color: white;
+  color: var(--white);
 }
 
 .secondaryButton {
   composes: button;
   background: var(--orange);
-  color: white;
+  color: var(--white);
 }
 
 .button:disabled {
-  background: #ddd;
+  background: var(--ddd);
+}
+
+.smallButton {
+  padding: 3px 6px;
+  font-size: 1rem;
 }

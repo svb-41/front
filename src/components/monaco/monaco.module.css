@@ -7,7 +7,7 @@
 
 .tabs {
   grid-area: tabs;
-  background: #555;
+  background: var(--555);
   display: flex;
   overflow: auto;
 }
@@ -18,7 +18,7 @@
 
 .tab {
   color: white;
-  background: #333;
+  background: var(--333);
   padding: 12px;
   border-bottom: 3px solid transparent;
   border-top: 3px solid transparent;
@@ -33,8 +33,8 @@
   display: flex;
   align-items: center;
   cursor: pointer;
-  border-right: 1px solid #444;
-  border-left: 1px solid #444;
+  border-right: 1px solid var(--444);
+  border-left: 1px solid var(--444);
 }
 
 .tab:hover .close {
@@ -63,11 +63,11 @@
 
 .menu {
   grid-area: menu;
-  background: #555;
+  background: var(--555);
   overflow: auto;
   display: flex;
   flex-direction: column;
-  border-right: 1px solid #444;
+  border-right: 1px solid var(--444);
 }
 
 .menuTitle {
@@ -76,7 +76,7 @@
   font-size: 0.9rem;
   font-weight: bolder;
   padding: 12px;
-  background: #444;
+  background: var(--444);
 }
 
 .menuItem {

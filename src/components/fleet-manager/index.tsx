@@ -224,12 +224,17 @@ const RenderShips = ({ ships, setShipDetails, onDragStart, team }: any) => (
 const ShipDetails = ({ shipDetails, ships, team }: any) => (
   <Row>
     {shipDetails !== null && (
-      <Row background="#ddd">
+      <Row background="var(--ddd)">
         <Ship.Details ship={ships[shipDetails]} locked={false} color={team} />
       </Row>
     )}
     {shipDetails === null && (
-      <Column background="#ddd" align="center" justify="center" padding="xl">
+      <Column
+        background="var(--ddd)"
+        align="center"
+        justify="center"
+        padding="xl"
+      >
         <div>Click on a ship</div>
         <div>to see its stats</div>
       </Column>
@@ -268,7 +273,7 @@ const RenderAIs = ({
               onDragStart={() => onAIDragStart(ai.id)}
               onClick={() => setAIDetails(ai.id)}
             >
-              <Column background="#ccc" padding="s" gap="s">
+              <Column background="var(--ccc)" padding="s" gap="s">
                 <Row align="center" gap="s">
                   <img src={tsLogo} className={styles.logo} />
                   <div className={styles.pathName}>{ai.file.path}</div>
@@ -302,7 +307,7 @@ const AIDetails = ({
   const ai = ais.find(ai => ai.id === aiDetails)
   if (ai)
     return (
-      <Column background="#ddd" padding="m" gap="m">
+      <Column background="var(--ddd)" padding="m" gap="m">
         <Row align="center" gap="s">
           <img src={tsLogo} className={styles.logo} />
           <div className={styles.pathName}>{ai.file.path}</div>
@@ -332,7 +337,12 @@ const AIDetails = ({
       </Column>
     )
   return (
-    <Column background="#ddd" align="center" justify="center" padding="xl">
+    <Column
+      background="var(--ddd)"
+      align="center"
+      justify="center"
+      padding="xl"
+    >
       <div>Click on an AI</div>
       <div>to see its details</div>
     </Column>
@@ -346,7 +356,7 @@ const ShipSelector = (props: any) => {
     <Column gap="xl">
       <Column>
         <ShipSelectorTabs state={state} setState={setState} />
-        <Column background="#ddd" padding="m" gap="s">
+        <Column background="var(--ddd)" padding="m" gap="s">
           <SubTitle content={subtitle} />
           {state === 'ships' && <RenderShips {...props} />}
           {state === 'ai' && <RenderAIs {...props} />}
@@ -443,7 +453,7 @@ export const FleetManager = (props: Props) => {
   const [aiDetails, setAIDetails] = useState<string | null>(null)
   return (
     <Column gap="xl">
-      <Column background="#ddd" padding="m" gap="s">
+      <Column background="var(--ddd)" padding="m" gap="s">
         <Row gap="l" align="center">
           <Title content="Construct your fleet" />
           <span
@@ -454,7 +464,7 @@ export const FleetManager = (props: Props) => {
           </span>
         </Row>
         <Explanations
-          color="#888"
+          color="var(--888)"
           content="Select your ships, drag and drop, and give them an AI"
         />
       </Column>

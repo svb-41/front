@@ -1,18 +1,11 @@
-.p {
-  white-space: pre-line;
-  margin: 0;
-  padding: 0;
-  line-height: 1.1;
-}
-
 .tab {
   padding: var(--l);
-  background: #ddd;
+  background: var(--ddd);
 }
 
 .activeTab {
   composes: tab;
-  background: #eee;
+  background: var(--eee);
 }
 
 .link {
@@ -30,15 +23,19 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: black;
+  background: var(--fff);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--000);
 }
 
 .activityIndicatorRect {
-  background: white;
+  background: var(--000);
   width: 10px;
   height: 40px;
+}
+
+.github {
+  padding-top: var(--m);
 }

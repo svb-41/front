@@ -3,59 +3,26 @@
   display: grid;
   grid-template-columns: 350px 1fr;
   grid-template-rows: auto 1fr;
-  gap: 24px;
-  padding: 24px;
+  gap: var(--xl);
+  padding: var(--xl);
   justify-content: center;
 }
 
-.missionsSelectorWrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  padding: 24px;
-  font-family: var(--monospace);
-  cursor: pointer;
-  background: #a80000;
-  color: white;
+.prepareMission {
+  grid-column: 1 / 3;
 }
 
 .mswOpened {
-  background: #eee;
-  composes: missionsSelectorWrapper;
   grid-row: 1 / 3;
-  cursor: auto;
-  color: inherit;
-}
-
-.missionsSelector {
-  display: grid;
-  gap: 24px;
-  grid-template-columns: repeat(2, 1fr);
-  grid-auto-rows: 139px;
-}
-
-.prepareMission {
-  display: flex;
-  flex-direction: column;
-  grid-column: 1 / 3;
-  background: #eee;
-  padding: 24px;
-  gap: 24px;
-}
-
-.missionsSelectorTitle {
-  grid-column: 1 / 3;
-  font-size: 2rem;
 }
 
 .missionSelectorItem {
-  border: 4px solid #ccc;
-  background: #ddd;
+  border: 4px solid var(--ccc);
+  background: var(--ddd);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 3rem;
-  /* transition: border-color 0.1s; */
 }
 
 .unlockedMissionSelector {
@@ -64,243 +31,37 @@
 
 .selectedMissionSelector {
   composes: missionSelectorItem;
-  border-color: #dfc843;
+  border-color: var(--space-yellow);
   animation: blinking 3s linear 0s infinite;
-}
-
-/* prettier-ignore */
-@keyframes blinking {
-  0% { border-color: #dfc843; }
-  70% { border-color: #dfc843; }
-  75% { border-color: #ccc; }
-  80% { border-color: #dfc843; }
-  85% { border-color: #ccc; }
-  90% { border-color: #dfc843; }
-  100% { border-color: #dfc843; }
 }
 
 .lockedMissionSelector {
   composes: missionSelectorItem;
   filter: brightness(0.3);
 }
-
-.info {
-  font-family: var(--monospace);
-  display: flex;
-  flex-direction: column;
-  padding: 24px;
-  background: #eee;
-  gap: 24px;
+/* prettier-ignore */
+@keyframes blinking {
+  0% { border-color: var(--space-yellow); }
+  70% { border-color: var(--space-yellow); }
+  75% { border-color: #ccc; }
+  80% { border-color: var(--space-yellow); }
+  85% { border-color: #ccc; }
+  90% { border-color: var(--space-yellow); }
+  100% { border-color: var(--space-yellow); }
 }
 
-.mission {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-}
-
-.typing {
-  white-space: pre;
-}
-
-.description {
-  margin: 0;
-}
-
-.message {
-  background: #ddd;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  white-space: pre-line;
-}
-
-.messageContent {
-  color: #888;
-}
-
-.startMission {
-  padding: 12px;
-  font-size: 1.5rem;
-  background: rgb(66, 119, 192);
-  color: white;
-}
-
-.preMissions {
+.missionsSelector {
   display: grid;
-  grid-template-areas: 'ally enemy' 'submit empty';
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr auto;
-}
-
-.enemy {
-  grid-area: enemy;
-  border-radius: 10px;
-  background: #ccc;
-  margin: 8px;
-}
-
-.ally {
-  grid-area: ally;
-  border-radius: 10px;
-  background: #ccc;
-  margin: 8px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 40px auto 2fr 55px;
-  grid-template-areas:
-    'title title'
-    'ships ships'
-    'ai pos'
-    'submit submit';
-}
-
-.ai {
-  grid-area: ai;
-}
-
-.ai td {
-  padding: 0 1rem;
-  font-size: 14px;
-}
-.ai tr {
-  padding: 0 1rem;
-  font-size: 14px;
-}
-.ai th {
-  padding: 0 1rem;
-  font-size: 20px;
-}
-
-.pos {
-  grid-area: pos;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
-}
-
-.cell {
-  border: 1px solid black;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: background 0.2s;
-}
-
-.gridCell {
-  display: flex;
-  padding: 1rem;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  flex-wrap: wrap;
-}
-
-.gridCell img {
-  cursor: pointer;
-  transform: rotate(90deg);
-}
-
-.title {
-  font-size: 24px;
-  font-family: var(--monospace);
-  padding: 1rem;
-  display: flex;
-  justify-content: space-between;
-  grid-area: title;
-}
-
-.submit {
-  text-align: center;
-  grid-area: submit;
-}
-
-.desc {
-  font-size: 20px;
-  padding: 1rem;
-}
-
-.availableShip {
-  cursor: pointer;
-}
-
-.ships {
-  grid-area: ships;
-  padding: 0 1rem;
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.subtitle {
-  margin-top: 1rem;
-}
-
-.shipSelector {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-
-.ships img {
-  image-rendering: pixelated;
-  height: 120px;
-  margin: 1rem;
-}
-
-.result {
-  font-size: 96px;
-  font-family: var(--monospace);
-  padding: 1rem;
-}
-
-.postMission {
-  text-align: center;
-}
-
-.shipsDestroyed {
-  border-radius: 10px;
-  background: #ccc;
-  border: solid black 2px;
-  margin: 1rem;
-}
-
-.shipsDestroyed .subtitle {
-  font-size: 48px;
-  font-family: var(--monospace);
-}
-
-.actions {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-}
-
-.time {
-  font-size: 36px;
-}
-
-.nextMission {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 36px;
-  font-family: var(--monospace);
-}
-.shipsRewards {
-  padding: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.shipsRewards img {
-  image-rendering: pixelated;
-  height: 120px;
-  cursor: auto;
+  gap: var(--xl);
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: 139px;
 }
 
 .summaryShipImage {
   width: 50px;
   image-rendering: pixelated;
+}
+
+.messageContent {
+  color: var(--888);
 }

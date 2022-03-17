@@ -1,51 +1,22 @@
 .nav {
-  display: flex;
-  align-items: baseline;
-  background: #eee;
-  padding: 24px;
-  gap: 30px;
   position: sticky;
   top: 0;
-  border-bottom: 2px solid #ddd;
-}
-
-.navTitle {
-  text-decoration: none;
-  color: inherit;
-  outline: none;
-}
-
-.title {
-  font-family: 'Neon Led';
-  font-size: 2rem;
+  border-bottom: 2px solid var(--ddd);
 }
 
 .links {
-  display: flex;
   appearance: none;
   list-style-type: none;
-  margin: 0;
-  padding: 0;
-  gap: 18px;
-  flex: 1;
 }
 
-.link {
-  font-size: 1rem;
-  font-family: Silom;
+.logo {
+  font-size: 2rem;
 }
 
 .navLink {
-  text-decoration: none;
-  color: #888;
+  color: var(--888);
 }
 
 .navLink:global(.active) {
-  color: #222;
-}
-
-.main {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
+  color: var(--222);
 }
