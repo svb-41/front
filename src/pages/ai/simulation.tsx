@@ -23,8 +23,8 @@ export const Simulation = ({ ai }: { ai: AI }) => {
 
   useEffect(() => {
     const fleet = {
-      ships: { 800: { 400: ship } },
-      AIs: { 800: { 400: ai.id } },
+      ships: { 1: { 1: ship } },
+      AIs: { 1: { 1: ai.id } },
     }
     setFleet(fleet)
     start(setState)
