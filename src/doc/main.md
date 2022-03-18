@@ -1,6 +1,6 @@
 # SVB 41
 
-## Documentation
+# Documentation
 
 This documentation is here to help you to understand how to use ships in SVB 41
 
@@ -14,7 +14,7 @@ export type Context<Data = any> = {
 }
 ```
 
-### ship
+## ship
 
 ```typescript
 type ControlPanel = {
@@ -31,7 +31,7 @@ type ControlPanel = {
 
 The default state, you ship will do nothing.
 
-#### thrust
+### thrust
 
 ```typescript
 export const ai: svb.AI<Data> = ({ ship }) => {
@@ -47,7 +47,7 @@ You can back thrust with `ship.thrust(-1)` or be more precise with your speed wi
 
 Without specifying it you thrust at the default value of speed of your ship.
 
-#### turn
+### turn
 
 ```typescript
 export const ai: svb.AI<Data> = ({ ship }) => {
@@ -106,3 +106,35 @@ export const ai: svb.AI<Data> = ({ ship }) => {
 ```
 
 <img src='./img/torpedo.gif'>
+
+## radar
+
+Every ship have detection capacity. The radar variables gives you at any time the ships near you ship.
+
+```typescript
+type RadarResult = {
+  position: Position
+  size: number
+  team: string
+  destroyed: boolean
+}
+```
+
+You can use the `closeEnemies` from the helper radar, it will respond a list of `Enemy` from your radar.
+
+```typescript
+type Enemy = { enemy: RadarResult; dist2: number }
+```
+
+<img src='./img/radar.gif'>
+
+```typescript
+export const ai: svb.AI<Data> = ({ stats, radar, ship }) => {
+  const enemies = svb.radar.closeEnemies(radar, stats.team, stats.position)
+  if (enemies.length > 0) {
+    if (stats.position.speed > -0.1) return ship.thrust(-0.1)
+  }
+  if (stats.position.speed < 0.1) return ship.thrust(0.1 - stats.position.speed)
+  return ship.idle()
+}
+```
