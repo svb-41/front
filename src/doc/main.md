@@ -61,7 +61,7 @@ export const ai: svb.AI<Data> = ({ ship }) => {
 
 <img src='./img/turn.gif'>
 
-If you turn when your ship is moving it will keep its speed but change it direction.
+If you turn when your ship is moving it will keep its speed but change its direction.
 
 ```typescript
 export const ai: svb.AI<Data> = ({ ship, stats }) => {
