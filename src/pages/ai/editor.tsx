@@ -160,14 +160,14 @@ export const AIEditor = () => {
   const ai = useAI(id)
   const selectedAI = useSelector(selectors.ai(id))
   const [loading, setLoading] = useState(false)
-  const [test, setTest] = useState(true)
+  const [test, setTest] = useState(false)
   const onClick = async () => {
     setLoading(true)
     await ai.methods.compile().catch(console.error)
     setLoading(false)
   }
   const toggleTest = () => {
-    setTest(test => true)
+    setTest(test => !test)
   }
   return (
     <HUD>
