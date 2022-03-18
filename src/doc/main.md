@@ -103,8 +103,6 @@ Torpedos are self propelled weapons. You only have to specify a target when you 
 export const ai: svb.AI<Data> = ({ ship }) => {
   return ship.fire(1, { target: { x: 1000, y: 600 }, armedTime: 400 })
 }
-
-}
 ```
 
 <img src='./img/torpedo.gif'>
