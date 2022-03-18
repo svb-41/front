@@ -2,7 +2,9 @@
 
 # Documentation
 
-This documentation is here to help you to understand how to use ships in SVB 41
+This documentation is here to help you to understand how to use ships in SVB 41.
+
+Your AI will get this context at every frames.
 
 ```typescript
 export type Context<Data = any> = {
@@ -15,6 +17,8 @@ export type Context<Data = any> = {
 ```
 
 ## ship
+
+Ship represent the control panel of your ship.
 
 ```typescript
 type ControlPanel = {
