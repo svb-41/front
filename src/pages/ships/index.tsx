@@ -1,6 +1,6 @@
 import { useDispatch } from '@/store/hooks'
 import { Row, Column } from '@/components/flex'
-import { HUD } from '@/components/hud'
+import { Main } from '@/components/main'
 import { Title } from '@/components/title'
 import { ColorPicker } from '@/components/color-picker'
 import { ships } from '@/helpers/ships'
@@ -17,10 +17,9 @@ const ShipsDetails = ({ color, unlockedShips }: any) => (
     {ships.map((ship, index) => {
       const isUnlocked = unlockedShips.includes(ship)
       return (
-        <Row background="var(--eee)">
+        <Row background="var(--eee)" key={index}>
           <Ship.Details
             infoCard="var(--ddd)"
-            key={index}
             ship={ship}
             locked={!isUnlocked}
             color={color}
@@ -36,7 +35,7 @@ export const Ships = () => {
   const { color, unlockedShips } = useSelector(selectors.userData)
   const onColorChange = (color: Color) => dispatch(changeColor(color))
   return (
-    <HUD>
+    <Main>
       <Column flex={1} align="flex-start" padding="xl" gap="xl">
         <Column background="var(--eee)" padding="xl" gap="xl">
           <Title content={s.pages.ships.chooseColor} />
@@ -44,6 +43,6 @@ export const Ships = () => {
         </Column>
         <ShipsDetails color={color} unlockedShips={unlockedShips} />
       </Column>
-    </HUD>
+    </Main>
   )
 }

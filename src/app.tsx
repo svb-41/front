@@ -12,6 +12,7 @@ import { Missions } from '@/pages/missions'
 import { Onboarding } from '@/pages/onboarding'
 import { NotFound } from '@/pages/not-found'
 import { Overlay } from '@/pages/overlay'
+import { Database } from '@/pages/database'
 
 const App = () => {
   const [visible, setVisible] = useState(true)
@@ -22,6 +23,7 @@ const App = () => {
       await dispatch(initStore)
       await document.fonts.ready
       const delta = Date.now() - time
+      if (process.env.NODE_ENV) setVisible(false)
       const temp = 5000 - delta
       const timeout = temp < 0 ? 0 : temp
       setTimeout(() => {
@@ -42,6 +44,7 @@ const App = () => {
       <Route path="missions" element={<Missions />} />
       <Route path="mission/:id" element={<Missions />} />
       <Route path="onboarding" element={<Onboarding />} />
+      <Route path="database" element={<Database />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   )

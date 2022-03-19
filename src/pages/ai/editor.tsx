@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import prettier from 'prettier'
 import parserTypescript from 'prettier/parser-babel'
-import { HUD } from '@/components/hud'
+import { Main } from '@/components/main'
 import { Button } from '@/components/button'
 import { Row } from '@/components/flex'
 import { Checkbox } from '@/components/checkbox'
@@ -170,7 +170,7 @@ export const AIEditor = () => {
     setTest(test => !test)
   }
   return (
-    <HUD>
+    <Main>
       <Row justify="space-between" padding="s" background="var(--eee)">
         <NameInput {...ai} />
         <Row align="center" gap="xxl">
@@ -210,6 +210,6 @@ export const AIEditor = () => {
           </div>
         )}
       </div>
-    </HUD>
+    </Main>
   )
 }

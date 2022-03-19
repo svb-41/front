@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { HUD } from '@/components/hud'
+import { Main } from '@/components/main'
 import { Row, Column } from '@/components/flex'
 import { Title, SubTitle } from '@/components/title'
 import { Button } from '@/components/button'
@@ -9,7 +9,7 @@ import s from '@/strings.json'
 export const NotFound = () => {
   const navigate = useNavigate()
   return (
-    <HUD>
+    <Main>
       <Column padding="xxl" align="center">
         <Column padding="xxl" background="var(--eee)" maxWidth={1500}>
           <Column>
@@ -33,6 +33,6 @@ export const NotFound = () => {
           </Row>
         </Column>
       </Column>
-    </HUD>
+    </Main>
   )
 }

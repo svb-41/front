@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import * as presentation from './presentation'
 import * as summary from './summary'
 import * as selectors from '@/store/selectors'
-import { HUD } from '@/components/hud'
+import { Main } from '@/components/main'
 import { Title } from '@/components/title'
 import { FleetManager } from '@/components/fleet-manager'
 import { Button } from '@/components/button'
@@ -65,7 +65,7 @@ export const Missions = () => {
   const navigate = useNavigate()
   const reset = () => navigate('/missions')
   return (
-    <HUD links={state === 'preparation'}>
+    <Main links={state === 'preparation'}>
       {state === 'end' && (
         <summary.Summary
           engine={engine.engine!}
@@ -114,6 +114,6 @@ export const Missions = () => {
           )}
         </div>
       )}
-    </HUD>
+    </Main>
   )
 }

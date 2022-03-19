@@ -1,7 +1,7 @@
-import { HUD } from '@/components/hud'
+import { Main } from '@/components/main'
 
 export const Training = () => (
-  <HUD>
+  <Main>
     <>Git gud</>
-  </HUD>
+  </Main>
 )

@@ -1,7 +1,7 @@
-import { HUD } from '@/components/hud'
+import { Main } from '@/components/main'
 
 export const Sandbox = () => (
-  <HUD>
+  <Main>
     <></>
-  </HUD>
+  </Main>
 )

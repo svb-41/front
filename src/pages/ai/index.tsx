@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { v4 } from 'uuid'
 import { Title } from '@/components/title'
 import { Row, Column } from '@/components/flex'
-import { HUD } from '@/components/hud'
+import { Main } from '@/components/main'
 import * as actions from '@/store/actions/ai'
 import { useSelector, useDispatch } from '@/store/hooks'
 import * as selectors from '@/store/selectors'
@@ -181,7 +181,7 @@ export const Ia = () => {
   const { ais, favorites } = useSelector(selectors.ais)
   const onlyFavs = ais.filter(ai => favorites.includes(ai.id))
   return (
-    <HUD>
+    <Main>
       <Column padding="xl" gap="xl" align="center">
         <AICards
           title="Favorites"
@@ -196,6 +196,6 @@ export const Ia = () => {
           before={<Add />}
         />
       </Column>
-    </HUD>
+    </Main>
   )
 }

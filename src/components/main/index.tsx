@@ -1,7 +1,8 @@
 import { Fragment } from 'react'
 import * as router from 'react-router-dom'
 import { Row, Column } from '@/components/flex'
-import styles from './hud.module.css'
+import styles from './main.module.css'
+import s from '@/strings.json'
 
 type LinkProps = { title: string; to: string }
 const Link = ({ title, to }: LinkProps) => (
@@ -14,7 +15,7 @@ const Link = ({ title, to }: LinkProps) => (
 
 export type Elem = JSX.Element | false
 export type Props = { children?: Elem | Elem[]; links?: boolean }
-export const HUD = ({ children, links = true }: Props) => (
+export const Main = ({ children, links = true }: Props) => (
   <Fragment>
     <Row
       className={styles.nav}
@@ -24,13 +25,14 @@ export const HUD = ({ children, links = true }: Props) => (
       gap="xxl"
     >
       <router.Link to="/">
-        <div className={styles.logo}>SVB-41</div>
+        <div className={styles.logo}>{s.svb}</div>
       </router.Link>
       {links && (
         <Row tag="ul" className={styles.links} flex={1} gap="l">
-          <Link title="Missions" to="/missions" />
+          <Link title="Campaign" to="/missions" />
           <Link title="AI" to="/ai" />
           <Link title="Ships" to="/ships" />
+          <Link title="Database" to="/database" />
           <div style={{ flexGrow: 1 }} />
           {false && <Link title="Training" to="/training" />}
           {false && <Link title="Sandbox" to="/sandbox" />}

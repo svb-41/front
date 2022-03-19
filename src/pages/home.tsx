@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { HUD } from '@/components/hud'
+import { Main } from '@/components/main'
 import { Row, Column } from '@/components/flex'
 import { Title, SubTitle, Jumbotron } from '@/components/title'
 import * as button from '@/components/button'
@@ -72,7 +72,7 @@ const InfoTabs = () => {
 }
 
 export const Home = () => (
-  <HUD>
+  <Main>
     <Row justify="center" padding="xxl" gap="xxl">
       <Column gap="xxl" maxWidth={700} flex={1}>
         <Column gap="s">
@@ -93,9 +93,12 @@ export const Home = () => (
           <Link className={button.style({ primary: true })} to="/ships">
             <div className={styles.mainLink}>Ships</div>
           </Link>
+          <Link className={button.style({ primary: true })} to="/database">
+            <div className={styles.mainLink}>Database</div>
+          </Link>
         </Column>
       </Column>
       <InfoTabs />
     </Row>
-  </HUD>
+  </Main>
 )
