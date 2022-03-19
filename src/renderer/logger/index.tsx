@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import styles from './logger.module.css'
+import s from '@/strings.json'
 
 export type Props = { logs: string[] }
 
@@ -17,7 +18,7 @@ const EmptyLine = () => {
 
 export const Render = ({ logs }: Props) => {
   const [visible, setVisible] = useState(false)
-  const text = visible ? 'Hide Logs' : 'Show Logs'
+  const text = visible ? s.renderer.hideLogs : s.renderer.showLogs
   return (
     <div className={styles.wrapper}>
       <button className={styles.toggler} onClick={() => setVisible(!visible)}>

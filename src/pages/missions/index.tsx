@@ -87,7 +87,12 @@ export const Missions = () => {
         <div className={styles.missions}>
           <presentation.MissionSelector reset={reset} {...details} />
           <presentation.MissionInformations {...details} />
-          <presentation.Submit {...details} />
+          {details.opened && (
+            <Column gap="xl">
+              <presentation.Ships {...details} team={preferences.enemy} />
+              <presentation.Submit {...details} />
+            </Column>
+          )}
           {!details.opened && (
             <Column
               background="var(--eee)"

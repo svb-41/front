@@ -3,6 +3,12 @@
   "incomingMessage": "Incoming message from HQ",
   "loading": "Loading…",
   "none": "None",
+  "renderer": {
+    "resume": "Resume",
+    "pause": "Pause",
+    "hideLogs": "Hide Logs",
+    "showLogs": "Show Logs"
+  },
   "pages": {
     "home": {
       "welcome": "Welcome commander, on",
@@ -37,7 +43,8 @@
         "select": "Select your mission",
         "back": "Back to selection",
         "title": "Mission",
-        "preparation": "Mission Preparation"
+        "preparation": "Mission Preparation",
+        "enemyShips": "Ennemy ships"
       },
       "info": {
         "content": "Message content",

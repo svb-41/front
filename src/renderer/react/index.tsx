@@ -5,6 +5,7 @@ import * as Logger from '@/renderer/logger'
 import { Engine } from '@/renderer/engine'
 import styles from '@/renderer/react/renderer.module.css'
 import backgroundTile from '@/assets/backgrounds/black.png'
+import s from '@/strings.json'
 
 const handleSpacebar = (onClick: () => void) => {
   return (event: KeyboardEvent) => {
@@ -29,7 +30,7 @@ const Pause = ({ state, onClick }: PauseProps) => {
     document.addEventListener('keydown', handler)
     return () => document.removeEventListener('keydown', handler)
   }, [onClick])
-  const text = state === 'paused' ? 'Resume' : 'Pause'
+  const text = state === 'paused' ? s.renderer.resume : s.renderer.pause
   const background = state === 'resumed' ? 'var(--ts-blue)' : 'var(--green)'
   return (
     <button className={styles.pause} style={{ background }} onClick={onClick}>

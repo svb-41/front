@@ -1,9 +1,10 @@
 import { Fragment, useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Column } from '@/components/flex'
+import { Row, Column } from '@/components/flex'
 import { Button } from '@/components/button'
 import { Title, SubTitle } from '@/components/title'
 import * as services from '@/services/mission'
+import { getImage } from '@/helpers/ships'
 import styles from './Missions.module.css'
 import s from '@/strings.json'
 
@@ -54,7 +55,12 @@ export const MissionSelector = (props: any) => {
             const st = { cursor: unlocked ? 'pointer' : 'auto' }
             const onClick = () => unlocked && setSelected(index)
             return (
-              <button className={clName} onClick={onClick} style={st}>
+              <button
+                key={index}
+                className={clName}
+                onClick={onClick}
+                style={st}
+              >
                 {index + 1}
               </button>
             )
@@ -86,13 +92,32 @@ const Description = ({ title, description, constraints }: any) => (
   </Fragment>
 )
 
+export type ShipsProps = any
+export const Ships = ({ mission, opened, team }: ShipsProps) => {
+  if (!opened) return null
+  return (
+    <Column padding="xl" gap="xl" background="var(--eee)">
+      <Title content={s.pages.missions.mission.enemyShips} />
+      <Row background="var(--ddd)" padding="m" gap="m">
+        {mission.ships.map((s: any, i: number) => {
+          const shipClass = s.classShip
+          const src = getImage(shipClass.toLowerCase(), team)
+          const alt = `${shipClass}-${team}`
+          const cl = styles.summaryShipImage
+          return <img key={i} src={src} className={cl} alt={alt} />
+        })}
+      </Row>
+    </Column>
+  )
+}
+
 export const MissionInformations = ({ mission, selected, opened }: any) => {
   const title = useTitle(mission, selected)
   return (
     <Column padding="xl" gap="xl" background="var(--eee)">
       <Column>
         <Title content={`${parseInt(mission.id) + 1} – ${mission.title}`} />
-        {opened && <SubTitle blinking content="HQ message incoming!" />}
+        {opened && <SubTitle blinking content={s.incomingMessage} />}
       </Column>
       {opened && <Description {...mission} title={title} />}
     </Column>
