@@ -206,7 +206,8 @@ export class Engine extends EventTarget {
   private run = (deltaTime: number) => {
     if (!this.#ended) {
       this.#app.stage.scale.set(this.#scale, this.#scale)
-      for (let i = 0; i < this.#speed; i++) this.#engine.step(deltaTime)
+      if (!this.#paused)
+        for (let i = 0; i < this.#speed; i++) this.#engine.step(deltaTime)
       this.updateDisplay()
     } else {
       this.#app.ticker.remove(this.run)
@@ -257,12 +258,10 @@ export class Engine extends EventTarget {
       helpers.console.log('=> [RendererEngine] Pause the game')
       this.#animateds.forEach(sprite => sprite.stop())
       this.#paused = true
-      this.#app.ticker.stop()
     } else {
       helpers.console.log('=> [RendererEngine] Resume the game')
       this.#animateds.forEach(sprite => sprite.play())
       this.#paused = false
-      this.#app.ticker.start()
     }
   }
 

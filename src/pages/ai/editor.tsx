@@ -164,14 +164,10 @@ export const AIEditor = () => {
   const ai = useAI(id)
   const selectedAI = useSelector(selectors.ai(id))
   const [loading, setLoading] = useState(false)
-  const [test, setTest] = useState(false)
   const onClick = async () => {
     setLoading(true)
     await ai.methods.compile().catch(console.error)
     setLoading(false)
-  }
-  const toggleTest = () => {
-    setTest(test => !test)
   }
   return (
     <Main>
@@ -188,19 +184,9 @@ export const AIEditor = () => {
             loading={loading}
             onClick={onClick}
           />
-
-          <Button
-            {...(test ? { primary: true } : { secondary: true })}
-            small
-            onClick={toggleTest}
-            text={s.pages.editor.test}
-          />
         </Row>
       </Row>
-      <div
-        className={test ? styles.monacoAndTest : styles.monaco}
-        style={{ background: '#1e1e1e' }}
-      >
+      <div className={styles.monaco} style={{ background: '#1e1e1e' }}>
         <div className={styles.editor}>
           <Monaco.Monaco
             onChange={ai.methods.save}
@@ -208,11 +194,9 @@ export const AIEditor = () => {
             onSave={onClick}
           />
         </div>
-        {test && (
-          <div className={styles.test}>
-            {selectedAI && <Simulation ai={selectedAI} />}
-          </div>
-        )}
+        <div className={styles.sidePanel}>
+          {selectedAI && <Simulation ai={selectedAI} />}
+        </div>
       </div>
     </Main>
   )

@@ -65,27 +65,20 @@
 /* editor.tsx */
 .monaco {
   flex: 1;
-  display: grid;
-  grid-template-areas: 'monaco';
-  grid-template-columns: 1fr;
-  grid-template-rows: 1fr;
-}
-.monacoAndTest {
-  flex: 1;
-  display: grid;
-  grid-template-areas: 'monaco test';
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr;
-}
-
-.test {
-  grid-area: test;
+  display: flex;
 }
 
 .editor {
-  grid-area: monaco;
+  flex: 3;
 }
+
+.sidePanel {
+  flex: 2;
+  display: flex;
+}
+
 .testRenderer {
+  flex: 1;
   display: flex;
   flex-direction: column;
 }

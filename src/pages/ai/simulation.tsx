@@ -7,14 +7,16 @@ import styles from './ai.module.css'
 import { AI } from '@/lib/ai'
 import { getSimulation } from '@/services/mission'
 
-export const Simulation = ({ ai }: { ai: AI }) => {
+type SHIP_CLASS = svb.engine.ship.SHIP_CLASS
+const { SHIP_CLASS } = svb.engine.ship
+
+export type Props = { ai: AI }
+export const Simulation = ({ ai }: Props) => {
   const simulation = getSimulation('0')!
-  const [ship, setShip] = useState<svb.engine.ship.SHIP_CLASS>(
-    svb.engine.ship.SHIP_CLASS.FIGHTER
-  )
+  const [ship, setShip] = useState<SHIP_CLASS>(SHIP_CLASS.FIGHTER)
   const [state, setState] = useState<State>('preparation')
 
-  const { engine, setFleet, start, reset } = useEngine({
+  const { engine, setFleet, start } = useEngine({
     team: 'blue',
     enemy: 'red',
     ais: [ai],
@@ -22,23 +24,16 @@ export const Simulation = ({ ai }: { ai: AI }) => {
   })
 
   useEffect(() => {
-    const fleet = {
-      ships: { 1: { 1: ship } },
-      AIs: { 1: { 1: ai.id } },
-    }
+    const ships = { 1: { 1: ship } }
+    const AIs = { 1: { 1: ai.id } }
+    const fleet = { ships, AIs }
     setFleet(fleet)
     start(setState)
-    console.log('start', engine)
   }, [ship, ai])
 
   return (
     <div className={styles.testRenderer}>
-      <Button
-        text={state}
-        onClick={() => {
-          start(setState)
-        }}
-      />
+      <Button text={state} onClick={() => start(setState)} />
       {state !== 'preparation' && <Renderer engine={engine!} />}
     </div>
   )

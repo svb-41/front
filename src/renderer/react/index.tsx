@@ -42,7 +42,6 @@ export const Renderer = ({ engine }: Props) => {
   const [pausedState, setPausedState] = useState<PausedState>('resumed')
   const [running, setRunning] = useState(false)
   const [logs, setLogs] = useState<string[]>([])
-  const [speed, setSpeed] = useState(helpers.settings.getInitialSpeed())
   const renderer = useRef<Engine | null>(null)
   const div = useRef<HTMLDivElement | null>(null)
   const updater = () => {
@@ -50,11 +49,6 @@ export const Renderer = ({ engine }: Props) => {
     setPausedState(newState)
     const detail = { paused: newState === 'paused' }
     renderer.current?.dispatchEvent(new CustomEvent('state.pause', { detail }))
-  }
-  const onSetSpeed = (value: number) => {
-    setSpeed(value)
-    const detail = value
-    renderer.current?.dispatchEvent(new CustomEvent('state.speed', { detail }))
   }
   const canvas = useRef<HTMLCanvasElement>(null)
   useEffect(() => {
@@ -79,7 +73,6 @@ export const Renderer = ({ engine }: Props) => {
   return (
     <div className={styles.fullHeight} ref={div}>
       <Logger.Render logs={logs} />
-      <Speed.Render speed={speed} onSetSpeed={onSetSpeed} />
       {running && <Pause state={pausedState} onClick={updater} />}
       <canvas ref={canvas} className={styles.canvas} />
     </div>
