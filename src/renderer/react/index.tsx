@@ -4,6 +4,7 @@ import { Details } from '@/components/ship'
 import * as Logger from '@/renderer/logger'
 import { Engine } from '@/renderer/engine'
 import styles from '@/renderer/react/renderer.module.css'
+import backgroundTile from '@/assets/backgrounds/black.png'
 
 const handleSpacebar = (onClick: () => void) => {
   return (event: KeyboardEvent) => {
@@ -94,7 +95,11 @@ export const Renderer = ({ engine }: Props) => {
       <Logger.Render logs={logs} />
       {ship && <RenderShip ship={ship} />}
       {running && <Pause state={pausedState} onClick={updater} />}
-      <canvas ref={canvas} className={styles.canvas} />
+      <canvas
+        ref={canvas}
+        className={styles.canvas}
+        style={{ background: `url(${backgroundTile})` }}
+      />
     </div>
   )
 }

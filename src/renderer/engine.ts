@@ -69,7 +69,12 @@ export class Engine extends EventTarget {
     this.#paused = false
     this.#selectedShip = null
     this.#speed = helpers.settings.getInitialSpeed()
-    this.#app = new PIXI.Application({ view, antialias, resizeTo: div })
+    this.#app = new PIXI.Application({
+      view,
+      antialias,
+      resizeTo: div,
+      transparent: true,
+    })
     const { scroll, onClick, onDragMove, onDragEnd, onDragStart } =
       this.moveFunctions()
     this.#app.view.addEventListener('wheel', scroll)
