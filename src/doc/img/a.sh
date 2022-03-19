@@ -5,3 +5,4 @@ ffmpeg -i torpedo.mov -pix_fmt rgb8 -r 30 torpedo.gif -ss 3 && gifsicle -O3 torp
 ffmpeg -i turn.mov -pix_fmt rgb8 -r 30 turn.gif -ss 3 && gifsicle -O3 turn.gif -o turn.gif
 ffmpeg -i turn2.mov -pix_fmt rgb8 -r 30 turn2.gif -ss 3 && gifsicle -O3 turn2.gif -o turn2.gif
 ffmpeg -i radar.mov -pix_fmt rgb8 -r 30 radar.gif -ss 3 && gifsicle -O3 radar.gif -o radar.gif
+ffmpeg -i radar2.mov -pix_fmt rgb8 -r 30 radar2.gif -ss 3 && gifsicle -O3 radar2.gif -o radar2.gif

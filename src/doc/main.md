@@ -61,7 +61,7 @@ export const ai: svb.AI<Data> = ({ ship }) => {
 
 <img src='./img/turn.gif'>
 
-If you turn when your ship is moving it will keep its speed but change it direction.
+If you turn when your ship is moving it will keep its speed but change its direction.
 
 ```typescript
 export const ai: svb.AI<Data> = ({ ship, stats }) => {
@@ -142,3 +142,41 @@ export const ai: svb.AI<Data> = ({ stats, radar, ship }) => {
   return ship.idle()
 }
 ```
+
+## comm
+
+Yours ships can communicate through their communication module.
+
+```typescript
+comm.sendMessage(message) //to send a message in you team channel
+comm.messagesSince(0) // to get every message in the channel
+```
+
+You can use a scout ship to spot enemy ships with its larger radar range.
+
+```typescript
+//scout
+export const ai: svb.AI<Data> = ({ stats, radar, ship, comm }) => {
+  const enemies = svb.radar.closeEnemies(radar, stats.team, stats.position)
+  if (enemies.length > 0) {
+    enemies.map(e => comm.sendMessage(e.enemy.position.pos))
+    if (stats.position.speed > -0.1) return ship.thrust(-0.1)
+  }
+  if (stats.position.speed < 0.1) return ship.thrust(0.1 - stats.position.speed)
+  return ship.idle()
+}
+```
+
+And use those informations to fire from an other ship
+
+```typescript
+//bomber
+export const ai: svb.AI<Data> = ({ ship, comm }) => {
+  const messages = comm.messagesSince(0)
+  if (messages)
+    return ship.fire(0, { target: messages[0].content.message, armedTime: 400 })
+  return ship.idle()
+}
+```
+
+<img src='./img/radar2.gif'>

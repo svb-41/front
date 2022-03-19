@@ -12,11 +12,29 @@
   "ships": [
     {
       "classShip": "FIGHTER",
-      "ai": "assault",
+      "ai": "idle",
       "position": {
         "direction": 3.141592653589793,
         "speed": 0,
         "pos": { "x": 500, "y": 500 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "idle",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 500, "y": 700 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "idle",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 500, "y": 300 }
       }
     }
   ]
