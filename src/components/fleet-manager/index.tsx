@@ -6,7 +6,7 @@ import { Button } from '@/components/button'
 import { Title, SubTitle, Explanations } from '@/components/title'
 import { Row, Column } from '@/components/flex'
 import * as Ship from '@/components/ship'
-import background from '@/assets/backgrounds/darkPurple.png'
+import background from '@/assets/backgrounds/black.png'
 import tsLogo from '@/components/monaco/ts.svg'
 import * as helpers from '@/helpers/dates'
 import styles from './fleet-manager.module.css'
@@ -75,7 +75,7 @@ const Cell = (props: CellProps) => {
             <Column gap="xs">
               <ShipImage ship={ship} color={color} />
               {a && (
-                <Row background={`var(--${props.team})`} padding="xs">
+                <Row background={`var(--team-${props.team})`} padding="xs">
                   {a.file.path}
                 </Row>
               )}
@@ -319,7 +319,7 @@ const AIDetails = ({
         {ai.tags.length >= 0 && (
           <Row gap="s">
             {ai.tags.map(tag => (
-              <Row padding="s" background={`var(--${team})`}>
+              <Row padding="s" background={`var(--team-${team})`}>
                 {tag}
               </Row>
             ))}
@@ -463,7 +463,7 @@ export const FleetManager = (props: Props) => {
           <Title content="Construct your fleet" />
           <span
             className={styles.teamName}
-            style={{ background: `var(--${team})` }}
+            style={{ background: `var(--team-${team})` }}
           >
             {team.toUpperCase()}
           </span>

@@ -8,27 +8,27 @@
 
 .tile-blue {
   composes: tile;
-  background: var(--blue);
+  background: var(--team-blue);
 }
 
 .tile-green {
   composes: tile;
-  background: var(--green);
+  background: var(--team-green);
 }
 
 .tile-red {
   composes: tile;
-  background: var(--red);
+  background: var(--team-red);
 }
 
 .tile-yellow {
   composes: tile;
-  background: var(--yellow);
+  background: var(--team-yellow);
 }
 
 .tile-white {
   composes: tile;
-  background: var(--white);
+  background: var(--team-white);
 }
 
 .active {

@@ -35,11 +35,13 @@
   --text-color: #fff;
   --space-yellow: #ffb000;
   --orange: orange;
-  --blue: #11a5d4;
-  --green: #92b115;
-  --red: #dd442c;
-  --yellow: #e2a106;
-  --white: #959ab1;
+
+  --team-blue: #11a5d4;
+  --team-red: #dd442c;
+  --team-yellow: #e2a106;
+  --team-green: #92b115;
+  --team-white: #959ab1;
+
   --grey: #959ab1;
   --ts-blue: #4176c1;
   --white: white;

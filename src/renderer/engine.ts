@@ -16,7 +16,12 @@ PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST
 
 const computeRotation = (rotation: number) => -rotation + Math.PI / 2
 
-type Info = { team?: string; size: number; shipClass?: engine.ship.SHIP_CLASS }
+type Info = {
+  team?: string
+  size: number
+  detection?: number
+  shipClass?: engine.ship.SHIP_CLASS
+}
 enum Type {
   SHIP,
   BULLET,
@@ -36,17 +41,16 @@ const selectTexture = (app: PIXI.Application, type: Type, sprite: Info) => {
 export class Engine extends EventTarget {
   #app: PIXI.Application
   #engine: engine.Engine
+  #radars: Map<string, PIXI.Graphics>
   #animateds: Map<string, PIXI.AnimatedSprite>
   #sprites: Map<string, PIXI.Sprite>
   #ended: boolean
   #paused: boolean
-  #speed: number
   #scale: number
   #pos: { x: number; y: number }
   #dragStart: { x: number; y: number }
   #drag: boolean
   #downTS: number
-  #selectedShip: string | null
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -62,13 +66,12 @@ export class Engine extends EventTarget {
     this.#dragStart = { x: 0, y: 0 }
     this.#downTS = Date.now()
     this.#drag = false
+    this.#radars = new Map()
     this.#sprites = new Map()
     this.#animateds = new Map()
     this.#engine = engine
     this.#ended = false
     this.#paused = false
-    this.#selectedShip = null
-    this.#speed = helpers.settings.getInitialSpeed()
     this.#app = new PIXI.Application({
       view,
       antialias,
@@ -92,7 +95,6 @@ export class Engine extends EventTarget {
     this.#engine.addEventListener('log.clear', this.onClear)
     this.#engine.addEventListener('state.end', this.onEnd)
     this.addEventListener('state.pause', this.onStatePause)
-    this.addEventListener('state.speed', this.onSpeed)
     this.preload().then(async () => {
       this.#app.ticker.add(this.run)
     })
@@ -106,7 +108,6 @@ export class Engine extends EventTarget {
     this.#engine.removeEventListener('log.clear', this.onClear)
     this.#engine.removeEventListener('state.end', this.onEnd)
     this.removeEventListener('state.pause', this.onStatePause)
-    this.removeEventListener('state.speed', this.onSpeed)
     const resources = Object.values(this.#app.loader?.resources ?? {})
     resources.forEach(resource => {
       resource.texture?.destroy(true)
@@ -118,14 +119,26 @@ export class Engine extends EventTarget {
 
   private handleSpritesBrightness(selectedShip: engine.ship.Ship | undefined) {
     for (const [key, value] of this.#sprites.entries()) {
+      const radar = this.#radars.get(key)
       if (!selectedShip) {
         value.filters = []
+        if (radar) {
+          const filter = new PIXI.filters.ColorMatrixFilter()
+          filter.brightness(0.2, false)
+          radar.filters = [filter]
+        }
       } else if (key !== selectedShip?.id) {
         const filter = new PIXI.filters.ColorMatrixFilter()
         filter.brightness(0.2, false)
         value.filters = [filter]
+        if (radar) {
+          const filter = new PIXI.filters.ColorMatrixFilter()
+          filter.brightness(0.15, false)
+          radar.filters = [filter]
+        }
       } else {
         value.filters = []
+        if (radar) radar.filters = []
       }
     }
   }
@@ -192,6 +205,46 @@ export class Engine extends EventTarget {
     return -y + this.#app.screen.height
   }
 
+  private updateRadar(id: string, x: number, y: number) {
+    if (this.#radars.has(id)) {
+      const radar = this.#radars.get(id)!
+      radar.x = x
+      radar.y = y
+    }
+  }
+
+  private getRadarColor(team: string) {
+    const clrs: any = {
+      blue: 0x11a5d4,
+      red: 0xdd442c,
+      yellow: 0xe2a106,
+      green: 0x92b115,
+      white: 0x959ab1,
+    }
+    return clrs[team] || 0x1b1b1b
+  }
+
+  private createRadar(
+    id: string,
+    x: number,
+    y: number,
+    size: number,
+    team: string
+  ) {
+    const radarColor = this.getRadarColor(team)
+    const radar = new PIXI.Graphics()
+    radar.x = x
+    radar.y = y
+    radar.lineStyle(2, radarColor)
+    const filter = new PIXI.filters.ColorMatrixFilter()
+    filter.brightness(0.2, false)
+    radar.filters = [filter]
+    radar.drawCircle(0, 0, size)
+    radar.endFill()
+    this.#app.stage.addChild(radar)
+    this.#radars.set(id, radar)
+  }
+
   private updateSprite(
     type: Type,
     id: string,
@@ -200,14 +253,20 @@ export class Engine extends EventTarget {
   ) {
     if (this.#sprites.has(id)) {
       const existing = this.#sprites.get(id)!
-      existing.x = position.pos.x + this.#pos.x
-      existing.y = this.computeY(position.pos.y) + this.#pos.y
+      const x = position.pos.x + this.#pos.x
+      const y = this.computeY(position.pos.y) + this.#pos.y
+      existing.x = x
+      existing.y = y
       existing.rotation = computeRotation(position.direction)
+      this.updateRadar(id, x, y)
     } else {
+      const x = position.pos.x + this.#pos.x
+      const y = this.computeY(position.pos.y) + this.#pos.y
+      if (type === Type.SHIP)
+        this.createRadar(id, x, y, sprite.detection!, sprite.team!)
       const texture = selectTexture(this.#app, type, sprite)
       const sprite_ = new PIXI.Sprite(texture)
-      const y = this.computeY(position.pos.y)
-      sprite_.position.set(position.pos.x + this.#pos.x, y + this.#pos.y)
+      sprite_.position.set(x, y)
       sprite_.anchor.set(0.5, 0.5)
       sprite_.rotation = computeRotation(position.direction)
       this.#app.stage.addChild(sprite_)
@@ -218,8 +277,9 @@ export class Engine extends EventTarget {
   private updateDisplay() {
     this.#engine.state.ships.forEach(ship => {
       const { id, position, team, stats, shipClass } = ship
-      const size = stats.size
-      this.updateSprite(Type.SHIP, id, position, { team, size, shipClass })
+      const { size, detection } = stats
+      const info = { team, size, detection, shipClass }
+      this.updateSprite(Type.SHIP, id, position, info)
     })
     this.#engine.state.bullets.forEach(bullet => {
       const { id, position, stats } = bullet
@@ -231,8 +291,7 @@ export class Engine extends EventTarget {
   private run = (deltaTime: number) => {
     if (!this.#ended) {
       this.#app.stage.scale.set(this.#scale, this.#scale)
-      if (!this.#paused)
-        for (let i = 0; i < this.#speed; i++) this.#engine.step(deltaTime)
+      if (!this.#paused) this.#engine.step(deltaTime)
       this.updateDisplay()
     } else {
       this.#app.ticker.remove(this.run)
@@ -267,6 +326,11 @@ export class Engine extends EventTarget {
         const filter = new PIXI.filters.ColorMatrixFilter()
         filter.brightness(0.4, true)
         ship.filters = [filter]
+        const radar = this.#radars.get(evt.detail.ship.id)
+        if (radar) {
+          radar.destroy()
+          this.#radars.delete(evt.detail.ship.id)
+        }
       }
     }
   }
@@ -301,13 +365,6 @@ export class Engine extends EventTarget {
     this.dispatchEvent(new Event('log.clear'))
   }
 
-  private onSpeed = (event: Event) => {
-    const evt = event as CustomEvent<number>
-    helpers.settings.setInitialSpeed(evt.detail)
-    this.#speed = evt.detail
-    this.#animateds.forEach(this.computeAnimationSpeed)
-  }
-
   // Sprites
 
   private createExplosion(id: string, ship: PIXI.Sprite) {
@@ -320,7 +377,7 @@ export class Engine extends EventTarget {
     ]
     const sprite = new PIXI.AnimatedSprite(textures)
     sprite.loop = false
-    this.computeAnimationSpeed(sprite)
+    sprite.animationSpeed = STANDARD_ANIMATED_SPEED
     sprite.anchor.set(0.5, 0.5)
     sprite.onComplete = () => {
       sprite.destroy()
@@ -355,12 +412,5 @@ export class Engine extends EventTarget {
     //   this.#app.stage.addChild(back)
     // }
     this.updateDisplay()
-  }
-
-  // helpers
-
-  private computeAnimationSpeed = (sprite: PIXI.AnimatedSprite) => {
-    const newSpeed = STANDARD_ANIMATED_SPEED * this.#speed
-    sprite.animationSpeed = newSpeed
   }
 }

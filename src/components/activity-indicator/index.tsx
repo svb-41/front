@@ -16,7 +16,7 @@ export const ActivityIndicator = () => {
   return (
     <Row gap="s">
       {new Array(20).fill(0).map((_, index) => {
-        const background = index <= colored ? 'var(--yellow)' : undefined
+        const background = index <= colored ? 'var(--team-yellow)' : undefined
         return (
           <div
             key={index}
