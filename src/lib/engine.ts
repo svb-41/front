@@ -66,18 +66,35 @@ const prepareEnemyData = (props: UseEngine): Data => {
   }, emptyData)
 }
 
-const teamDestroyed = (ships: svb.engine.ship.Ship[], team: string) => {
+const outOfBound = (
+  ship: svb.engine.ship.Ship,
+  size: { height: number; width: number }
+): boolean =>
+  ship.position.pos.x < 0 ||
+  ship.position.pos.y < 0 ||
+  ship.position.pos.x > size.width ||
+  ship.position.pos.y > size.height
+
+const teamDestroyed = (
+  ships: svb.engine.ship.Ship[],
+  team: string,
+  size: { height: number; width: number }
+) => {
   return ships
     .filter(s => s.team === team)
-    .map(s => s.destroyed)
+    .map(s => s.destroyed || outOfBound(s, size))
     .reduce((acc, val) => acc && val, true)
 }
 
-const isEnded = (teams: Teams) => {
+const isEnded = (teams: Teams, size: { height: number; width: number }) => {
   return (state: svb.engine.State): boolean => {
     const { ships } = state
     const [fst, snd] = teams
-    return teamDestroyed(ships, fst) || teamDestroyed(ships, snd) || false
+    return (
+      teamDestroyed(ships, fst, size) ||
+      teamDestroyed(ships, snd, size) ||
+      false
+    )
   }
 }
 
@@ -103,7 +120,11 @@ const setupEngine = ({ props, enemy, data, setState }: SetupEngine) => {
     timeElapsed: 0,
   }
   const ais = [...enemy.ais, ...data.ais]
-  const engine = new svb.engine.Engine(state, ais, isEnded(teams))
+  const engine = new svb.engine.Engine(
+    state,
+    ais,
+    isEnded(teams, props.mission.size)
+  )
   const toPostMission = () => {
     setTimeout(() => {
       engine.removeEventListener('state.end', toPostMission)
