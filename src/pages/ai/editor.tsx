@@ -52,9 +52,13 @@ const NameInput = ({ data, methods }: any) => {
 
 const CompileStatus = ({ updatedAt, onClick, loading }: any) => (
   <Row align="center" gap="s">
-    {loading && <img className={styles.loader} src={loader} />}
-    {!loading && updatedAt && <img className={styles.loader} src={valid} />}
-    {!loading && !updatedAt && <img className={styles.loader} src={error} />}
+    {loading && <img className={styles.loader} src={loader} alt="Loader" />}
+    {!loading && updatedAt && (
+      <img className={styles.loader} src={valid} alt="Valid" />
+    )}
+    {!loading && !updatedAt && (
+      <img className={styles.loader} src={error} alt="Error" />
+    )}
     {updatedAt && <div className={styles.updatedAt}>{updatedAt}</div>}
     <Button primary small onClick={onClick} text={s.pages.editor.compile} />
   </Row>

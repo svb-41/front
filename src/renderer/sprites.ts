@@ -1,6 +1,5 @@
 import { engine } from '@svb-41/engine'
 
-type SHIP_CLASS = engine.ship.SHIP_CLASS
 const { SHIP_CLASS } = engine.ship
 
 export type Sprite = { name: string; url: string }
@@ -44,7 +43,7 @@ export const colorSprite = (team: string): string => {
   }
 }
 
-export type ShipSprite = { ship: SHIP_CLASS; team?: string }
+export type ShipSprite = { ship: engine.ship.SHIP_CLASS; team?: string }
 export const shipSprite = ({ ship, team = 'white' }: ShipSprite): string => {
   switch (ship) {
     case SHIP_CLASS.DESTROYER:

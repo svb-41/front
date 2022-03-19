@@ -21,7 +21,7 @@ const useTitle = (mission: services.Mission, selected: number) => {
       }
     }
     fun(1)
-  }, [selected])
+  }, [mission.subtitle, selected])
   return title
 }
 

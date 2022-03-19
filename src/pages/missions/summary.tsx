@@ -49,7 +49,11 @@ const CongratsOrCry = ({ won }: { won: boolean }) => {
   const { congrats, tooBad, brilliantVictory, youLost } = congratsOrCry
   return (
     <Row align="center" gap="xl">
-      <img src={won ? trophy : cry} style={{ width: 100 }} />
+      <img
+        src={won ? trophy : cry}
+        alt={won ? 'Trophy' : 'Cries'}
+        style={{ width: 100 }}
+      />
       <Column>
         <Jumbotron content={won ? congrats : tooBad} />
         <Title content={won ? brilliantVictory : youLost} />
@@ -148,7 +152,7 @@ export const Summary = ({ engine, restart, mission, replay, back }: Props) => {
       const action = unlockRewards(mission.rewards)
       dispatch(action)
     }
-  }, [mission, playerWin])
+  }, [dispatch, mission, playerWin])
   return (
     <Column align="center" justify="center" padding="xxl" gap="xxl">
       <CongratsOrCry won={playerWin} />

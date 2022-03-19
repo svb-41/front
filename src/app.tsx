@@ -31,7 +31,7 @@ const App = () => {
       }, timeout)
     }
     run()
-  }, [])
+  }, [dispatch])
   if (visible) return <Overlay />
   return (
     <Routes>

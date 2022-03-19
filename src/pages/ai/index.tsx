@@ -80,7 +80,7 @@ const FileCard = ({ ai, favorite, onFavorite, onClick }: FileCardProps) => {
         className={styles.fileName}
         style={opacity}
       >
-        <img src={tsLogo} className={styles.logo} />
+        <img src={tsLogo} className={styles.logo} alt="TypeScript Logo" />
         <div>{ai?.file?.path ?? 'example.ts'}</div>
         <div style={{ flex: 1 }} />
         <div

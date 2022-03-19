@@ -275,7 +275,11 @@ const RenderAIs = ({
             >
               <Column background="var(--ccc)" padding="s" gap="s">
                 <Row align="center" gap="s">
-                  <img src={tsLogo} className={styles.logo} />
+                  <img
+                    src={tsLogo}
+                    className={styles.logo}
+                    alt="TypeScript Logo"
+                  />
                   <div className={styles.pathName}>{ai.file.path}</div>
                 </Row>
                 <Column>
@@ -309,7 +313,7 @@ const AIDetails = ({
     return (
       <Column background="var(--ddd)" padding="m" gap="m">
         <Row align="center" gap="s">
-          <img src={tsLogo} className={styles.logo} />
+          <img src={tsLogo} className={styles.logo} alt="TypeScript Logo" />
           <div className={styles.pathName}>{ai.file.path}</div>
         </Row>
         {ai.tags.length >= 0 && (
@@ -430,6 +434,7 @@ export const FleetManager = (props: Props) => {
   //     setSelected(undefined)
   //   }
   // }
+  const { onValidConfiguration } = props
   useEffect(() => {
     let atLeastOne = false
     const oneBy = (data: ByCoords<any>, comp: ByCoords<any>) => {
@@ -447,8 +452,8 @@ export const FleetManager = (props: Props) => {
     }
     const isValid =
       oneBy(data.ships, data.AIs) && oneBy(data.AIs, data.ships) && atLeastOne
-    props.onValidConfiguration(isValid ? data : null)
-  }, [data])
+    onValidConfiguration(isValid ? data : null)
+  }, [data, onValidConfiguration])
   const [shipDetails, setShipDetails] = useState<number | null>(null)
   const [aiDetails, setAIDetails] = useState<string | null>(null)
   return (

@@ -48,17 +48,18 @@ export const Monaco = (props: Props) => {
     monaco.languages.typescript.typescriptDefaults.addExtraLib(types, engine)
     monaco.languages.typescript.typescriptDefaults.addExtraLib(core, coreDecl)
   }
+  const { onSave } = props
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {
       const isCmdCtrl = event.ctrlKey || event.metaKey
       if (event.key === 's' && isCmdCtrl) {
         event.preventDefault()
-        props.onSave()
+        onSave()
       }
     }
     document.addEventListener('keydown', handler)
     return () => document.removeEventListener('keydown', handler)
-  }, [props.onSave])
+  }, [onSave])
   return (
     <Editor
       value={props.file?.code}
@@ -74,7 +75,7 @@ export const Monaco = (props: Props) => {
         fontSize: 14,
         'semanticHighlighting.enabled': true,
       }}
-      loading={<img className={styles.loader} src={loader} />}
+      loading={<img className={styles.loader} src={loader} alt="Loader" />}
     />
   )
 }

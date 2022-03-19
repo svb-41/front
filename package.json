@@ -41,7 +41,15 @@
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "rules": {
+      "semi": 0,
+      "no-shadow": 0,
+      "curly": 0,
+      "no-unused-vars": 0,
+      "@typescript-eslint/no-unused-vars": 0,
+      "@typescript-eslint/no-redeclare": 0
+    }
   },
   "resolutions": {
     "react-error-overlay": "6.0.9"
