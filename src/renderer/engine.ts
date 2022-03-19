@@ -46,6 +46,7 @@ export class Engine extends EventTarget {
   #dragStart: { x: number; y: number }
   #drag: boolean
   #downTS: number
+  #selectedShip: string | null
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -66,6 +67,7 @@ export class Engine extends EventTarget {
     this.#engine = engine
     this.#ended = false
     this.#paused = false
+    this.#selectedShip = null
     this.#speed = helpers.settings.getInitialSpeed()
     this.#app = new PIXI.Application({ view, antialias, resizeTo: div })
     const { scroll, onClick, onDragMove, onDragEnd, onDragStart } =
@@ -109,9 +111,24 @@ export class Engine extends EventTarget {
     this.#app.destroy()
   }
 
+  private handleSpritesBrightness(selectedShip: engine.ship.Ship | undefined) {
+    for (const [key, value] of this.#sprites.entries()) {
+      if (!selectedShip) {
+        value.filters = []
+      } else if (key !== selectedShip?.id) {
+        const filter = new PIXI.filters.ColorMatrixFilter()
+        filter.brightness(0.2, false)
+        value.filters = [filter]
+      } else {
+        value.filters = []
+      }
+    }
+  }
+
   private moveFunctions() {
     return {
       onClick: (e: any) => {
+        if (!this.#app) return
         if (Date.now() - this.#downTS < 200) {
           const { offsetX: x, offsetY: y } = e
           const scale = this.#scale
@@ -130,7 +147,7 @@ export class Engine extends EventTarget {
           this.dispatchEvent(event)
         }
       },
-      onDragEnd: (e: any) => (this.#drag = false),
+      onDragEnd: (_e: any) => (this.#drag = false),
       onDragMove: (e: any) => {
         if (this.#drag) {
           const { x, y } = e
