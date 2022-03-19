@@ -25,7 +25,7 @@ const Preparation = ({ onClick }: { onClick: () => void }) => (
 
 const RenderLoading = () => (
   <Column flex={1} justify="center" padding="xxl" gap="m">
-    <Title content="You AI is compiling…" />
+    <Title content={s.pages.ais.aiCompiling} />
     <ActivityIndicator />
   </Column>
 )

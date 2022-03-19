@@ -79,7 +79,8 @@
       "favoriteDescription": "Add a file to your favorite to see it displayed here.",
       "launchSimulation": "Prepare simulation",
       "relaunchEngine": "Relaunch Engine",
-      "tryAI": "To try your AI quickly, you can launch a simulation"
+      "tryAI": "To try your AI quickly, you can launch a simulation",
+      "aiCompiling": "You AI is compiling…"
     },
     "notFound": {
       "title": "Unfortunately, it looks like there’s nothing here…",
