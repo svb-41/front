@@ -20,3 +20,11 @@
   position: relative;
   flex: 1;
 }
+
+.renderShip {
+  position: absolute;
+  top: var(--m);
+  right: var(--m);
+  background: var(--eee);
+  z-index: 10000;
+}

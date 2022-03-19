@@ -124,7 +124,10 @@ export class Engine extends EventTarget {
               dist2(s.position, { pos, direction: 0, speed: 0 }) <
               Math.pow(s.stats.size, 2)
           )
-          console.log(pos, selectedShip)
+          const data = { detail: { pos, ship: selectedShip } }
+          const event = new CustomEvent('ship.selection', data)
+          this.handleSpritesBrightness(selectedShip)
+          this.dispatchEvent(event)
         }
       },
       onDragEnd: (e: any) => (this.#drag = false),
