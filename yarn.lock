@@ -1684,15 +1684,15 @@
     ejs "^2.6.1"
     magic-string "^0.25.0"
 
-"@svb-41/core@^0.9.0":
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/@svb-41/core/-/core-0.9.0.tgz#948a99a285a53bfbe7c98cf56b886ea6faeb4551"
-  integrity sha512-UZgBnk/UWQcaEHHp5bDcoHQa75tFPGNp4z1s2IGtucUPm+hLDSAMGEiENUWNILw30fig31jHvLQunF890PfMDA==
+"@svb-41/core@^0.12.0":
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/@svb-41/core/-/core-0.12.0.tgz#42bd562fd5281e6b5c4764c916734f77467c0333"
+  integrity sha512-7a46+zPKSXu7dOKU25bSicx+Clm1sTevsZzwHCVPt72u2NN47sSB6UpqO3KXq/TUjAjBdNpJmwx2nEo5WECkhw==
 
-"@svb-41/engine@^0.8.0":
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/@svb-41/engine/-/engine-0.8.0.tgz#2ccfb35cc951fc882f17f0f39753eca6f34ef9f2"
-  integrity sha512-+Mf+sh8avl+BshtLr9ouEy5/78toisDxo2yW4FwHMytDq02mTgdpR8zgfU6QK/IvmMxlNxfF7NdZeIoiEc0gvQ==
+"@svb-41/engine@^0.10.0":
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/@svb-41/engine/-/engine-0.10.0.tgz#888bc3e39f384f7dcbde4176ffa60308d5ca781a"
+  integrity sha512-L7EKerryLMcLpWXk3oDPYCbCmRgRcA0xRXTyCwcXkKueizvrWom+9GO5h+ZXL/Vxl6pXqGKnfS18IvEmk84mzA==
   dependencies:
     uuid "^8.3.2"
 
