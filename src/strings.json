@@ -76,7 +76,10 @@
       "createdAt": "Created at",
       "updatedAt": "Updated at",
       "emptyDescription": "Enter your description here. Use it to remember easily what the controller do.",
-      "favoriteDescription": "Add a file to your favorite to see it displayed here."
+      "favoriteDescription": "Add a file to your favorite to see it displayed here.",
+      "launchSimulation": "Prepare simulation",
+      "relaunchEngine": "Relaunch Engine",
+      "tryAI": "To try your AI quickly, you can launch a simulation"
     },
     "notFound": {
       "title": "Unfortunately, it looks like there’s nothing here…",

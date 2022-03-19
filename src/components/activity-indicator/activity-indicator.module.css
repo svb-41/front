@@ -1,0 +1,5 @@
+.activityIndicatorRect {
+  background: var(--000);
+  width: 10px;
+  height: 40px;
+}

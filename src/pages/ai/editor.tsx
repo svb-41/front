@@ -3,7 +3,7 @@ import prettier from 'prettier'
 import parserTypescript from 'prettier/parser-babel'
 import { Main } from '@/components/main'
 import { Button } from '@/components/button'
-import { Row } from '@/components/flex'
+import { Row, Column } from '@/components/flex'
 import { Checkbox } from '@/components/checkbox'
 import { useLocation } from 'react-router-dom'
 import * as Monaco from '@/components/monaco'
@@ -171,31 +171,38 @@ export const AIEditor = () => {
   }
   return (
     <Main>
-      <Row justify="space-between" padding="s" background="var(--eee)">
-        <NameInput {...ai} />
-        <Row align="center" gap="xxl">
-          <FormatStatus
-            formatOnSave={ai.data.formatOnSave}
-            onChange={ai.methods.toggleFormat}
-            onClick={ai.methods.format}
-          />
-          <CompileStatus
-            updatedAt={ai.data.updatedAt}
-            loading={loading}
-            onClick={onClick}
-          />
-        </Row>
-      </Row>
       <div className={styles.monaco} style={{ background: '#1e1e1e' }}>
-        <div className={styles.editor}>
-          <Monaco.Monaco
-            onChange={ai.methods.save}
-            file={ai.data.file}
-            onSave={onClick}
-          />
-        </div>
+        <Column flex={3}>
+          <Row
+            justify="space-between"
+            padding="s"
+            background="var(--eee)"
+            height={50}
+          >
+            <NameInput {...ai} />
+            <Row align="center" gap="xxl">
+              <FormatStatus
+                formatOnSave={ai.data.formatOnSave}
+                onChange={ai.methods.toggleFormat}
+                onClick={ai.methods.format}
+              />
+              <CompileStatus
+                updatedAt={ai.data.updatedAt}
+                loading={loading}
+                onClick={onClick}
+              />
+            </Row>
+          </Row>
+          <div className={styles.editor}>
+            <Monaco.Monaco
+              onChange={ai.methods.save}
+              file={ai.data.file}
+              onSave={onClick}
+            />
+          </div>
+        </Column>
         <div className={styles.sidePanel}>
-          {selectedAI && <Simulation ai={selectedAI} />}
+          {selectedAI && <Simulation ai={selectedAI} beforeLaunch={onClick} />}
         </div>
       </div>
     </Main>

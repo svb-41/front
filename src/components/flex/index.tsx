@@ -39,13 +39,14 @@ export type Props = {
   color?: string
   onClick?: () => void
   style?: CSSProperties
+  height?: number
 }
 
 const Flex = (r: { row: boolean; col: boolean }): FC<Props> => {
   return props => {
     const { children, tag = 'div', onClick } = props
     const { gap, padding = 'none', align, justify, wrap } = props
-    const { background, width, flex, maxWidth, color } = props
+    const { background, width, flex, maxWidth, color, height } = props
     const cursor = onClick ? 'pointer' : undefined
     const cl = classesNames({
       ...r,
@@ -57,7 +58,15 @@ const Flex = (r: { row: boolean; col: boolean }): FC<Props> => {
       cursor,
     })
     const className = props.className ? `${cl} ${props.className}` : cl
-    const style = { ...props.style, background, width, flex, maxWidth, color }
+    const style = {
+      ...props.style,
+      background,
+      width,
+      flex,
+      maxWidth,
+      color,
+      height,
+    }
     return createElement(tag, { className, style, onClick }, children)
   }
 }

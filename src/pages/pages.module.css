@@ -30,12 +30,6 @@
   color: var(--000);
 }
 
-.activityIndicatorRect {
-  background: var(--000);
-  width: 10px;
-  height: 40px;
-}
-
 .github {
   padding-top: var(--m);
 }
