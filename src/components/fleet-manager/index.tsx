@@ -8,7 +8,6 @@ import { useSelector, useDispatch } from '@/store/hooks'
 import * as actions from '@/store/actions/user'
 import { Title, SubTitle, Explanations } from '@/components/title'
 import { Row, Column } from '@/components/flex'
-import * as Ship from '@/components/ship'
 import background from '@/assets/backgrounds/black.png'
 import tsLogo from '@/components/monaco/ts.svg'
 import * as helpers from '@/helpers/dates'
@@ -361,26 +360,32 @@ export const FleetManager = (props: Props) => {
   return (
     <Column gap="xl">
       <Column background="var(--ddd)" padding="m" gap="s">
-        <Row gap="l" align="center">
-          <Title content="Construct your fleet" />
-          <span
-            className={styles.teamName}
-            style={{ background: `var(--team-${team})` }}
-          >
-            {team.toUpperCase()}
-          </span>
-          <Button
-            text="Load fleet config"
-            onClick={() => {
-              loadDataFromStore('da157cf8-c041-4e88-904e-041d9568feed')
-            }}
-            secondary
-          />
-          <Button
-            text={`Save ${!loadedConf ? 'new ' : ''}config`}
-            onClick={saveFleetConfig}
-            secondary
-          />
+        <Row justify="space-between">
+          <Row gap="l" align="center">
+            <Title content="Construct your fleet" />
+            <span
+              className={styles.teamName}
+              style={{ background: `var(--team-${team})` }}
+            >
+              {team.toUpperCase()}
+            </span>
+          </Row>
+          <Row gap="s">
+            <Button
+              small
+              text="Load fleet config"
+              onClick={() => {
+                loadDataFromStore('da157cf8-c041-4e88-904e-041d9568feed')
+              }}
+              secondary
+            />
+            <Button
+              small
+              text={`Save ${!loadedConf ? 'new ' : ''}config`}
+              onClick={saveFleetConfig}
+              secondary
+            />
+          </Row>
         </Row>
         <Explanations
           color="var(--888)"

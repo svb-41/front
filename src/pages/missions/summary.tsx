@@ -20,7 +20,7 @@ const RenderShipsSummary = ({ ships, content }: RSSProps) => (
   <Column background="var(--ddd)" padding="m">
     <SubTitle color="var(--555)" content={content} />
     <Row gap="m" wrap="wrap">
-      {ships.map((ship, i) => (
+      {ships.map(ship => (
         <Icon shipClass={ship.shipClass} team={ship.team} />
       ))}
     </Row>

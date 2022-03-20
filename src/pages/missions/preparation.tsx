@@ -5,6 +5,27 @@ import { Mission } from '@/services/mission'
 import { countShips } from '@/lib/ship'
 import s from '@/strings.json'
 
+const renderShip = (team: string, onClick?: (id: string) => void) => {
+  return ([shipClass, count]: [string, number], i: number) => {
+    const c = onClick ? () => onClick(shipClass) : undefined
+    return (
+      <Column
+        background="var(--ddd)"
+        padding="m"
+        gap="s"
+        align="center"
+        onClick={c}
+      >
+        <Row gap="s">
+          <div style={{ color: 'var(--888)' }}>{count} x</div>
+          <div>{shipClass}</div>
+        </Row>
+        <Icon shipClass={shipClass as any} key={i} team={team} />
+      </Column>
+    )
+  }
+}
+
 export type EnemyShipsProps = {
   mission: Mission
   team: string
@@ -20,21 +41,7 @@ export const EnemyShips = ({ mission, team, onClick }: EnemyShipsProps) => {
           <Caption content={s.pages.missions.mission.whyEnemyShips} />
         </Column>
         <Row gap="m" wrap="wrap">
-          {cards.map(([shipClass, count], i) => (
-            <Column
-              background="var(--ddd)"
-              padding="m"
-              gap="s"
-              align="center"
-              onClick={onClick ? () => onClick(shipClass) : undefined}
-            >
-              <Row gap="s">
-                <div style={{ color: 'var(--888)' }}>{count} x</div>
-                <div>{shipClass}</div>
-              </Row>
-              <Icon shipClass={shipClass as any} key={i} team={team} />
-            </Column>
-          ))}
+          {cards.map(renderShip(team, onClick))}
         </Row>
       </Column>
     </Column>
