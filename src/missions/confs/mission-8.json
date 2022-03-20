@@ -1,0 +1,167 @@
+{
+  "id": "8",
+  "title": "Kill the hive",
+  "subtitle": "Finally we’re here. All the hard work finished to pay. We found the headquarters of the fleet.\nA huge number of ships. A huge number of weapons. And lots of generals.\nThe big final is there.",
+  "description": "While you may not know commander, we’re in war with the moonlanders since a while now. They escaped from the Earth a long time ago, and they never surrender. Surprinsigly, they’re especially strong in space conditions. Thanks to moon gravity I think. Those little son of a bitch have to die, we need to conquer the moon back.\nBe careful, you’ll have a huge fleet against you. Prepare correctly, you won’t have a second chance.\nFuck the moonlanders. Kill ’em all.",
+  "credit": 320,
+  "size": { "height": 1000, "width": 2000 },
+  "rewards": {
+    "ships": ["destroyer"],
+    "missions": []
+  },
+  "ships": [
+    {
+      "classShip": "FIGHTER",
+      "ai": "fastAssault",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 350 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "fastAssault",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 450 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "fastAssault",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 550 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "fastAssault",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 650 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "fastAssault",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 750 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "fastAssault",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 850 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "fastAssault",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 1900, "y": 300 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "fastAssault",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 1900, "y": 900 }
+      }
+    },
+    {
+      "classShip": "SCOUT",
+      "ai": "staticScout",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 1900, "y": 450 }
+      }
+    },
+    {
+      "classShip": "SCOUT",
+      "ai": "staticScout",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 1900, "y": 750 }
+      }
+    },
+    {
+      "classShip": "SCOUT",
+      "ai": "scout",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 1800, "y": 450 }
+      }
+    },
+    {
+      "classShip": "SCOUT",
+      "ai": "scout",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 1800, "y": 750 }
+      }
+    },
+    {
+      "classShip": "DESTROYER",
+      "ai": "destroyer",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 400 }
+      }
+    },
+    {
+      "classShip": "DESTROYER",
+      "ai": "destroyer",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 500 }
+      }
+    },
+    {
+      "classShip": "DESTROYER",
+      "ai": "destroyer",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 600 }
+      }
+    },
+    {
+      "classShip": "DESTROYER",
+      "ai": "destroyer",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 700 }
+      }
+    },
+    {
+      "classShip": "DESTROYER",
+      "ai": "destroyer",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 800 }
+      }
+    }
+  ]
+}
