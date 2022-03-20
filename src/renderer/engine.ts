@@ -51,6 +51,7 @@ export class Engine extends EventTarget {
   #dragStart: { x: number; y: number }
   #drag: boolean
   #downTS: number
+  #shipsDestroyed: Map<string, boolean>
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -69,6 +70,7 @@ export class Engine extends EventTarget {
     this.#radars = new Map()
     this.#sprites = new Map()
     this.#animateds = new Map()
+    this.#shipsDestroyed = new Map()
     this.#engine = engine
     this.#ended = false
     this.#paused = false
@@ -117,9 +119,9 @@ export class Engine extends EventTarget {
     this.#app.destroy()
   }
 
-  private get smallBrightness() {
+  private brightness(value: number, boolean = false) {
     const filter = new PIXI.filters.ColorMatrixFilter()
-    filter.brightness(0.2, false)
+    filter.brightness(value, boolean)
     return filter
   }
 
@@ -127,11 +129,11 @@ export class Engine extends EventTarget {
     for (const [key, value] of this.#sprites.entries()) {
       const radar = this.#radars.get(key)
       if (!selectedShip) {
-        const ship = this.#engine.state.ships.find(s => s.id === key)
-        value.filters = ship?.destroyed ? [this.smallBrightness] : []
-        if (radar) radar.filters = [this.smallBrightness]
+        const isDestroyed = this.#shipsDestroyed.has(key)
+        value.filters = isDestroyed ? [this.brightness(0.2)] : []
+        if (radar) radar.filters = [this.brightness(0.2)]
       } else if (key !== selectedShip?.id) {
-        value.filters = [this.smallBrightness]
+        value.filters = [this.brightness(0.2)]
         if (radar) {
           const filter = new PIXI.filters.ColorMatrixFilter()
           filter.brightness(0.15, false)
@@ -324,9 +326,8 @@ export class Engine extends EventTarget {
       this.#app.stage.addChild(sprite)
       sprite.play()
       if (evt.detail.ship.destroyed) {
-        const filter = new PIXI.filters.ColorMatrixFilter()
-        filter.brightness(0.4, true)
-        ship.filters = [filter]
+        this.#shipsDestroyed.set(evt.detail.ship.id, true)
+        ship.filters = [this.brightness(0.4, true)]
         const radar = this.#radars.get(evt.detail.ship.id)
         if (radar) {
           radar.destroy()
