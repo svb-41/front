@@ -4,7 +4,7 @@
   "subtitle": "Commander? New day, new mission. As one of the best of us, you’re in charge of a new mission.\nAre you ready to tackle it seriously?",
   "description": "The opponent developped a new weapon for the fight. While it’s an old technology, they just rediscovered it, why now? Nobody knows. Be careful commander, the torpedo they’re using are able to seek for their target. Once seen, you won’t be able to save your ship. Apparently, they keep an undercover strategy: not moving, have large radars, and try to shoot everything that comes in.\nGo there and kill them. Good luck, commander.",
   "credit": 320,
-  "size": { "height": 1000, "width": 2000 },
+  "size": { "height": 1000, "width": 3000 },
   "rewards": {
     "ships": [],
     "missions": ["8"]
@@ -16,7 +16,7 @@
       "position": {
         "direction": 3.141592653589793,
         "speed": 0,
-        "pos": { "x": 2000, "y": 200 }
+        "pos": { "x": 2800, "y": 200 }
       }
     },
     {
@@ -25,7 +25,7 @@
       "position": {
         "direction": 3.141592653589793,
         "speed": 0,
-        "pos": { "x": 2000, "y": 400 }
+        "pos": { "x": 2800, "y": 400 }
       }
     },
     {
@@ -34,7 +34,7 @@
       "position": {
         "direction": 3.141592653589793,
         "speed": 0,
-        "pos": { "x": 2000, "y": 600 }
+        "pos": { "x": 2800, "y": 600 }
       }
     },
     {
@@ -43,7 +43,7 @@
       "position": {
         "direction": 3.141592653589793,
         "speed": 0,
-        "pos": { "x": 2000, "y": 800 }
+        "pos": { "x": 2800, "y": 800 }
       }
     },
     {
@@ -52,7 +52,7 @@
       "position": {
         "direction": 3.141592653589793,
         "speed": 0,
-        "pos": { "x": 2000, "y": 1000 }
+        "pos": { "x": 2800, "y": 1000 }
       }
     },
     {
@@ -61,7 +61,7 @@
       "position": {
         "direction": 3.141592653589793,
         "speed": 0,
-        "pos": { "x": 2000, "y": 1200 }
+        "pos": { "x": 2800, "y": 1200 }
       }
     },
     {
@@ -70,7 +70,7 @@
       "position": {
         "direction": 3.141592653589793,
         "speed": 0,
-        "pos": { "x": 2000, "y": 700 }
+        "pos": { "x": 2800, "y": 700 }
       }
     },
     {
@@ -79,7 +79,7 @@
       "position": {
         "direction": 3.141592653589793,
         "speed": 0,
-        "pos": { "x": 2000, "y": 300 }
+        "pos": { "x": 2800, "y": 300 }
       }
     },
     {
@@ -88,7 +88,7 @@
       "position": {
         "direction": 3.141592653589793,
         "speed": 0,
-        "pos": { "x": 2000, "y": 1100 }
+        "pos": { "x": 2800, "y": 1100 }
       }
     },
     {
@@ -97,7 +97,7 @@
       "position": {
         "direction": 3.141592653589793,
         "speed": 0,
-        "pos": { "x": 2000, "y": 900 }
+        "pos": { "x": 2800, "y": 900 }
       }
     },
     {
@@ -106,7 +106,7 @@
       "position": {
         "direction": 3.141592653589793,
         "speed": 0,
-        "pos": { "x": 2000, "y": 500 }
+        "pos": { "x": 2800, "y": 500 }
       }
     }
   ]
