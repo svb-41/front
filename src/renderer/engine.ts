@@ -117,20 +117,21 @@ export class Engine extends EventTarget {
     this.#app.destroy()
   }
 
+  private get smallBrightness() {
+    const filter = new PIXI.filters.ColorMatrixFilter()
+    filter.brightness(0.2, false)
+    return filter
+  }
+
   private handleSpritesBrightness(selectedShip: engine.ship.Ship | undefined) {
     for (const [key, value] of this.#sprites.entries()) {
       const radar = this.#radars.get(key)
       if (!selectedShip) {
-        value.filters = []
-        if (radar) {
-          const filter = new PIXI.filters.ColorMatrixFilter()
-          filter.brightness(0.2, false)
-          radar.filters = [filter]
-        }
+        const ship = this.#engine.state.ships.find(s => s.id === key)
+        value.filters = ship?.destroyed ? [this.smallBrightness] : []
+        if (radar) radar.filters = [this.smallBrightness]
       } else if (key !== selectedShip?.id) {
-        const filter = new PIXI.filters.ColorMatrixFilter()
-        filter.brightness(0.2, false)
-        value.filters = [filter]
+        value.filters = [this.smallBrightness]
         if (radar) {
           const filter = new PIXI.filters.ColorMatrixFilter()
           filter.brightness(0.15, false)
