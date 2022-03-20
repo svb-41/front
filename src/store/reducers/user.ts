@@ -4,9 +4,11 @@ import {
   UPDATE_USER_ID,
   UPDATE_COLOR,
   UNLOCK_REWARDS,
+  SAVE_FLEET_CONFIG,
   Rewards,
 } from '@/store/actions/user'
 import { Color } from '@/lib/color'
+import { Data } from '@/components/fleet-manager'
 
 export type User = string | null
 
@@ -15,6 +17,7 @@ export type State = {
   unlockedShips: Array<string>
   unlockedMissions: Array<string>
   color: Color
+  fleetConfigs: { [id: string]: Data }
 }
 
 const init: State = {
@@ -22,12 +25,14 @@ const init: State = {
   unlockedShips: [],
   unlockedMissions: [],
   color: Color.GREEN,
+  fleetConfigs: {},
 }
 
 export type Action =
   | { type: 'user/LOAD_ID'; id: string }
   | { type: 'user/UPDATE_COLOR'; color: Color }
   | { type: 'user/UNLOCK_REWARDS'; rewards: Rewards }
+  | { type: 'user/SAVE_FLEET_CONFIG'; conf: { data: Data; id: string } }
   | {
       type: 'user/LOAD_USER'
       unlockedShips: Array<string>
@@ -50,6 +55,11 @@ export const reducer: Reducer<State, Action> = (state = init, action) => {
     case UPDATE_COLOR: {
       const { color } = action
       return { ...state, color }
+    }
+    case SAVE_FLEET_CONFIG: {
+      const { conf } = action
+      const fleetConfigs = { ...state.fleetConfigs, [conf.id]: conf.data }
+      return { ...state, fleetConfigs }
     }
     case UNLOCK_REWARDS: {
       const { rewards } = action
