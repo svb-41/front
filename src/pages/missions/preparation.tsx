@@ -1,7 +1,6 @@
-import { useState } from 'react'
 import { Title, Caption } from '@/components/title'
 import { Column, Row } from '@/components/flex'
-import { Icon, Details } from '@/components/ship'
+import { Icon } from '@/components/ship'
 import { Mission } from '@/services/mission'
 import { countShips } from '@/lib/ship'
 import s from '@/strings.json'
@@ -9,11 +8,10 @@ import s from '@/strings.json'
 export type EnemyShipsProps = {
   mission: Mission
   team: string
-  clickable?: boolean
+  onClick?: (id: string) => void
 }
-export const EnemyShips = ({ mission, team, clickable }: EnemyShipsProps) => {
+export const EnemyShips = ({ mission, team, onClick }: EnemyShipsProps) => {
   const cards = Object.entries(countShips(mission))
-  const [selected, setSelected] = useState<string>()
   return (
     <Column gap="xl">
       <Column background="var(--eee)" padding="xl" gap="xl">
@@ -28,7 +26,7 @@ export const EnemyShips = ({ mission, team, clickable }: EnemyShipsProps) => {
               padding="m"
               gap="s"
               align="center"
-              onClick={clickable ? () => setSelected(shipClass) : undefined}
+              onClick={onClick ? () => onClick(shipClass) : undefined}
             >
               <Row gap="s">
                 <div style={{ color: 'var(--888)' }}>{count} x</div>
@@ -39,19 +37,6 @@ export const EnemyShips = ({ mission, team, clickable }: EnemyShipsProps) => {
           ))}
         </Row>
       </Column>
-      {selected && clickable && (
-        <Column padding="xl" gap="xl" background="var(--eee)">
-          <Title content="Details" />
-          <Row background="var(--ddd)">
-            <Details
-              ship={selected}
-              locked={false}
-              color={team}
-              infoCard="var(--ccc)"
-            />
-          </Row>
-        </Column>
-      )}
     </Column>
   )
 }

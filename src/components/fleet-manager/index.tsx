@@ -136,7 +136,7 @@ const Grid = (props: GridProps) => {
 
 type ShipsProps = {
   ships: string[]
-  onClick: (value: number) => void
+  onClick: (value: string) => void
   onDragStart: (ship: string) => void
   team: string
 }
@@ -146,7 +146,7 @@ const Ships = ({ ships, onClick, onDragStart, team }: ShipsProps) => (
       <div
         key={index}
         className={styles.availableShip}
-        onClick={() => onClick(index)}
+        onClick={() => onClick(ship)}
       >
         <div>{ship}</div>
         <img
@@ -159,31 +159,6 @@ const Ships = ({ ships, onClick, onDragStart, team }: ShipsProps) => (
     ))}
   </Row>
 )
-
-type ListAiProps = {
-  ais: AI[]
-  onClick: (ai: AI) => void
-  onDelete: () => void
-  displayed: boolean
-}
-const ListAi = ({ ais, onClick, displayed, onDelete }: ListAiProps) => {
-  const compiled = ais.filter(ai => !!ai.compiledValue)
-  if (!displayed) return null
-  return (
-    <div className={styles.ai}>
-      {compiled.map(ai => (
-        <div
-          key={ai.id}
-          onClick={() => onClick(ai)}
-          className={styles.aiButton}
-        >
-          <div className={styles.aiPath}>{ai.file.path}</div>
-        </div>
-      ))}
-      <Button text="Delete" onClick={onDelete} />
-    </div>
-  )
-}
 
 const Tab = ({ onClick, text, className }: any) => (
   <button onClick={onClick} className={className}>
@@ -213,33 +188,12 @@ const RenderShips = ({ ships, setShipDetails, onDragStart, team }: any) => (
     {ships.length >= 5 && (
       <Ships
         ships={ships.slice(3, 9)}
-        onClick={(i: number) => setShipDetails(i + 3)}
+        onClick={(i: string) => setShipDetails(i)}
         onDragStart={onDragStart}
         team={team}
       />
     )}
   </Column>
-)
-
-const ShipDetails = ({ shipDetails, ships, team }: any) => (
-  <Row>
-    {shipDetails !== null && (
-      <Row background="var(--ddd)">
-        <Ship.Details ship={ships[shipDetails]} locked={false} color={team} />
-      </Row>
-    )}
-    {shipDetails === null && (
-      <Column
-        background="var(--ddd)"
-        align="center"
-        justify="center"
-        padding="xl"
-      >
-        <div>Click on a ship</div>
-        <div>to see its stats</div>
-      </Column>
-    )}
-  </Row>
 )
 
 const RenderAIs = ({
@@ -299,60 +253,6 @@ const RenderAIs = ({
   )
 }
 
-const AIDetails = ({
-  aiDetails,
-  ais,
-  team,
-}: {
-  ais: AI[]
-  aiDetails: string | null
-  team: string
-}) => {
-  const ai = ais.find(ai => ai.id === aiDetails)
-  if (ai)
-    return (
-      <Column background="var(--ddd)" padding="m" gap="m">
-        <Row align="center" gap="s">
-          <img src={tsLogo} className={styles.logo} alt="TypeScript Logo" />
-          <div className={styles.pathName}>{ai.file.path}</div>
-        </Row>
-        {ai.tags.length >= 0 && (
-          <Row gap="s">
-            {ai.tags.map(tag => (
-              <Row padding="s" background={`var(--team-${team})`}>
-                {tag}
-              </Row>
-            ))}
-          </Row>
-        )}
-        {ai.description && (
-          <div style={{ maxWidth: 200, overflow: 'hidden' }}>
-            {ai.description}
-          </div>
-        )}
-        <Column align="flex-end">
-          <div className={styles.dates}>
-            Created at {helpers.toLocale(new Date(ai.createdAt))}
-          </div>
-          <div className={styles.dates}>
-            Updated at {helpers.toLocale(new Date(ai.updatedAt))}
-          </div>
-        </Column>
-      </Column>
-    )
-  return (
-    <Column
-      background="var(--ddd)"
-      align="center"
-      justify="center"
-      padding="xl"
-    >
-      <div>Click on an AI</div>
-      <div>to see its details</div>
-    </Column>
-  )
-}
-
 const ShipSelector = (props: any) => {
   const [state, setState] = useState<'ships' | 'ai'>('ships')
   const subtitle = state === 'ai' ? 'Available AI' : 'Available ships'
@@ -366,8 +266,6 @@ const ShipSelector = (props: any) => {
           {state === 'ai' && <RenderAIs {...props} />}
         </Column>
       </Column>
-      {state === 'ships' && <ShipDetails {...props} />}
-      {state === 'ai' && <AIDetails {...props} />}
     </Column>
   )
 }
@@ -379,6 +277,8 @@ export type Props = {
   onValidConfiguration: (data: Data | null) => void
   width: number
   height: number
+  onShipClick: (id: string) => void
+  onAIClick: (id: string) => void
 }
 export const FleetManager = (props: Props) => {
   const { team, ships, ais } = props
@@ -419,21 +319,6 @@ export const FleetManager = (props: Props) => {
       setData({ ...data, AIs })
     }
   }
-  // const onDelete = () => {
-  //   if (selected) {
-  //     const { x, y, idx } = selected
-  //     const atXShips = data.ships[x] ?? {}
-  //     const atYShips = [...(atXShips[y] ?? [])]
-  //     atYShips.splice(idx, 1)
-  //     const ships = { ...data.ships, [x]: { ...data.ships[x], [y]: atYShips } }
-  //     const atXAI = data.AIs[x] ?? {}
-  //     const atYAI = [...(atXAI[y] ?? [])]
-  //     atYAI.splice(idx, 1)
-  //     const AIs = { ...data.ships, [x]: { ...data.ships[x], [y]: atYAI } }
-  //     setData({ ...data, ships, AIs })
-  //     setSelected(undefined)
-  //   }
-  // }
   const { onValidConfiguration } = props
   useEffect(() => {
     let atLeastOne = false
@@ -454,8 +339,6 @@ export const FleetManager = (props: Props) => {
       oneBy(data.ships, data.AIs) && oneBy(data.AIs, data.ships) && atLeastOne
     onValidConfiguration(isValid ? data : null)
   }, [data, onValidConfiguration])
-  const [shipDetails, setShipDetails] = useState<number | null>(null)
-  const [aiDetails, setAIDetails] = useState<string | null>(null)
   return (
     <Column gap="xl">
       <Column background="var(--ddd)" padding="m" gap="s">
@@ -479,10 +362,8 @@ export const FleetManager = (props: Props) => {
           onDragStart={onDragStart}
           onAIDragStart={onAIDragStart}
           team={team}
-          shipDetails={shipDetails}
-          setShipDetails={setShipDetails}
-          aiDetails={aiDetails}
-          setAIDetails={setAIDetails}
+          setShipDetails={props.onShipClick}
+          setAIDetails={props.onAIClick}
           ais={ais}
         />
         <Grid

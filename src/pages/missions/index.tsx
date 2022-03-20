@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useSelector } from '@/store/hooks'
 import { useNavigate, useLocation } from 'react-router-dom'
 import * as presentation from './presentation'
@@ -10,12 +10,17 @@ import { Title, Caption } from '@/components/title'
 import { FleetManager } from '@/components/fleet-manager'
 import { Button } from '@/components/button'
 import { Row, Column } from '@/components/flex'
+import { Details } from '@/components/ship'
+import { Movable } from '@/components/movable'
 import { Renderer } from '@/renderer'
 import * as color from '@/lib/color'
 import { useEngine, State } from '@/lib/engine'
 import * as services from '@/services/mission'
 import styles from './Missions.module.css'
 import s from '@/strings.json'
+import * as helpers from '@/helpers/dates'
+import tsLogo from '@/components/monaco/ts.svg'
+import { AI } from '@/lib/ai'
 
 const useMission = () => {
   const missions = useSelector(selectors.missions)
@@ -60,76 +65,174 @@ const useSetupEngine = () => {
   return { preferences, details, engine }
 }
 
+const AIDetails = ({
+  selected,
+  ais,
+  team,
+}: {
+  ais: AI[]
+  selected: string
+  team: string
+}) => {
+  const ai = ais.find(ai => ai.id === selected)
+  if (ai)
+    return (
+      <Column background="var(--ddd)" padding="m" gap="m">
+        <Row align="center" gap="s">
+          <img src={tsLogo} className={styles.logo} alt="TypeScript Logo" />
+          <div className={styles.pathName}>{ai.file.path}</div>
+        </Row>
+        {ai.tags.length >= 0 && (
+          <Row gap="s">
+            {ai.tags.map(tag => (
+              <Row padding="s" background={`var(--team-${team})`}>
+                {tag}
+              </Row>
+            ))}
+          </Row>
+        )}
+        {ai.description && (
+          <div style={{ maxWidth: 200, overflow: 'hidden' }}>
+            {ai.description}
+          </div>
+        )}
+        <Column align="flex-end">
+          <div className={styles.dates}>
+            Created at {helpers.toLocale(new Date(ai.createdAt))}
+          </div>
+          <div className={styles.dates}>
+            Updated at {helpers.toLocale(new Date(ai.updatedAt))}
+          </div>
+        </Column>
+      </Column>
+    )
+  return (
+    <Column
+      background="var(--ddd)"
+      align="center"
+      justify="center"
+      padding="xl"
+    >
+      <div>Click on an AI</div>
+      <div>to see its details</div>
+    </Column>
+  )
+}
+
 export const Missions = () => {
   const { details, engine, preferences } = useSetupEngine()
   const [state, setState] = useState<State>('preparation')
   const navigate = useNavigate()
   const reset = () => navigate('/missions')
+  const [selected, setSelected] = useState<string>()
+  const [selectedTeam, setSelectedTeam] = useState<string>()
   return (
-    <Main links={state === 'preparation'}>
-      {state === 'end' && (
-        <summary.Summary
-          engine={engine.engine!}
-          restart={() => {
-            engine.reset()
-            setState('preparation')
-          }}
-          replay={() => engine.start(setState)}
-          mission={details.mission}
-          back={() => {
-            navigate('/missions')
-            setState('preparation')
-            engine.reset()
-          }}
-        />
-      )}
-      {state === 'engine' && <Renderer engine={engine.engine!} />}
-      {state === 'preparation' && (
-        <div className={styles.missions}>
-          <presentation.MissionSelector reset={reset} {...details} />
-          <presentation.MissionInformations {...details} />
-          {details.opened && (
-            <Column gap="xl">
-              <presentation.Ships {...details} team={preferences.enemy} />
-              <presentation.Submit {...details} />
-            </Column>
-          )}
-          {!details.opened && (
-            <Row className={styles.prepareMission} gap="xl">
-              <Column flex={3} background="var(--eee)" padding="xl" gap="xl">
-                <Column>
-                  <Title content={s.pages.missions.mission.preparation} />
-                  <Caption
-                    content={s.pages.missions.mission.whyPreparation}
-                    color="var(--888)"
+    <>
+      <Main links={state === 'preparation'}>
+        {state === 'end' && (
+          <summary.Summary
+            engine={engine.engine!}
+            restart={() => {
+              engine.reset()
+              setState('preparation')
+            }}
+            replay={() => engine.start(setState)}
+            mission={details.mission}
+            back={() => {
+              navigate('/missions')
+              setState('preparation')
+              engine.reset()
+            }}
+          />
+        )}
+        {state === 'engine' && <Renderer engine={engine.engine!} />}
+        {state === 'preparation' && (
+          <div className={styles.missions}>
+            <presentation.MissionSelector reset={reset} {...details} />
+            <presentation.MissionInformations {...details} />
+            {details.opened && (
+              <Column gap="xl">
+                <presentation.Ships {...details} team={preferences.enemy} />
+                <presentation.Submit {...details} />
+              </Column>
+            )}
+            {!details.opened && (
+              <Row className={styles.prepareMission} gap="xl">
+                <Column flex={3} background="var(--eee)" padding="xl" gap="xl">
+                  <Column>
+                    <Title content={s.pages.missions.mission.preparation} />
+                    <Caption
+                      content={s.pages.missions.mission.whyPreparation}
+                      color="var(--888)"
+                    />
+                  </Column>
+                  <FleetManager
+                    team={preferences.player.color}
+                    ships={preferences.player.unlockedShips}
+                    ais={preferences.ais}
+                    onValidConfiguration={c => c && engine.setFleet(c)}
+                    width={2}
+                    height={5}
+                    onAIClick={id => {
+                      setSelected(id)
+                      setSelectedTeam(undefined)
+                    }}
+                    onShipClick={id => {
+                      setSelected(id)
+                      setSelectedTeam(preferences.player.color)
+                    }}
                   />
                 </Column>
-                <FleetManager
-                  team={preferences.player.color}
-                  ships={preferences.player.unlockedShips}
+                <Column flex={2} gap="xl">
+                  <preparation.EnemyShips
+                    mission={details.mission}
+                    team={preferences.enemy}
+                    onClick={id => {
+                      setSelected(id)
+                      setSelectedTeam(preferences.enemy)
+                    }}
+                  />
+                  <Button
+                    primary
+                    disabled={!engine.fleet}
+                    onClick={() => engine.start(setState)}
+                    text={s.pages.missions.launch}
+                  />
+                </Column>
+              </Row>
+            )}
+          </div>
+        )}
+      </Main>
+      {selected && (
+        <Movable
+          onClose={() => {
+            setSelected(undefined)
+            setSelectedTeam(undefined)
+          }}
+        >
+          <Column padding="l" gap="m" background="var(--eee)">
+            <Title content="Details" />
+            <Row background="var(--ddd)">
+              {selectedTeam && (
+                <Details
+                  ship={selected}
+                  locked={false}
+                  color={selectedTeam}
+                  infoCard="var(--ccc)"
+                />
+              )}
+              {!selectedTeam && (
+                <AIDetails
                   ais={preferences.ais}
-                  onValidConfiguration={c => c && engine.setFleet(c)}
-                  width={2}
-                  height={5}
+                  selected={selected}
+                  team={preferences.player.color}
                 />
-              </Column>
-              <Column flex={2} gap="xl">
-                <preparation.EnemyShips
-                  mission={details.mission}
-                  team={preferences.enemy}
-                  clickable
-                />
-                <Button
-                  primary
-                  disabled={!engine.fleet}
-                  onClick={() => engine.start(setState)}
-                  text={s.pages.missions.launch}
-                />
-              </Column>
+              )}
             </Row>
-          )}
-        </div>
+          </Column>
+        </Movable>
       )}
-    </Main>
+    </>
   )
 }

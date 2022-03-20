@@ -60,3 +60,130 @@
 .messageContent {
   color: var(--888);
 }
+
+/* To sort */
+.ally {
+  background: var(--ccc);
+}
+
+.ai {
+  grid-area: ai;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 12px;
+}
+
+.pos {
+  grid-area: pos;
+  display: grid;
+  grid-template-columns: repeat(2, 100px);
+  grid-template-rows: repeat(5, 100px);
+  gap: var(--m);
+}
+
+.cell {
+  border: 2px solid var(--ddd);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background 0.2s;
+  flex: 1;
+}
+
+.gridCell {
+  display: flex;
+  /* padding: 1rem; */
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+
+.gridCell img {
+  cursor: pointer;
+  transform: rotate(90deg);
+}
+
+.availableShip {
+  padding: var(--m);
+  background: var(--ccc);
+  cursor: pointer;
+  text-transform: capitalize;
+  gap: var(--m);
+  display: flex;
+  flex-direction: column;
+}
+
+.img {
+  image-rendering: pixelated;
+  width: 100%;
+}
+
+.ships {
+  grid-area: ships;
+  padding: 0 1rem;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.subtitle {
+  margin-top: 1rem;
+}
+
+.shipSelector {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.ships img {
+  image-rendering: pixelated;
+  height: 120px;
+  margin: 1rem;
+}
+
+.aiButton {
+  display: flex;
+}
+
+.aiPath {
+  background: var(--aaa);
+  padding: 3px 6px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.teamName {
+  padding: 3px 6px;
+  color: white;
+}
+
+.tab {
+  padding: var(--m);
+  background: var(--ddd);
+  cursor: pointer;
+}
+
+.inactiveTab {
+  composes: tab;
+  background: var(--ccc);
+}
+
+.logo {
+  width: 20px;
+  height: 20px;
+}
+
+.pathName {
+  font-size: 1.2rem;
+}
+
+.dates {
+  color: var(--888);
+  font-size: 0.7rem;
+}
+
+.cursor {
+  cursor: pointer;
+}
