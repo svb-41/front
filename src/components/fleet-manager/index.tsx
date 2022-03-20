@@ -3,6 +3,9 @@ import { engine } from '@svb-41/engine'
 import { AI } from '@/lib/ai'
 import { getImage } from '@/helpers/ships'
 import { Button } from '@/components/button'
+import * as selectors from '@/store/selectors'
+import { useSelector, useDispatch } from '@/store/hooks'
+import * as actions from '@/store/actions/user'
 import { Title, SubTitle, Explanations } from '@/components/title'
 import { Row, Column } from '@/components/flex'
 import * as Ship from '@/components/ship'
@@ -283,9 +286,25 @@ export type Props = {
 export const FleetManager = (props: Props) => {
   const { team, ships, ais } = props
   const [data, setData] = useState<Data>({ ships: {}, AIs: {} })
+  const [loadedConf, setLoadedConf] = useState<string>()
   const dragVal = useRef<string | undefined>()
   const cell = useRef<XY>()
   const aiRef = useRef<string | undefined>()
+  const confs = useSelector(selectors.fleetConfigs)
+  const dispatch = useDispatch()
+
+  const loadDataFromStore = (id: string) => {
+    const conf = confs[id]
+    if (conf) {
+      setData(conf)
+      setLoadedConf(id)
+    }
+  }
+
+  const saveFleetConfig = () => {
+    dispatch(actions.saveFleetConfig(data, loadedConf))
+  }
+
   const onDragStart = (ship: string) => {
     aiRef.current = undefined
     dragVal.current = ship
@@ -350,6 +369,18 @@ export const FleetManager = (props: Props) => {
           >
             {team.toUpperCase()}
           </span>
+          <Button
+            text="Load fleet config"
+            onClick={() => {
+              loadDataFromStore('da157cf8-c041-4e88-904e-041d9568feed')
+            }}
+            secondary
+          />
+          <Button
+            text={`Save ${!loadedConf ? 'new ' : ''}config`}
+            onClick={saveFleetConfig}
+            secondary
+          />
         </Row>
         <Explanations
           color="var(--888)"

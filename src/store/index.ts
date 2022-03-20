@@ -20,6 +20,7 @@ const saveLocal = (store: any) => (next: any) => (action: any) => {
     color: state.user.color,
     ais: state.ai.ais.map(ai => ai.id),
     favoriteAIS: state.ai.favorites,
+    fleetConfigs: state.user.fleetConfigs,
   })
   return value
 }

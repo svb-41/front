@@ -11,6 +11,7 @@ const defaultUser: local.StoredData = {
   ais: [],
   favoriteAIS: [],
   color: Color.BLUE,
+  fleetConfigs: {},
 }
 
 export const initStore: Effect<void> = async dispatch => {
@@ -28,5 +29,6 @@ export const initStore: Effect<void> = async dispatch => {
     unlockedShips: data.ships,
     unlockedMissions: data.missions,
     color: data.color,
+    fleetConfigs: data.fleetConfigs,
   })
 }
