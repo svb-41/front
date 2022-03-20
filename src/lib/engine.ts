@@ -70,10 +70,10 @@ const outOfBound = (
   ship: svb.engine.ship.Ship,
   size: { height: number; width: number }
 ): boolean =>
-  ship.position.pos.x < 0 ||
-  ship.position.pos.y < 0 ||
-  ship.position.pos.x > size.width ||
-  ship.position.pos.y > size.height
+  ship.position.pos.x < -size.width * 2 ||
+  ship.position.pos.y < -size.height * 2 ||
+  ship.position.pos.x > size.width * 3 ||
+  ship.position.pos.y > size.height * 3
 
 const teamDestroyed = (
   ships: svb.engine.ship.Ship[],
