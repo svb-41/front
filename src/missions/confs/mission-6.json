@@ -16,7 +16,7 @@
       "position": {
         "direction": 3.141592653589793,
         "speed": 0,
-        "pos": { "x": 1900, "y": 700 }
+        "pos": { "x": 1800, "y": 700 }
       }
     },
     {
@@ -25,7 +25,7 @@
       "position": {
         "direction": 3.141592653589793,
         "speed": 0,
-        "pos": { "x": 1900, "y": 900 }
+        "pos": { "x": 1800, "y": 900 }
       }
     },
     {
@@ -35,6 +35,42 @@
         "direction": 3.141592653589793,
         "speed": 0,
         "pos": { "x": 2000, "y": 800 }
+      }
+    },
+    {
+      "classShip": "BOMBER",
+      "ai": "torpedo",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 400 }
+      }
+    },
+    {
+      "classShip": "BOMBER",
+      "ai": "torpedo",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 1200 }
+      }
+    },
+    {
+      "classShip": "BOMBER",
+      "ai": "torpedo",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 1000 }
+      }
+    },
+    {
+      "classShip": "BOMBER",
+      "ai": "torpedo",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 600 }
       }
     }
   ]
