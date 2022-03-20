@@ -10,6 +10,11 @@
   font-size: 1rem;
 }
 
+.p {
+  font-size: 1rem;
+  color: var(--888);
+}
+
 .blinking {
   animation: blinking 1s linear 0s infinite alternate;
 }

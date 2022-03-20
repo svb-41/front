@@ -7,6 +7,7 @@ import { unlockRewards } from '@/store/actions/user'
 import { Button } from '@/components/button'
 import { Row, Column } from '@/components/flex'
 import { Title, SubTitle, Jumbotron } from '@/components/title'
+import { Icon } from '@/components/ship'
 import { getImage } from '@/helpers/ships'
 import { Mission, getMission } from '@/services/mission'
 import styles from './Missions.module.css'
@@ -19,12 +20,9 @@ const RenderShipsSummary = ({ ships, content }: RSSProps) => (
   <Column background="var(--ddd)" padding="m">
     <SubTitle color="var(--555)" content={content} />
     <Row gap="m" wrap="wrap">
-      {ships.map((ship, i) => {
-        const src = getImage(ship.shipClass.toLowerCase(), ship.team)
-        const alt = `${ship.shipClass}-${ship.team}`
-        const cl = styles.summaryShipImage
-        return <img key={i} src={src} className={cl} alt={alt} />
-      })}
+      {ships.map((ship, i) => (
+        <Icon shipClass={ship.shipClass} team={ship.team} />
+      ))}
     </Row>
   </Column>
 )

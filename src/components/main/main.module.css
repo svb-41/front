@@ -2,6 +2,7 @@
   position: sticky;
   top: 0;
   border-bottom: 2px solid var(--ddd);
+  z-index: 10000;
 }
 
 .links {

@@ -2,13 +2,14 @@ import { useState, useEffect } from 'react'
 import { useSelector } from '@/store/hooks'
 import { useNavigate, useLocation } from 'react-router-dom'
 import * as presentation from './presentation'
+import * as preparation from './preparation'
 import * as summary from './summary'
 import * as selectors from '@/store/selectors'
 import { Main } from '@/components/main'
-import { Title } from '@/components/title'
+import { Title, Caption } from '@/components/title'
 import { FleetManager } from '@/components/fleet-manager'
 import { Button } from '@/components/button'
-import { Column } from '@/components/flex'
+import { Row, Column } from '@/components/flex'
 import { Renderer } from '@/renderer'
 import * as color from '@/lib/color'
 import { useEngine, State } from '@/lib/engine'
@@ -94,28 +95,38 @@ export const Missions = () => {
             </Column>
           )}
           {!details.opened && (
-            <Column
-              background="var(--eee)"
-              padding="xl"
-              gap="xl"
-              className={styles.prepareMission}
-            >
-              <Title content={s.pages.missions.mission.preparation} />
-              <FleetManager
-                team={preferences.player.color}
-                ships={preferences.player.unlockedShips}
-                ais={preferences.ais}
-                onValidConfiguration={c => c && engine.setFleet(c)}
-                width={2}
-                height={5}
-              />
-              <Button
-                primary
-                disabled={!engine.fleet}
-                onClick={() => engine.start(setState)}
-                text={s.pages.missions.launch}
-              />
-            </Column>
+            <Row className={styles.prepareMission} gap="xl">
+              <Column flex={3} background="var(--eee)" padding="xl" gap="xl">
+                <Column>
+                  <Title content={s.pages.missions.mission.preparation} />
+                  <Caption
+                    content={s.pages.missions.mission.whyPreparation}
+                    color="var(--888)"
+                  />
+                </Column>
+                <FleetManager
+                  team={preferences.player.color}
+                  ships={preferences.player.unlockedShips}
+                  ais={preferences.ais}
+                  onValidConfiguration={c => c && engine.setFleet(c)}
+                  width={2}
+                  height={5}
+                />
+              </Column>
+              <Column flex={2} gap="xl">
+                <preparation.EnemyShips
+                  mission={details.mission}
+                  team={preferences.enemy}
+                  clickable
+                />
+                <Button
+                  primary
+                  disabled={!engine.fleet}
+                  onClick={() => engine.start(setState)}
+                  text={s.pages.missions.launch}
+                />
+              </Column>
+            </Row>
           )}
         </div>
       )}

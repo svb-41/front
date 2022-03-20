@@ -44,7 +44,9 @@
         "back": "Back to selection",
         "title": "Mission",
         "preparation": "Mission Preparation",
-        "enemyShips": "Ennemy ships"
+        "enemyShips": "Ennemy ships",
+        "whyEnemyShips": "Find the list of your enemies here",
+        "whyPreparation": "Select your ships and your AI"
       },
       "info": {
         "content": "Message content",

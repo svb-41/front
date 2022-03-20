@@ -34,6 +34,7 @@
   /* border-radius: 10px; */
   gap: 24px;
   place-items: center;
+  flex: 1;
 }
 
 .img {
@@ -47,10 +48,6 @@
 }
 
 .infos {
-  display: flex;
-  flex-direction: column;
-  font-family: var(--monospace);
-  gap: 6px;
   justify-self: start;
 }
 
@@ -81,15 +78,14 @@
   padding: 9px;
 }
 
-.infoCardWrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
 /* prettier-ignore */
 @keyframes rotation {
   0% { transform: rotate(0deg); }
   50% { transform: rotate(180deg); }
   100% { transform: rotate(360deg); }
+}
+
+.summaryShipImage {
+  width: 50px;
+  image-rendering: pixelated;
 }

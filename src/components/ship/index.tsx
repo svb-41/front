@@ -1,4 +1,5 @@
 import * as svb from '@svb-41/engine'
+import { Column, Row } from '@/components/flex'
 import { getImage } from '@/helpers/ships'
 import styles from './ship.module.css'
 
@@ -38,10 +39,10 @@ export const Details = ({ ship, locked, color, infoCard }: DetailsProps) => {
   const stats = !locked ? stats_ : emptyStats
   return (
     <div key={ship} className={styles.cell}>
-      <div className={styles.infos}>
+      <Column gap="s" className={styles.infos}>
         <Labeled label="ID" content={stats.id} className={styles.id} />
-        <div style={{ display: 'flex', gap: 12 }}>
-          <div className={styles.infoCardWrapper}>
+        <Row gap="m" flex={1}>
+          <Column gap="s">
             Infos
             <div className={styles.infoCard} style={{ background: infoCard }}>
               <Labeled
@@ -58,10 +59,10 @@ export const Details = ({ ship, locked, color, infoCard }: DetailsProps) => {
               <Labeled label="Detection" content={stats.stats.detection} />
               <Labeled label="Visibility" content={stats.stealth} />
             </div>
-          </div>
+          </Column>
           <div className={styles.weapons}>
             {stats.weapons.map((weapon: any, index: number) => (
-              <div key={index} className={styles.infoCardWrapper}>
+              <Column gap="s" key={index}>
                 Weapon #{index}
                 <div
                   className={styles.infoCard}
@@ -86,11 +87,11 @@ export const Details = ({ ship, locked, color, infoCard }: DetailsProps) => {
                   <Labeled label="Cool Down" content={weapon.bullet.coolDown} />
                   <Labeled label="Munitions" content={weapon.amo} />
                 </div>
-              </div>
+              </Column>
             ))}
           </div>
-        </div>
-      </div>
+        </Row>
+      </Column>
       <img
         src={getImage(ship, color)}
         className={styles.img}
@@ -99,4 +100,12 @@ export const Details = ({ ship, locked, color, infoCard }: DetailsProps) => {
       />
     </div>
   )
+}
+
+export type IconProps = { shipClass: svb.engine.ship.SHIP_CLASS; team: string }
+export const Icon = ({ shipClass, team }: IconProps) => {
+  const src = getImage(shipClass.toLowerCase(), team)
+  const alt = `${shipClass}-${team}`
+  const cl = styles.summaryShipImage
+  return <img src={src} className={cl} alt={alt} />
 }

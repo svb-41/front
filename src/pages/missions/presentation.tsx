@@ -3,8 +3,9 @@ import { useNavigate } from 'react-router-dom'
 import { Row, Column } from '@/components/flex'
 import { Button } from '@/components/button'
 import { Title, SubTitle } from '@/components/title'
+import { Icon } from '@/components/ship'
+import * as preparation from './preparation'
 import * as services from '@/services/mission'
-import { getImage } from '@/helpers/ships'
 import styles from './Missions.module.css'
 import s from '@/strings.json'
 
@@ -95,20 +96,7 @@ const Description = ({ title, description, constraints }: any) => (
 export type ShipsProps = any
 export const Ships = ({ mission, opened, team }: ShipsProps) => {
   if (!opened) return null
-  return (
-    <Column padding="xl" gap="xl" background="var(--eee)">
-      <Title content={s.pages.missions.mission.enemyShips} />
-      <Row background="var(--ddd)" padding="m" gap="m">
-        {mission.ships.map((s: any, i: number) => {
-          const shipClass = s.classShip
-          const src = getImage(shipClass.toLowerCase(), team)
-          const alt = `${shipClass}-${team}`
-          const cl = styles.summaryShipImage
-          return <img key={i} src={src} className={cl} alt={alt} />
-        })}
-      </Row>
-    </Column>
-  )
+  return <preparation.EnemyShips mission={mission} team={team} />
 }
 
 export const MissionInformations = ({ mission, selected, opened }: any) => {

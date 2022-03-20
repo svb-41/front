@@ -34,6 +34,7 @@ export type Props = {
   flex?: number
   wrap?: Wrap
   maxWidth?: number
+  minWidth?: number
   tag?: string
   className?: string
   color?: string
@@ -46,7 +47,7 @@ const Flex = (r: { row: boolean; col: boolean }): FC<Props> => {
   return props => {
     const { children, tag = 'div', onClick } = props
     const { gap, padding = 'none', align, justify, wrap } = props
-    const { background, width, flex, maxWidth, color, height } = props
+    const { background, width, flex, maxWidth, color, height, minWidth } = props
     const cursor = onClick ? 'pointer' : undefined
     const cl = classesNames({
       ...r,
@@ -66,6 +67,7 @@ const Flex = (r: { row: boolean; col: boolean }): FC<Props> => {
       maxWidth,
       color,
       height,
+      minWidth,
     }
     return createElement(tag, { className, style, onClick }, children)
   }
