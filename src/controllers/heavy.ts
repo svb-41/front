@@ -60,12 +60,14 @@ export const ai: svb.AI<Data> = ({ stats, radar, memory, ship, comm }) => {
         .reduce((a, v) => (a.dist > v.dist ? v : a)).res
     )
     memory.targets = memory.targets.filter(t => t !== target)
-    return svb.geometry.aim({
+    const resAim = svb.geometry.aim({
       ship,
       source: stats.position,
       target,
       weapon: weaponType(stats),
     })
+    if (resAim.id === svb.Instruction.FIRE && ally) return ship.idle()
+    return resAim
   }
 
   return ship.idle()

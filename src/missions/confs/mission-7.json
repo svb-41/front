@@ -11,6 +11,78 @@
   },
   "ships": [
     {
+      "classShip": "FIGHTER",
+      "ai": "assault",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 350 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "assault",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 450 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "assault",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 550 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "assault",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 650 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "assault",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 750 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "assault",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 850 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "assault",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 1900, "y": 300 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "assault",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 1900, "y": 900 }
+      }
+    },
+    {
       "classShip": "SCOUT",
       "ai": "staticScout",
       "position": {
