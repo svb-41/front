@@ -1,5 +1,5 @@
 .ally {
-  background: var(--ccc);
+  background: var(--ddd);
 }
 
 .ai {
@@ -19,7 +19,7 @@
 }
 
 .cell {
-  border: 2px solid var(--ddd);
+  border: 2px solid var(--eee);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -43,7 +43,7 @@
 
 .availableShip {
   padding: var(--m);
-  background: var(--ccc);
+  background: var(--ddd);
   cursor: pointer;
   text-transform: capitalize;
   gap: var(--m);
@@ -52,8 +52,20 @@
 }
 
 .img {
+  display: block;
   image-rendering: pixelated;
-  width: 100%;
+}
+
+.smallImg {
+  composes: img;
+  height: 32px;
+  width: 32px;
+}
+
+.hugeImg {
+  composes: img;
+  height: 100px;
+  width: 100px;
 }
 
 .ships {
@@ -84,7 +96,7 @@
 }
 
 .aiPath {
-  background: var(--aaa);
+  background: var(--bbb);
   padding: 3px 6px;
   border-radius: 10px;
   cursor: pointer;
@@ -97,13 +109,13 @@
 
 .tab {
   padding: var(--m);
-  background: var(--ddd);
+  background: var(--eee);
   cursor: pointer;
 }
 
 .inactiveTab {
   composes: tab;
-  background: var(--ccc);
+  background: var(--ddd);
 }
 
 .logo {
@@ -122,4 +134,14 @@
 
 .cursor {
   cursor: pointer;
+}
+
+.alignSelfStart {
+  align-self: flex-start;
+}
+
+.renderShips {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--m);
 }

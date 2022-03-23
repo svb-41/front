@@ -10,6 +10,7 @@ const renderShip = (team: string, onClick?: (id: string) => void) => {
     const c = onClick ? () => onClick(shipClass) : undefined
     return (
       <Column
+        key={shipClass}
         background="var(--ddd)"
         padding="m"
         gap="s"
