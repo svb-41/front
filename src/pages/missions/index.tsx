@@ -158,31 +158,22 @@ export const Missions = () => {
             )}
             {!details.opened && (
               <Row className={styles.prepareMission} gap="xl">
-                <Column flex={3} background="var(--eee)" padding="xl" gap="xl">
-                  <Column>
-                    <Title content={s.pages.missions.mission.preparation} />
-                    <Caption
-                      content={s.pages.missions.mission.whyPreparation}
-                      color="var(--888)"
-                    />
-                  </Column>
-                  <FleetManager
-                    team={preferences.player.color}
-                    ships={preferences.player.unlockedShips}
-                    ais={preferences.ais}
-                    onValidConfiguration={c => c && engine.setFleet(c)}
-                    width={2}
-                    height={5}
-                    onAIClick={id => {
-                      setSelected(id)
-                      setSelectedTeam(undefined)
-                    }}
-                    onShipClick={id => {
-                      setSelected(id)
-                      setSelectedTeam(preferences.player.color)
-                    }}
-                  />
-                </Column>
+                <FleetManager
+                  team={preferences.player.color}
+                  ships={preferences.player.unlockedShips}
+                  ais={preferences.ais}
+                  onValidConfiguration={c => c && engine.setFleet(c)}
+                  width={2}
+                  height={5}
+                  onAIClick={id => {
+                    setSelected(id)
+                    setSelectedTeam(undefined)
+                  }}
+                  onShipClick={id => {
+                    setSelected(id)
+                    setSelectedTeam(preferences.player.color)
+                  }}
+                />
                 <Column flex={2} gap="xl">
                   <preparation.EnemyShips
                     mission={details.mission}

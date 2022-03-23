@@ -57,6 +57,7 @@ body {
   overscroll-behavior: none;
   background: var(--background-color);
   color: var(--text-color);
+  user-select: none;
 }
 
 #root {

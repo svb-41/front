@@ -22,32 +22,33 @@ export type UseEngine = {
   mission: Mission
 }
 
-const prepareData = (props: UseEngine, fleetData: fleet.Data): Data => {
-  const step = Math.floor(props.mission.size.height / 10)
-  const starts = Object.entries(fleetData.ships).flatMap(([x_, values]) => {
-    return Object.entries(values).flatMap(([y_, value]) => {
-      const x = parseInt(x_)
-      const y = parseInt(y_)
-      return { x, y, value: value.toUpperCase() }
-    })
-  })
-  return starts.reduce<Data>((acc, { x, y, value }) => {
-    const builder = findBuilder(value)
-    const x_ = x * step
-    const y_ = props.mission.size.height - y * step * 2
-    const position = { pos: { x: x_, y: y_ }, direction: 0 }
-    const findAI = (ai: AI) => ai.id === fleetData.AIs[x][y]
-    const code = props.ais.find(findAI)?.compiledValue
-    if (builder && code) {
-      const { team } = props
-      const ship = builder.builder({ position, team })
-      const ai = { code, shipId: ship.id }
-      const ships = [...acc.ships, ship]
-      const ais = [...acc.ais, ai]
-      return { ...acc, ships, ais }
-    }
-    return acc
-  }, emptyData)
+const prepareData = (props: UseEngine, fleetData: any): Data => {
+  return { ships: [], ais: [] }
+  // const step = Math.floor(props.mission.size.height / 10)
+  // const starts = Object.entries(fleetData.ships).flatMap(([x_, values]) => {
+  //   return Object.entries(values).flatMap(([y_, value]) => {
+  //     const x = parseInt(x_)
+  //     const y = parseInt(y_)
+  //     return { x, y, value: value.toUpperCase() }
+  //   })
+  // })
+  // return starts.reduce<Data>((acc, { x, y, value }) => {
+  //   const builder = findBuilder(value)
+  //   const x_ = x * step
+  //   const y_ = props.mission.size.height - y * step * 2
+  //   const position = { pos: { x: x_, y: y_ }, direction: 0 }
+  //   const findAI = (ai: AI) => ai.id === fleetData.AIs[x][y]
+  //   const code = props.ais.find(findAI)?.compiledValue
+  //   if (builder && code) {
+  //     const { team } = props
+  //     const ship = builder.builder({ position, team })
+  //     const ai = { code, shipId: ship.id }
+  //     const ships = [...acc.ships, ship]
+  //     const ais = [...acc.ais, ai]
+  //     return { ...acc, ships, ais }
+  //   }
+  //   return acc
+  // }, emptyData)
 }
 
 const prepareEnemyData = (props: UseEngine): Data => {
@@ -137,7 +138,7 @@ const setupEngine = ({ props, enemy, data, setState }: SetupEngine) => {
 
 export const useEngine = (props: UseEngine) => {
   const [engine, setEngine] = useState<svb.engine.Engine>()
-  const [fleetData, setFleetData] = useState<fleet.Data>()
+  const [fleetData, setFleetData] = useState<any>()
 
   const start = (setState: SetState) => {
     if (!fleetData) return
