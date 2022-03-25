@@ -1,4 +1,7 @@
 import * as svb from '@svb-41/core'
+
+type State = 'ATTACK' | 'DEFEND' | 'FIRE'
+
 type Data = {
   init: boolean
   state: State
@@ -6,24 +9,26 @@ type Data = {
   speed: number
 }
 
-type State = 'ATTACK' | 'DEFEND' | 'FIRE'
-
 type SwarmMessage =
   | {
       messageType: 'RADAR'
       pos: Array<svb.ship.RadarResult>
+      id: string
     }
   | {
       messageType: 'FIRE'
       pos: svb.ship.Position
+      id: string
     }
   | {
       messageType: 'ATTACK'
       pos: svb.ship.Position
+      id: string
     }
   | {
       messageType: 'DEFEND'
       pos: svb.ship.Position
+      id: string
     }
   | {
       messageType: 'REGISTER'
@@ -80,32 +85,41 @@ export const ai: svb.AI<Data> = ({ stats, radar, ship, comm, memory }) => {
       id: stats.id,
       shipClass: stats.shipClass,
     })
+    memory.pos = stats.position
   }
   const messages = comm.messagesSince(0)
   if (messages.length > 0) {
     messages.map(m => {
       const message: SwarmMessage = m.content.message
-      switch (message.messageType) {
-        case 'DEFEND':
-          memory.pos = message.pos
-          memory.state = 'DEFEND'
-          break
-        case 'ATTACK':
-          memory.pos = message.pos
-          memory.state = 'ATTACK'
-          break
-        case 'FIRE':
-          memory.pos = message.pos
-          memory.state = 'FIRE'
-          break
+      if (message.id === stats.id) {
+        switch (message.messageType) {
+          case 'DEFEND':
+            memory.pos = message.pos
+            memory.state = 'DEFEND'
+            break
+          case 'ATTACK':
+            memory.pos = message.pos
+            memory.state = 'ATTACK'
+            break
+          case 'FIRE':
+            memory.pos = message.pos
+            memory.state = 'FIRE'
+            break
+        }
       }
     })
   }
 
   const enemies = svb.radar.closeEnemies(radar, stats.team, stats.position)
   const enemyPoss = enemies.map(e => e.enemy)
-  if (enemyPoss.length > 0)
-    comm.sendMessage({ messageType: 'RADAR', content: enemyPoss })
+  if (enemyPoss.length > 0) {
+    const m: SwarmMessage = {
+      messageType: 'RADAR',
+      pos: enemyPoss,
+      id: stats.id,
+    }
+    comm.sendMessage(m)
+  }
 
   if (memory.state === 'DEFEND') {
     const d2 = svb.geometry.dist2(memory.pos, stats.position)
@@ -145,6 +159,9 @@ export const ai: svb.AI<Data> = ({ stats, radar, ship, comm, memory }) => {
       svb.geometry.dist2(target, source) <
       Math.pow(stats.weapons[weapon].bullet.range, 2)
     ) {
+      if (stats.weapons[weapon].bullet.stats.acceleration > 0) {
+        return ship.fire(weapon, { target: target.pos, armedTime: 200 })
+      }
       const resAim = svb.geometry.aim({ target, source, ship, weapon })
       if (resAim.id === 'FIRE' && stats.weapons[weapon].coolDown === 0) {
         memory.pos = stats.position
