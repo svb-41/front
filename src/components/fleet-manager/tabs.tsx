@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { AI } from '@/lib/ai'
 import { getImage } from '@/helpers/ships'
-import { SubTitle } from '@/components/title'
+import { Title } from '@/components/title'
 import { Row, Column } from '@/components/flex'
 import tsLogo from '@/components/monaco/ts.svg'
 import * as helpers from '@/helpers'
@@ -38,13 +38,13 @@ const RenderShips = ({
         <div
           key={index}
           className={styles.availableShip}
-          onClick={() => onShipClick(ship)}
-          onDoubleClick={() => setShipDetails(ship)}
+          onClick={unlocked ? () => onShipClick(ship) : undefined}
+          onDoubleClick={unlocked ? () => setShipDetails(ship) : undefined}
           style={unlocked ? undefined : { filter: 'brightness(0.2)' }}
         >
           <div>{unlocked ? ship : '???'}</div>
           <img
-            onDragStart={() => onDragStart(ship)}
+            onDragStart={unlocked ? () => onDragStart(ship) : undefined}
             src={getImage(ship, team)}
             className={styles.img}
             alt={ship}
@@ -116,10 +116,10 @@ export const ShipSelector = (props: any) => {
   const [state, setState] = useState<'ships' | 'ai'>('ships')
   const subtitle = state === 'ai' ? 'Available AI' : 'Available ships'
   return (
-    <Column flex={1}>
+    <Column width={400}>
       <ShipSelectorTabs state={state} setState={setState} />
-      <Column background="var(--eee)" padding="m" gap="s" flex={1}>
-        <SubTitle content={subtitle} />
+      <Column background="var(--eee)" padding="xl" gap="m" flex={1}>
+        <Title content={subtitle} />
         {state === 'ships' && <RenderShips {...props} />}
         {state === 'ai' && <RenderAIs {...props} />}
       </Column>

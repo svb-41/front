@@ -145,3 +145,25 @@
   grid-template-columns: repeat(3, 1fr);
   gap: var(--m);
 }
+
+.numGuide {
+  position: absolute;
+  color: var(--ddd);
+}
+
+.visibleNumGuide {
+  composes: numGuide;
+  z-index: 100000;
+  color: var(--888);
+}
+
+.lineGuide {
+  position: absolute;
+  border: 1px dashed var(--ddd);
+}
+
+.visibleLineGuide {
+  composes: lineGuide;
+  border: 1px dashed var(--888);
+  z-index: 100000;
+}

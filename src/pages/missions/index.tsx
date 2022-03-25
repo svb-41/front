@@ -173,23 +173,24 @@ export const Missions = () => {
                     setSelected(id)
                     setSelectedTeam(preferences.player.color)
                   }}
-                />
-                <Column flex={2} gap="xl">
-                  <preparation.EnemyShips
-                    mission={details.mission}
-                    team={preferences.enemy}
-                    onClick={id => {
-                      setSelected(id)
-                      setSelectedTeam(preferences.enemy)
-                    }}
-                  />
-                  <Button
-                    primary
-                    disabled={!engine.fleet}
-                    onClick={() => engine.start(setState)}
-                    text={s.pages.missions.launch}
-                  />
-                </Column>
+                >
+                  <Column flex={1} gap="xl">
+                    <preparation.EnemyShips
+                      mission={details.mission}
+                      team={preferences.enemy}
+                      onClick={id => {
+                        setSelected(id)
+                        setSelectedTeam(preferences.enemy)
+                      }}
+                    />
+                    <Button
+                      primary
+                      disabled={!engine.fleet}
+                      onClick={() => engine.start(setState)}
+                      text={s.pages.missions.launch}
+                    />
+                  </Column>
+                </FleetManager>
               </Row>
             )}
           </div>
