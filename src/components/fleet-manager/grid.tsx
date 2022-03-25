@@ -6,7 +6,7 @@ import { Button } from '@/components/button'
 import * as selectors from '@/store/selectors'
 import { useSelector, useDispatch } from '@/store/hooks'
 import * as actions from '@/store/actions/user'
-import { SubTitle } from '@/components/title'
+import { Title, Explanations } from '@/components/title'
 import { Row, Column } from '@/components/flex'
 import { ShipSelector } from './tabs'
 import styles from './fleet-manager.module.css'
@@ -76,7 +76,79 @@ const usePosition = (
   return { position, onMouseDown }
 }
 
+const Guides = ({ displayGuides, visible, position }: any) => {
+  const clNum = visible ? styles.visibleNumGuide : styles.numGuide
+  const clLine = visible ? styles.visibleLineGuide : styles.lineGuide
+  return (
+    <>
+      {position.top <= 300 && (displayGuides || visible) && (
+        <div
+          className={clLine}
+          style={{
+            width: 0,
+            height: position.top - 4,
+            left: position.left + 15,
+          }}
+        />
+      )}
+      {position.left <= 150 && (displayGuides || visible) && (
+        <div
+          className={clLine}
+          style={{
+            height: 0,
+            width: position.left - 6,
+            top: position.top + 16,
+          }}
+        />
+      )}
+      {position.top > 300 && (displayGuides || visible) && (
+        <div
+          className={clLine}
+          style={{
+            width: 0,
+            height: 600 - position.top - 40,
+            right: 300 - (position.left + 21),
+            bottom: 0,
+          }}
+        />
+      )}
+      {position.left > 150 && (displayGuides || visible) && (
+        <div
+          className={clLine}
+          style={{
+            height: 0,
+            width: 300 - (position.left + 42),
+            bottom: 600 - (position.top + 22),
+            right: 0,
+          }}
+        />
+      )}
+      {position.top <= 300 && (displayGuides || visible) && (
+        <div className={clNum} style={{ left: position.left + 8, top: -24 }}>
+          {position.left}
+        </div>
+      )}
+      {position.left <= 150 && (displayGuides || visible) && (
+        <div className={clNum} style={{ top: position.top + 10, left: -32 }}>
+          {position.top}
+        </div>
+      )}
+      {position.top > 300 && (displayGuides || visible) && (
+        <div className={clNum} style={{ left: position.left + 8, bottom: -24 }}>
+          {position.left}
+        </div>
+      )}
+      {position.left > 150 && (displayGuides || visible) && (
+        <div className={clNum} style={{ top: position.top + 10, right: -32 }}>
+          {position.top}
+        </div>
+      )}
+    </>
+  )
+}
+
 const MovableShip = ({
+  selected,
   ship,
   team,
   x,
@@ -84,6 +156,7 @@ const MovableShip = ({
   onUpdate,
   displayGuides,
 }: {
+  selected: boolean
   ship: SHIP_CLASS
   team: string
   x: number
@@ -98,59 +171,13 @@ const MovableShip = ({
     zIndex: visible ? 1000000 : 10000,
     ...pos.position,
   } as any
-  const clr = visible ? 'var(--888)' : 'var(--ddd)'
   return (
     <>
-      {(displayGuides || visible) && (
-        <div
-          style={{
-            width: 0,
-            height: pos.position.top - 4,
-            border: `1px dashed ${clr}`,
-            position: 'absolute',
-            left: pos.position.left + 15,
-            zIndex: visible ? 100000 : undefined,
-          }}
-        />
-      )}
-      {(displayGuides || visible) && (
-        <div
-          style={{
-            position: 'absolute',
-            top: -24,
-            left: pos.position.left + 8,
-            color: clr,
-            zIndex: visible ? 100000 : undefined,
-          }}
-        >
-          {pos.position.left}
-        </div>
-      )}
-      {(displayGuides || visible) && (
-        <div
-          style={{
-            width: pos.position.left - 6,
-            height: 0,
-            border: `1px dashed ${clr}`,
-            position: 'absolute',
-            top: pos.position.top + 16,
-            zIndex: visible ? 100000 : undefined,
-          }}
-        />
-      )}
-      {(displayGuides || visible) && (
-        <div
-          style={{
-            position: 'absolute',
-            top: pos.position.top + 10,
-            left: -28,
-            color: clr,
-            zIndex: visible ? 100000 : undefined,
-          }}
-        >
-          {pos.position.top}
-        </div>
-      )}
+      <Guides
+        displayGuides={displayGuides}
+        visible={visible || selected}
+        position={pos.position}
+      />
       <div
         onMouseDown={pos.onMouseDown}
         style={st}
@@ -167,7 +194,9 @@ export type GridProps = {
   ships: AllShips
   width: number
   height: number
-  onDrop: ({ x, y }: { x: number; y: number }) => void
+  onDrop: ({ x, y }: { x: number; y: number }) => string | undefined
+  selectedShip?: string
+  setSelectedShip: (id: string | undefined) => void
   // ais: AI[]
   team: string
   onUpdate: (id: string, x: number, y: number) => void
@@ -183,51 +212,64 @@ export const Grid = (props: GridProps) => {
   }, [width, height])
   const [displayGuides, setDisplayGuides] = useState(true)
   return (
-    <Column
-      background="var(--eee)"
-      justify="center"
-      padding="xxl"
-      style={{ alignSelf: 'flex-start' }}
-    >
-      <div
-        onDragOver={event => event.preventDefault()}
-        onDragEnter={event => event.preventDefault()}
-        onDragLeave={event => event.preventDefault()}
-        onDrop={event => {
-          event.preventDefault()
-          const { target, clientX, clientY } = event
-          const rect = (target as HTMLDivElement).getBoundingClientRect()
-          const x = Math.round(clientX - rect.x - 16)
-          const y = Math.round(clientY - rect.y - 16)
-          props.onDrop({ x, y })
-        }}
-        style={{
-          position: 'relative',
-          width: 300,
-          height: 600,
-          border: '2px solid var(--ddd)',
-          background: `url(${background})`,
-        }}
-      >
-        {ships.map(ship => (
-          <MovableShip
-            displayGuides={displayGuides}
-            key={ship.id}
-            x={ship.x}
-            y={ship.y}
-            ship={ship.shipClass}
-            team={team}
-            onUpdate={(x, y) => onUpdate(ship.id, x, y)}
+    <Column gap="xl">
+      <Column background="var(--eee)" padding="xl" gap="m">
+        <Column>
+          <Title content="Options" />
+          <p style={{ color: 'var(--888)' }}>Set options for the grid below</p>
+        </Column>
+        <Row align="center" gap="s">
+          <Checkbox
+            checked={displayGuides}
+            onChange={() => setDisplayGuides(s => !s)}
           />
-        ))}
-      </div>
-      <Row align="center" gap="s" justify="flex-end" width={300} padding="s">
-        <Checkbox
-          checked={displayGuides}
-          onChange={() => setDisplayGuides(s => !s)}
-        />
-        <div>Display guides</div>
-      </Row>
+          <div>Display guides</div>
+        </Row>
+      </Column>
+      <Column
+        background="var(--eee)"
+        justify="center"
+        padding="xxl"
+        style={{ alignSelf: 'flex-start' }}
+      >
+        <div
+          onDragOver={event => event.preventDefault()}
+          onDragEnter={event => event.preventDefault()}
+          onDragLeave={event => event.preventDefault()}
+          onDrop={event => {
+            event.preventDefault()
+            const { target, clientX, clientY } = event
+            const rect = (target as HTMLDivElement).getBoundingClientRect()
+            const x = Math.round(clientX - rect.x - 16)
+            const y = Math.round(clientY - rect.y - 16)
+            const id = props.onDrop({ x, y })
+            props.setSelectedShip(id)
+          }}
+          style={{
+            position: 'relative',
+            width: 300,
+            height: 600,
+            border: '2px solid var(--ddd)',
+            background: `url(${background})`,
+          }}
+        >
+          {ships.map(ship => (
+            <MovableShip
+              selected={props.selectedShip === ship.id}
+              displayGuides={displayGuides}
+              key={ship.id}
+              x={ship.x}
+              y={ship.y}
+              ship={ship.shipClass}
+              team={team}
+              onUpdate={(x, y) => {
+                onUpdate(ship.id, x, y)
+                props.setSelectedShip(ship.id)
+              }}
+            />
+          ))}
+        </div>
+      </Column>
     </Column>
   )
 }

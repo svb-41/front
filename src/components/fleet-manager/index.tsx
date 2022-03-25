@@ -1,14 +1,14 @@
-import { useState, useRef, useEffect } from 'react'
+import { FC, useState, useRef, useEffect } from 'react'
 import { AI } from '@/lib/ai'
 import { Button } from '@/components/button'
 import * as selectors from '@/store/selectors'
 import { useSelector, useDispatch } from '@/store/hooks'
 import * as actions from '@/store/actions/user'
-import { Title, Explanations } from '@/components/title'
+import { Title, SubTitle, Explanations } from '@/components/title'
 import { Row, Column } from '@/components/flex'
 import { ShipSelector } from './tabs'
 import { Grid } from './grid'
-import { AllShips, SHIP_CLASS } from './type'
+import { AllShips, Ship, SHIP_CLASS } from './type'
 import { v4 as uuid } from 'uuid'
 import styles from './fleet-manager.module.css'
 
@@ -48,6 +48,61 @@ const FleetTitle = ({ team, isConf, onLoad, onSave }: FleetTitleProps) => {
   )
 }
 
+const ShipDetails = ({
+  ship,
+  onUpdate,
+}: {
+  ship?: Ship
+  onUpdate: (ship: Ship) => void
+}) => {
+  return (
+    <Column background="var(--eee)" padding="xl" gap="m">
+      <Column>
+        <Title content="Ship details" />
+        <p style={{ color: 'var(--888)' }}>Select a ship to change details</p>
+      </Column>
+      <Row gap="s" align="center">
+        <Explanations content="x" />
+        {ship && (
+          <input
+            style={{
+              background: 'var(--ddd)',
+              border: 'none',
+              fontFamily: 'Unifont',
+              padding: 'var(--s)',
+            }}
+            type="number"
+            value={ship.x}
+            onChange={event => {
+              const x = parseInt(event.target.value)
+              onUpdate({ ...ship, x })
+            }}
+          />
+        )}
+      </Row>
+      <Row gap="s" align="center">
+        <Explanations content="y" />
+        {ship && (
+          <input
+            style={{
+              background: 'var(--ddd)',
+              border: 'none',
+              fontFamily: 'Unifont',
+              padding: 'var(--s)',
+            }}
+            type="number"
+            value={ship.y}
+            onChange={event => {
+              const y = parseInt(event.target.value)
+              onUpdate({ ...ship, y })
+            }}
+          />
+        )}
+      </Row>
+    </Column>
+  )
+}
+
 export type Props = {
   ships: string[]
   team: string
@@ -58,10 +113,11 @@ export type Props = {
   onShipClick: (id: string) => void
   onAIClick: (id: string) => void
 }
-export const FleetManager = (props: Props) => {
+export const FleetManager: FC<Props> = props => {
   const { team, ais } = props
   const [ships, setShips] = useState<AllShips>([])
   const [loadedConf, setLoadedConf] = useState<string>()
+  const [selectedShip, setSelectedShip] = useState<string>()
   const dragVal = useRef<string | undefined>()
   const aiRef = useRef<string | undefined>()
   const confs = useSelector(selectors.fleetConfigs)
@@ -90,11 +146,13 @@ export const FleetManager = (props: Props) => {
   const onDrop = ({ x, y }: { x: number; y: number }) => {
     if (dragVal.current) {
       const shipClass = dragVal.current as SHIP_CLASS
+      const id = uuid()
       setShips(ships => {
-        const s = { id: uuid(), x, y, shipClass }
+        const s = { id, x, y, shipClass }
         return [...ships, s]
       })
       dragVal.current = undefined
+      return id
     }
   }
   // const selectAI = (x: number, y: number, ai: AI) => {
@@ -148,10 +206,12 @@ export const FleetManager = (props: Props) => {
             setShips(ships => {
               if (!lastPlacement.current) return ships
               const { x, y } = lastPlacement.current
-              const s = { id: uuid(), x, y, shipClass }
+              const id = uuid()
+              const s = { id, x, y, shipClass }
               const newY = Math.max((y + 40) % 520, 30)
               const newX = newY < y ? Math.max((x + 40) % 240, 30) : x
               lastPlacement.current = { x: newX, y: newY }
+              setSelectedShip(id)
               return [...ships, s]
             })
           }
@@ -161,6 +221,8 @@ export const FleetManager = (props: Props) => {
           ships={ships}
           width={props.width}
           height={props.height}
+          selectedShip={selectedShip}
+          setSelectedShip={setSelectedShip}
           onDrop={onDrop}
           onUpdate={(id, x, y) => {
             setShips(ships => {
@@ -171,6 +233,20 @@ export const FleetManager = (props: Props) => {
             })
           }}
         />
+        <Column flex={1} gap="xl">
+          <ShipDetails
+            ship={ships.find(s => s.id === selectedShip)}
+            onUpdate={ship => {
+              setShips(ships => {
+                return ships.map(s => {
+                  if (s.id === ship.id) return ship
+                  return s
+                })
+              })
+            }}
+          />
+          {props.children}
+        </Column>
       </Row>
     </Column>
   )
