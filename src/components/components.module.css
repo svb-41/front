@@ -43,8 +43,15 @@
   color: var(--white);
 }
 
+.warningButton {
+  composes: button;
+  background: var(--warn-red);
+  color: var(--white);
+}
+
 .button:disabled {
   background: var(--ddd);
+  cursor: not-allowed;
 }
 
 .smallButton {

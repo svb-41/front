@@ -9,7 +9,9 @@ import { Row, Column } from '@/components/flex'
 import { ShipSelector } from './tabs'
 import { Grid } from './grid'
 import { AllShips, Ship, SHIP_CLASS } from './type'
+import { getImage } from '@/helpers/ships'
 import { v4 as uuid } from 'uuid'
+import * as svb from '@svb-41/engine'
 import styles from './fleet-manager.module.css'
 
 type FleetTitleProps = {
@@ -48,56 +50,143 @@ const FleetTitle = ({ team, isConf, onLoad, onSave }: FleetTitleProps) => {
   )
 }
 
-const ShipDetails = ({
+const RotationShip = ({
   ship,
   onUpdate,
+  rotation,
+  team,
 }: {
   ship?: Ship
   onUpdate: (ship: Ship) => void
+  rotation: number
+  team: string
+}) => {
+  const shipClass = ship?.shipClass ?? svb.engine.ship.SHIP_CLASS.FIGHTER
+  const src = getImage(shipClass, team)
+  return (
+    <Row
+      onClick={() => ship && onUpdate({ ...ship, rotation })}
+      background="var(--ddd)"
+      align="center"
+      justify="center"
+    >
+      <img
+        className={styles.rotationShipImg}
+        style={{ transform: `rotate(${rotation}deg)` }}
+        src={src}
+      />
+    </Row>
+  )
+}
+
+const ShipDetails = ({
+  team,
+  ship,
+  ai,
+  onUpdate,
+  onDelete,
+}: {
+  team: string
+  ship?: Ship
+  ai?: AI
+  onUpdate: (ship: Ship) => void
+  onDelete: (ship: Ship) => void
 }) => {
   return (
-    <Column background="var(--eee)" padding="xl" gap="m">
-      <Column>
-        <Title content="Ship details" />
-        <p style={{ color: 'var(--888)' }}>Select a ship to change details</p>
-      </Column>
-      <Row gap="s" align="center">
-        <Explanations content="x" />
-        {ship && (
-          <input
-            style={{
-              background: 'var(--ddd)',
-              border: 'none',
-              fontFamily: 'Unifont',
-              padding: 'var(--s)',
-            }}
-            type="number"
-            value={ship.x}
-            onChange={event => {
-              const x = parseInt(event.target.value)
-              onUpdate({ ...ship, x })
-            }}
-          />
-        )}
+    <Column background="var(--eee)" padding="xl" gap="l">
+      <Row gap="l" justify="space-between" align="flex-start">
+        <Column>
+          <Title content="Ship details" />
+          <p style={{ color: 'var(--888)' }}>Select a ship to change details</p>
+        </Column>
+        <Button
+          small
+          warning
+          disabled={!ship}
+          text="Delete"
+          onClick={() => onDelete(ship!)}
+        />
       </Row>
-      <Row gap="s" align="center">
-        <Explanations content="y" />
-        {ship && (
-          <input
-            style={{
-              background: 'var(--ddd)',
-              border: 'none',
-              fontFamily: 'Unifont',
-              padding: 'var(--s)',
-            }}
-            type="number"
-            value={ship.y}
-            onChange={event => {
-              const y = parseInt(event.target.value)
-              onUpdate({ ...ship, y })
-            }}
-          />
-        )}
+      <Row gap="l">
+        <Column gap="s">
+          <SubTitle content="Position" />
+          <Row gap="s">
+            <div className={styles.detailsGrid}>
+              <Explanations content="x" />
+              <input
+                size={3}
+                disabled={!ship}
+                className={styles.inputNumber}
+                type="number"
+                value={ship?.x ?? 0}
+                onChange={event => {
+                  if (!ship) return
+                  const x_ = parseInt(event.target.value)
+                  const x = isNaN(x_) ? 4 : Math.max(4, Math.min(260, x_))
+                  onUpdate({ ...ship, x })
+                }}
+              />
+              <Explanations content="y" />
+              <input
+                size={3}
+                disabled={!ship}
+                className={styles.inputNumber}
+                type="number"
+                value={ship?.y ?? 0}
+                onChange={event => {
+                  if (!ship) return
+                  const y_ = parseInt(event.target.value)
+                  const y = isNaN(y_) ? 4 : Math.max(4, Math.min(560, y_))
+                  onUpdate({ ...ship, y })
+                }}
+              />
+              <Explanations content="rotation" />
+              <input
+                size={3}
+                disabled={!ship}
+                className={styles.inputNumber}
+                type="number"
+                value={ship?.rotation ?? 0}
+                onChange={event => {
+                  if (!ship) return
+                  const r_ = parseInt(event.target.value)
+                  const rotation = isNaN(r_) ? 0 : (r_ + 360) % 360
+                  onUpdate({ ...ship, rotation })
+                }}
+              />
+            </div>
+            <div className={styles.rotationPositions}>
+              {[315, 0, 45, 270, null, 90, 225, 180, 135].map((rot, index) => {
+                if (rot === null) return <div key={index} />
+                return (
+                  <RotationShip
+                    key={index}
+                    ship={ship}
+                    team={team}
+                    onUpdate={onUpdate}
+                    rotation={rot}
+                  />
+                )
+              })}
+            </div>
+          </Row>
+        </Column>
+        <Column gap="s">
+          <SubTitle content="AI" />
+          {!ai && (
+            <>
+              <Row background="var(--fff)" padding="m">
+                <p>No AI selected.</p>
+              </Row>
+              <Button
+                primary
+                style={{ fontSize: '1.2rem' }}
+                text="Select one"
+                onClick={() => {}}
+              />
+            </>
+          )}
+        </Column>
       </Row>
     </Column>
   )
@@ -148,7 +237,7 @@ export const FleetManager: FC<Props> = props => {
       const shipClass = dragVal.current as SHIP_CLASS
       const id = uuid()
       setShips(ships => {
-        const s = { id, x, y, shipClass }
+        const s = { id, x, y, shipClass, rotation: 0 }
         return [...ships, s]
       })
       dragVal.current = undefined
@@ -207,7 +296,7 @@ export const FleetManager: FC<Props> = props => {
               if (!lastPlacement.current) return ships
               const { x, y } = lastPlacement.current
               const id = uuid()
-              const s = { id, x, y, shipClass }
+              const s = { id, x, y, shipClass, rotation: 0 }
               const newY = Math.max((y + 40) % 520, 30)
               const newX = newY < y ? Math.max((x + 40) % 240, 30) : x
               lastPlacement.current = { x: newX, y: newY }
@@ -235,7 +324,12 @@ export const FleetManager: FC<Props> = props => {
         />
         <Column flex={1} gap="xl">
           <ShipDetails
+            team={team}
             ship={ships.find(s => s.id === selectedShip)}
+            onDelete={ship => {
+              setShips(ships => ships.filter(s => s.id !== ship.id))
+              setSelectedShip(undefined)
+            }}
             onUpdate={ship => {
               setShips(ships => {
                 return ships.map(s => {

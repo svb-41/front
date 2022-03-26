@@ -6,6 +6,7 @@ export type Ship = {
   shipClass: SHIP_CLASS
   x: number
   y: number
+  rotation: number
 }
 export type AllShips = Ship[]
 export type AllAIs = { id: string; ai: engine.control.AI }[]
