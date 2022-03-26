@@ -8,7 +8,7 @@ import { Title, SubTitle, Explanations } from '@/components/title'
 import { Row, Column } from '@/components/flex'
 import { ShipSelector } from './tabs'
 import { Grid } from './grid'
-import { AllShips, Ship, SHIP_CLASS } from './type'
+import { AllShips, AllAIs, Ship, SHIP_CLASS } from './type'
 import { getImage } from '@/helpers/ships'
 import { v4 as uuid } from 'uuid'
 import * as svb from '@svb-41/engine'
@@ -85,12 +85,14 @@ const ShipDetails = ({
   ai,
   onUpdate,
   onDelete,
+  unselect,
 }: {
   team: string
   ship?: Ship
   ai?: AI
   onUpdate: (ship: Ship) => void
   onDelete: (ship: Ship) => void
+  unselect: () => void
 }) => {
   return (
     <Column background="var(--eee)" padding="xl" gap="l">
@@ -99,13 +101,22 @@ const ShipDetails = ({
           <Title content="Ship details" />
           <p style={{ color: 'var(--888)' }}>Select a ship to change details</p>
         </Column>
-        <Button
-          small
-          warning
-          disabled={!ship}
-          text="Delete"
-          onClick={() => onDelete(ship!)}
-        />
+        <Row gap="s">
+          <Button
+            small
+            primary
+            disabled={!ship}
+            text="Unselect"
+            onClick={unselect}
+          />
+          <Button
+            small
+            warning
+            disabled={!ship}
+            text="Delete"
+            onClick={() => onDelete(ship!)}
+          />
+        </Row>
       </Row>
       <Row gap="l">
         <Column gap="s">
@@ -178,12 +189,6 @@ const ShipDetails = ({
               <Row background="var(--fff)" padding="m">
                 <p>No AI selected.</p>
               </Row>
-              <Button
-                primary
-                style={{ fontSize: '1.2rem' }}
-                text="Select one"
-                onClick={() => {}}
-              />
             </>
           )}
         </Column>
@@ -203,8 +208,9 @@ export type Props = {
   onAIClick: (id: string) => void
 }
 export const FleetManager: FC<Props> = props => {
-  const { team, ais } = props
+  const { team } = props
   const [ships, setShips] = useState<AllShips>([])
+  const [ais, setAIs] = useState<AllAIs>([])
   const [loadedConf, setLoadedConf] = useState<string>()
   const [selectedShip, setSelectedShip] = useState<string>()
   const dragVal = useRef<string | undefined>()
@@ -290,7 +296,7 @@ export const FleetManager: FC<Props> = props => {
           team={team}
           setShipDetails={props.onShipClick}
           setAIDetails={props.onAIClick}
-          ais={ais}
+          ais={props.ais}
           onShipClick={(shipClass: SHIP_CLASS) =>
             setShips(ships => {
               if (!lastPlacement.current) return ships
@@ -308,6 +314,7 @@ export const FleetManager: FC<Props> = props => {
         <Grid
           team={team}
           ships={ships}
+          ais={ais}
           width={props.width}
           height={props.height}
           selectedShip={selectedShip}
@@ -326,6 +333,8 @@ export const FleetManager: FC<Props> = props => {
           <ShipDetails
             team={team}
             ship={ships.find(s => s.id === selectedShip)}
+            ai={ais.find(ai => ai.id === selectedShip)?.ai}
+            unselect={() => setSelectedShip(undefined)}
             onDelete={ship => {
               setShips(ships => ships.filter(s => s.id !== ship.id))
               setSelectedShip(undefined)

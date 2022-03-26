@@ -1,4 +1,5 @@
 import { engine } from '@svb-41/engine'
+import { AI } from '@/lib/ai'
 
 export type SHIP_CLASS = engine.ship.SHIP_CLASS
 export type Ship = {
@@ -9,4 +10,4 @@ export type Ship = {
   rotation: number
 }
 export type AllShips = Ship[]
-export type AllAIs = { id: string; ai: engine.control.AI }[]
+export type AllAIs = { id: string; ai: AI }[]

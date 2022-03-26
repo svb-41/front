@@ -4,8 +4,9 @@ import { Title } from '@/components/title'
 import { Row, Column } from '@/components/flex'
 import styles from './fleet-manager.module.css'
 import background from '@/assets/backgrounds/black.png'
-import { AllShips, SHIP_CLASS } from './type'
+import { AllShips, AllAIs, SHIP_CLASS } from './type'
 import { Checkbox } from '@/components/checkbox'
+import { AI } from '@/lib/ai'
 
 type ShipImageProps = {
   ship: SHIP_CLASS
@@ -143,6 +144,7 @@ const Guides = ({ displayGuides, visible, position }: GuidesProps) => {
 type MovableShipProps = {
   selected: boolean
   ship: SHIP_CLASS
+  ai?: AI
   team: string
   x: number
   y: number
@@ -179,6 +181,23 @@ const MovableShip = (props: MovableShipProps) => {
           color={props.team}
           small
         />
+        <div
+          style={{
+            position: 'absolute',
+            top: 24,
+            left: 14,
+            padding: '0 var(--xs)',
+            color: 'var(--white)',
+            background: props.ai ? 'var(--ts-blue)' : 'var(--ddd)',
+            textOverflow: 'clip',
+            overflow: 'hidden',
+            maxWidth: 40,
+            whiteSpace: 'pre-wrap',
+            fontSize: '.8rem',
+          }}
+        >
+          {props.ai?.file?.path ?? '?'}
+        </div>
       </div>
     </>
   )
@@ -186,6 +205,7 @@ const MovableShip = (props: MovableShipProps) => {
 
 export type GridProps = {
   ships: AllShips
+  ais: AllAIs
   width: number
   height: number
   onDrop: ({ x, y }: { x: number; y: number }) => string | undefined
@@ -242,6 +262,7 @@ export const Grid = (props: GridProps) => {
         >
           {ships.map(ship => (
             <MovableShip
+              ai={props.ais.find(ai => ai.id === ship.id)?.ai}
               selected={props.selectedShip === ship.id}
               displayGuides={displayGuides}
               key={ship.id}
