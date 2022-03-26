@@ -134,6 +134,7 @@
 
 .cursor {
   cursor: pointer;
+  flex: 1;
 }
 
 .alignSelfStart {

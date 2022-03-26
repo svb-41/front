@@ -95,7 +95,7 @@ const RenderAIs = ({
                   />
                   <div className={styles.pathName}>{ai.file.path}</div>
                 </Row>
-                <Column>
+                <Column align="flex-end">
                   <div className={styles.dates}>
                     Created at {helpers.dates.toLocale(new Date(ai.createdAt))}
                   </div>
@@ -106,6 +106,7 @@ const RenderAIs = ({
               </Column>
             </div>
           ))}
+          {ais.length < 2 && <div className={styles.cursor} />}
         </Row>
       ))}
     </Column>
