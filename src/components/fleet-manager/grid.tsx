@@ -1,14 +1,7 @@
-import { useState, useRef, useEffect, useMemo } from 'react'
-import { engine } from '@svb-41/engine'
-import { AI } from '@/lib/ai'
+import { useState, useRef, useEffect } from 'react'
 import { getImage } from '@/helpers/ships'
-import { Button } from '@/components/button'
-import * as selectors from '@/store/selectors'
-import { useSelector, useDispatch } from '@/store/hooks'
-import * as actions from '@/store/actions/user'
-import { Title, Explanations } from '@/components/title'
+import { Title } from '@/components/title'
 import { Row, Column } from '@/components/flex'
-import { ShipSelector } from './tabs'
 import styles from './fleet-manager.module.css'
 import background from '@/assets/backgrounds/black.png'
 import { AllShips, SHIP_CLASS } from './type'
@@ -30,6 +23,7 @@ const ShipImage = ({ ship, color, small, draggable }: ShipImageProps) => {
 const usePosition = (
   top: number,
   left: number,
+  onClick: () => void,
   onUpdate: (x: number, y: number) => void
 ) => {
   const [position, setPosition] = useState({ top, left })
@@ -72,110 +66,105 @@ const usePosition = (
     mouseupHandlerRef.current = mouseUp
     document.addEventListener('mousemove', mouseMove)
     document.addEventListener('mouseup', mouseupHandlerRef.current)
+    onClick()
   }
   return { position, onMouseDown }
 }
 
-const Guides = ({ displayGuides, visible, position }: any) => {
+type GuidesProps = {
+  displayGuides: boolean
+  visible: boolean
+  position: { top: number; left: number }
+}
+const Guides = ({ displayGuides, visible, position }: GuidesProps) => {
   const clNum = visible ? styles.visibleNumGuide : styles.numGuide
   const clLine = visible ? styles.visibleLineGuide : styles.lineGuide
+  const { top, left } = position
   return (
     <>
-      {position.top <= 300 && (displayGuides || visible) && (
+      {top <= 300 && (displayGuides || visible) && (
+        <div
+          className={clLine}
+          style={{ width: 0, height: top - 4, left: left + 15 }}
+        />
+      )}
+      {left <= 150 && (displayGuides || visible) && (
+        <div
+          className={clLine}
+          style={{ height: 0, width: left - 6, top: top + 16 }}
+        />
+      )}
+      {top > 300 && (displayGuides || visible) && (
         <div
           className={clLine}
           style={{
             width: 0,
-            height: position.top - 4,
-            left: position.left + 15,
-          }}
-        />
-      )}
-      {position.left <= 150 && (displayGuides || visible) && (
-        <div
-          className={clLine}
-          style={{
-            height: 0,
-            width: position.left - 6,
-            top: position.top + 16,
-          }}
-        />
-      )}
-      {position.top > 300 && (displayGuides || visible) && (
-        <div
-          className={clLine}
-          style={{
-            width: 0,
-            height: 600 - position.top - 40,
-            right: 300 - (position.left + 21),
+            height: 600 - top - 40,
+            right: 300 - (left + 21),
             bottom: 0,
           }}
         />
       )}
-      {position.left > 150 && (displayGuides || visible) && (
+      {left > 150 && (displayGuides || visible) && (
         <div
           className={clLine}
           style={{
             height: 0,
-            width: 300 - (position.left + 42),
-            bottom: 600 - (position.top + 22),
+            width: 300 - (left + 42),
+            bottom: 600 - (top + 22),
             right: 0,
           }}
         />
       )}
-      {position.top <= 300 && (displayGuides || visible) && (
-        <div className={clNum} style={{ left: position.left + 8, top: -24 }}>
-          {position.left}
+      {top <= 300 && (displayGuides || visible) && (
+        <div className={clNum} style={{ left: left + 8, top: -24 }}>
+          {left}
         </div>
       )}
-      {position.left <= 150 && (displayGuides || visible) && (
-        <div className={clNum} style={{ top: position.top + 10, left: -32 }}>
-          {position.top}
+      {left <= 150 && (displayGuides || visible) && (
+        <div className={clNum} style={{ top: top + 10, left: -32 }}>
+          {top}
         </div>
       )}
-      {position.top > 300 && (displayGuides || visible) && (
-        <div className={clNum} style={{ left: position.left + 8, bottom: -24 }}>
-          {position.left}
+      {top > 300 && (displayGuides || visible) && (
+        <div className={clNum} style={{ left: left + 8, bottom: -24 }}>
+          {left}
         </div>
       )}
-      {position.left > 150 && (displayGuides || visible) && (
-        <div className={clNum} style={{ top: position.top + 10, right: -32 }}>
-          {position.top}
+      {left > 150 && (displayGuides || visible) && (
+        <div className={clNum} style={{ top: top + 10, right: -32 }}>
+          {top}
         </div>
       )}
     </>
   )
 }
 
-const MovableShip = ({
-  selected,
-  ship,
-  team,
-  x,
-  y,
-  onUpdate,
-  displayGuides,
-}: {
+type MovableShipProps = {
   selected: boolean
   ship: SHIP_CLASS
   team: string
   x: number
   y: number
+  rotation: number
+  onClick: () => void
   onUpdate: (x: number, y: number) => void
   displayGuides: boolean
-}) => {
+}
+const MovableShip = (props: MovableShipProps) => {
   const [visible, setVisible] = useState(false)
-  const pos = usePosition(y, x, onUpdate)
+  const pos = usePosition(props.y, props.x, props.onClick, props.onUpdate)
   const st = {
     position: 'absolute',
     zIndex: visible ? 1000000 : 10000,
+    transform: `rotate(${props.rotation}deg)`,
     ...pos.position,
   } as any
   return (
     <>
       <Guides
-        displayGuides={displayGuides}
-        visible={visible || selected}
+        displayGuides={props.displayGuides}
+        visible={visible || props.selected}
         position={pos.position}
       />
       <div
@@ -184,7 +173,12 @@ const MovableShip = ({
         onMouseEnter={() => setVisible(true)}
         onMouseLeave={() => setVisible(false)}
       >
-        <ShipImage draggable={false} ship={ship} color={team} small />
+        <ShipImage
+          draggable={false}
+          ship={props.ship}
+          color={props.team}
+          small
+        />
       </div>
     </>
   )
@@ -202,14 +196,7 @@ export type GridProps = {
   onUpdate: (id: string, x: number, y: number) => void
 }
 export const Grid = (props: GridProps) => {
-  const { ships, width, height, team, onUpdate } = props
-  const filler = useMemo(() => {
-    return new Array(width * height).fill(0).map((_, index) => {
-      const x = index % width
-      const y = Math.floor(index / width)
-      return { x, y }
-    })
-  }, [width, height])
+  const { ships, team, onUpdate } = props
   const [displayGuides, setDisplayGuides] = useState(true)
   return (
     <Column gap="xl">
@@ -260,12 +247,11 @@ export const Grid = (props: GridProps) => {
               key={ship.id}
               x={ship.x}
               y={ship.y}
+              rotation={ship.rotation}
               ship={ship.shipClass}
               team={team}
-              onUpdate={(x, y) => {
-                onUpdate(ship.id, x, y)
-                props.setSelectedShip(ship.id)
-              }}
+              onClick={() => props.setSelectedShip(ship.id)}
+              onUpdate={(x, y) => onUpdate(ship.id, x, y)}
             />
           ))}
         </div>

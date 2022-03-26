@@ -167,3 +167,43 @@
   border: 1px dashed var(--888);
   z-index: 100000;
 }
+
+.inputNumber {
+  background: var(--ddd);
+  width: auto;
+}
+
+.inputNumber:focus {
+  outline: 2px solid var(--fff);
+}
+
+.inputNumber:disabled {
+  background: var(--fff);
+  cursor: not-allowed;
+  color: var(--ddd);
+}
+
+.detailsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: var(--s);
+  align-items: center;
+  /* justify-items: end; */
+}
+
+.detailsGrid h3 {
+  background: var(--fff);
+  padding: var(--s);
+  text-align: right;
+}
+
+.rotationPositions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: var(--s);
+}
+
+.rotationShipImg {
+  width: 25px;
+}

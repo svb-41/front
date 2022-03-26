@@ -6,6 +6,7 @@ export type Props = {
   text: string
   primary?: boolean
   secondary?: boolean
+  warning?: boolean
   disabled?: boolean
   style?: CSSProperties
   small?: boolean
@@ -24,10 +25,22 @@ export const Button = ({ onClick, text, ...props }: Props) => {
   )
 }
 
-export type Style = { secondary?: boolean; primary?: boolean; small?: boolean }
-export const style = ({ secondary, primary, small = false }: Style) => {
+export type Style = {
+  warning?: boolean
+  secondary?: boolean
+  primary?: boolean
+  small?: boolean
+}
+export const style = ({
+  warning,
+  secondary,
+  primary,
+  small = false,
+}: Style) => {
   const state = (() => {
-    if (secondary) {
+    if (warning) {
+      return styles.warningButton
+    } else if (secondary) {
       return styles.secondaryButton
     } else if (primary) {
       return styles.primaryButton
