@@ -138,16 +138,15 @@ export const ai: svb.AI<Data> = ({ stats, radar, ship, comm, memory }) => {
     }
   }
   if (memory.state === 'ATTACK') {
+    if (stats.position.speed < memory.speed)
+      return ship.thrust(memory.speed - stats.position.speed)
     const d2 = svb.geometry.dist2(memory.pos, stats.position)
-    if (memory.pos && d2 > 4000 && enemies.length < 0) {
-      if (stats.position.speed < memory.speed)
-        return ship.thrust(memory.speed - stats.position.speed)
-      else
-        return svb.geometry.turnToTarget({
-          source: stats.position,
-          target: memory.pos,
-          ship,
-        })
+    if (memory.pos && d2 > 4000 && enemies.length === 0) {
+      return svb.geometry.turnToTarget({
+        source: stats.position,
+        target: memory.pos,
+        ship,
+      })
     }
     return attack(stats, radar, ship)
   }

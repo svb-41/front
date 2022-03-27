@@ -12,6 +12,15 @@
   },
   "ships": [
     {
+      "classShip": "CRUISER",
+      "ai": "masterSwarm",
+      "position": {
+        "direction": 0.7853981633974483,
+        "speed": 0.1,
+        "pos": { "x": 0, "y": 0 }
+      }
+    },
+    {
       "classShip": "FIGHTER",
       "ai": "slave",
       "position": {
@@ -98,7 +107,250 @@
       "position": {
         "direction": 0,
         "speed": 0,
-        "pos": { "x": 500, "y": 200 }
+        "pos": { "x": 0, "y": 200 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "slave",
+      "position": {
+        "direction": 0,
+        "speed": 0,
+        "pos": { "x": 0, "y": 1200 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "slave",
+      "position": {
+        "direction": 0,
+        "speed": 0,
+        "pos": { "x": 0, "y": 2200 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "slave",
+      "position": {
+        "direction": 0,
+        "speed": 0,
+        "pos": { "x": 0, "y": 3200 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "slave",
+      "position": {
+        "direction": 0,
+        "speed": 0,
+        "pos": { "x": 0, "y": 4200 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "slave",
+      "position": {
+        "direction": 0,
+        "speed": 0,
+        "pos": { "x": 0, "y": 5200 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "slave",
+      "position": {
+        "direction": 0,
+        "speed": 0,
+        "pos": { "x": 0, "y": 6200 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "slave",
+      "position": {
+        "direction": 0,
+        "speed": 0,
+        "pos": { "x": 0, "y": 7200 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "slave",
+      "position": {
+        "direction": 0,
+        "speed": 0,
+        "pos": { "x": 0, "y": 8200 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "slave",
+      "position": {
+        "direction": 0,
+        "speed": 0,
+        "pos": { "x": 0, "y": 9200 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "slave",
+      "position": {
+        "direction": 0,
+        "speed": 0,
+        "pos": { "x": 1000, "y": 9200 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "slave",
+      "position": {
+        "direction": 0,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 9200 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "slave",
+      "position": {
+        "direction": 0,
+        "speed": 0,
+        "pos": { "x": 3000, "y": 9200 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "slave",
+      "position": {
+        "direction": 0,
+        "speed": 0,
+        "pos": { "x": 4000, "y": 9200 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "slave",
+      "position": {
+        "direction": 0,
+        "speed": 0,
+        "pos": { "x": 5000, "y": 9200 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "slave",
+      "position": {
+        "direction": 0,
+        "speed": 0,
+        "pos": { "x": 6000, "y": 9200 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "slave",
+      "position": {
+        "direction": 0,
+        "speed": 0,
+        "pos": { "x": 7000, "y": 9200 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "slave",
+      "position": {
+        "direction": 0,
+        "speed": 0,
+        "pos": { "x": 8000, "y": 9200 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "slave",
+      "position": {
+        "direction": 0,
+        "speed": 0,
+        "pos": { "x": 9000, "y": 9200 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "slave",
+      "position": {
+        "direction": 0,
+        "speed": 0,
+        "pos": { "x": 10000, "y": 8200 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "slave",
+      "position": {
+        "direction": 0,
+        "speed": 0,
+        "pos": { "x": 10000, "y": 7200 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "slave",
+      "position": {
+        "direction": 0,
+        "speed": 0,
+        "pos": { "x": 10000, "y": 6200 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "slave",
+      "position": {
+        "direction": 0,
+        "speed": 0,
+        "pos": { "x": 10000, "y": 5200 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "slave",
+      "position": {
+        "direction": 0,
+        "speed": 0,
+        "pos": { "x": 10000, "y": 4200 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "slave",
+      "position": {
+        "direction": 0,
+        "speed": 0,
+        "pos": { "x": 10000, "y": 3200 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "slave",
+      "position": {
+        "direction": 0,
+        "speed": 0,
+        "pos": { "x": 10000, "y": 2200 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "slave",
+      "position": {
+        "direction": 0,
+        "speed": 0,
+        "pos": { "x": 10000, "y": 1200 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "slave",
+      "position": {
+        "direction": 0,
+        "speed": 0,
+        "pos": { "x": 10000, "y": 200 }
       }
     }
   ]
