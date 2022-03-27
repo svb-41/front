@@ -6,7 +6,6 @@
   "credit": 100,
   "size": { "height": 1000, "width": 1000 },
   "start": { "x": 0, "y": 400 },
-
   "rewards": {
     "ships": ["cruiser"],
     "missions": ["2"]
