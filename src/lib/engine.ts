@@ -28,9 +28,7 @@ const prepareData = (props: UseEngine, fleetData: fleet.Data): Data => {
     const value = shipClass.toUpperCase()
     const builder = findBuilder(value)
     const direction = rotation * (Math.PI / 180) - Math.PI / 2
-    const x_ = x + 50
-    const y_ = Math.abs(600 - y) + (props.mission.size.height / 2 - 300)
-    const position = { pos: { x: x_ + start.x, y: y_ + start.y }, direction }
+    const position = { pos: { x: x + start.x, y: y + start.y }, direction }
     const code = props.ais.find(
       ai => ai.id === fleetData.ais.find(ai => ai.sid === id)?.aid
     )?.compiledValue
