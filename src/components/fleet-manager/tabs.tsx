@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { AI } from '@/lib/ai'
 import { getImage } from '@/helpers/ships'
 import { Title } from '@/components/title'
@@ -58,11 +57,11 @@ const RenderShips = ({
 const RenderAIs = ({
   ais,
   setAIDetails,
-  onAIDragStart,
+  onAIClick,
 }: {
   ais: AI[]
   setAIDetails: (value: string) => void
-  onAIDragStart: (value: string) => void
+  onAIClick: (value: string) => void
 }) => {
   const [cols, remaining] = ais.reduce(
     (acc, val, index) => {
@@ -82,9 +81,8 @@ const RenderAIs = ({
             <div
               className={styles.cursor}
               key={ai.id}
-              draggable
-              onDragStart={() => onAIDragStart(ai.id)}
-              onClick={() => setAIDetails(ai.id)}
+              onDoubleClick={() => setAIDetails(ai.id)}
+              onClick={() => onAIClick(ai.id)}
             >
               <Column background="var(--ddd)" padding="s" gap="s">
                 <Row align="center" gap="s">
@@ -114,15 +112,14 @@ const RenderAIs = ({
 }
 
 export const ShipSelector = (props: any) => {
-  const [state, setState] = useState<'ships' | 'ai'>('ships')
-  const subtitle = state === 'ai' ? 'Available AI' : 'Available ships'
+  const subtitle = props.state === 'ai' ? 'Available AI' : 'Available ships'
   return (
     <Column width={400}>
-      <ShipSelectorTabs state={state} setState={setState} />
+      <ShipSelectorTabs {...props} />
       <Column background="var(--eee)" padding="xl" gap="m" flex={1}>
         <Title content={subtitle} />
-        {state === 'ships' && <RenderShips {...props} />}
-        {state === 'ai' && <RenderAIs {...props} />}
+        {props.state === 'ships' && <RenderShips {...props} />}
+        {props.state === 'ai' && <RenderAIs {...props} />}
       </Column>
     </Column>
   )

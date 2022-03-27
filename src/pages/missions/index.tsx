@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useSelector } from '@/store/hooks'
 import { useNavigate, useLocation } from 'react-router-dom'
 import * as presentation from './presentation'
@@ -6,7 +6,7 @@ import * as preparation from './preparation'
 import * as summary from './summary'
 import * as selectors from '@/store/selectors'
 import { Main } from '@/components/main'
-import { Title, Caption } from '@/components/title'
+import { Title } from '@/components/title'
 import { FleetManager } from '@/components/fleet-manager'
 import { Button } from '@/components/button'
 import { Row, Column } from '@/components/flex'
@@ -120,7 +120,7 @@ const AIDetails = ({
 }
 
 export const Missions = () => {
-  const { details, engine, preferences } = useSetupEngine()
+  const { engine, details, preferences } = useSetupEngine()
   const [state, setState] = useState<State>('preparation')
   const navigate = useNavigate()
   const reset = () => navigate('/missions')
@@ -163,8 +163,6 @@ export const Missions = () => {
                   ships={preferences.player.unlockedShips}
                   ais={preferences.ais}
                   onValidConfiguration={c => c && engine.setFleet(c)}
-                  width={2}
-                  height={5}
                   onAIClick={id => {
                     setSelected(id)
                     setSelectedTeam(undefined)
