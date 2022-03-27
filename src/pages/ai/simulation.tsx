@@ -45,9 +45,9 @@ export const Simulation = ({ ai, beforeLaunch }: Props) => {
   })
 
   const defaultFleet = useCallback(() => {
-    const ships = { 0: { 3: ship } }
-    const AIs = { 0: { 3: ai.id } }
-    const fleet = { ships, AIs }
+    const ships = [{ shipClass: ship, id: 'meh', x: 50, y: 300, rotation: 90 }]
+    const ais = [{ aid: ai.id, sid: 'meh' }]
+    const fleet = { ships, ais }
     setFleet(fleet)
   }, [setFleet, ai, ship])
 

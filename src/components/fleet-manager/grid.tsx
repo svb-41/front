@@ -58,6 +58,7 @@ const usePosition = (
     }
   }
   const onMouseDown = (event: any) => {
+    event.stopPropagation()
     popupRef.current = {
       x: event.clientX,
       y: event.clientY,
@@ -83,19 +84,19 @@ const Guides = ({ displayGuides, visible, position }: GuidesProps) => {
   const { top, left } = position
   return (
     <>
-      {top <= 300 && (displayGuides || visible) && (
+      {top <= 280 && (displayGuides || visible) && (
         <div
           className={clLine}
           style={{ width: 0, height: top - 4, left: left + 15 }}
         />
       )}
-      {left <= 150 && (displayGuides || visible) && (
+      {left <= 130 && (displayGuides || visible) && (
         <div
           className={clLine}
           style={{ height: 0, width: left - 6, top: top + 16 }}
         />
       )}
-      {top > 300 && (displayGuides || visible) && (
+      {top > 280 && (displayGuides || visible) && (
         <div
           className={clLine}
           style={{
@@ -106,7 +107,7 @@ const Guides = ({ displayGuides, visible, position }: GuidesProps) => {
           }}
         />
       )}
-      {left > 150 && (displayGuides || visible) && (
+      {left > 130 && (displayGuides || visible) && (
         <div
           className={clLine}
           style={{
@@ -117,22 +118,22 @@ const Guides = ({ displayGuides, visible, position }: GuidesProps) => {
           }}
         />
       )}
-      {top <= 300 && (displayGuides || visible) && (
+      {top <= 280 && (displayGuides || visible) && (
         <div className={clNum} style={{ left: left + 8, top: -24 }}>
           {left}
         </div>
       )}
-      {left <= 150 && (displayGuides || visible) && (
+      {left <= 130 && (displayGuides || visible) && (
         <div className={clNum} style={{ top: top + 10, left: -32 }}>
           {top}
         </div>
       )}
-      {top > 300 && (displayGuides || visible) && (
+      {top > 280 && (displayGuides || visible) && (
         <div className={clNum} style={{ left: left + 8, bottom: -24 }}>
           {left}
         </div>
       )}
-      {left > 150 && (displayGuides || visible) && (
+      {left > 130 && (displayGuides || visible) && (
         <div className={clNum} style={{ top: top + 10, right: -32 }}>
           {top}
         </div>
@@ -152,6 +153,7 @@ type MovableShipProps = {
   onClick: () => void
   onUpdate: (x: number, y: number) => void
   displayGuides: boolean
+  displayAIs: boolean
 }
 const MovableShip = (props: MovableShipProps) => {
   const [visible, setVisible] = useState(false)
@@ -159,7 +161,6 @@ const MovableShip = (props: MovableShipProps) => {
   const st = {
     position: 'absolute',
     zIndex: visible ? 1000000 : 10000,
-    transform: `rotate(${props.rotation}deg)`,
     ...pos.position,
   } as any
   return (
@@ -175,29 +176,33 @@ const MovableShip = (props: MovableShipProps) => {
         onMouseEnter={() => setVisible(true)}
         onMouseLeave={() => setVisible(false)}
       >
-        <ShipImage
-          draggable={false}
-          ship={props.ship}
-          color={props.team}
-          small
-        />
-        <div
-          style={{
-            position: 'absolute',
-            top: 24,
-            left: 14,
-            padding: '0 var(--xs)',
-            color: 'var(--white)',
-            background: props.ai ? 'var(--ts-blue)' : 'var(--ddd)',
-            textOverflow: 'clip',
-            overflow: 'hidden',
-            maxWidth: 40,
-            whiteSpace: 'pre-wrap',
-            fontSize: '.8rem',
-          }}
-        >
-          {props.ai?.file?.path ?? '?'}
+        <div style={{ transform: `rotate(${props.rotation}deg)` }}>
+          <ShipImage
+            draggable={false}
+            ship={props.ship}
+            color={props.team}
+            small
+          />
         </div>
+        {(props.displayAIs || visible || props.selected) && (
+          <div
+            style={{
+              position: 'absolute',
+              top: 24,
+              left: 14,
+              padding: '0 var(--xs)',
+              color: 'var(--white)',
+              background: props.ai ? 'var(--ts-blue)' : 'var(--ddd)',
+              textOverflow: 'clip',
+              overflow: 'hidden',
+              maxWidth: 40,
+              whiteSpace: 'pre-wrap',
+              fontSize: '.8rem',
+            }}
+          >
+            {props.ai?.file?.path ?? '?'}
+          </div>
+        )}
       </div>
     </>
   )
@@ -205,33 +210,50 @@ const MovableShip = (props: MovableShipProps) => {
 
 export type GridProps = {
   ships: AllShips
-  ais: AllAIs
-  width: number
-  height: number
+  aiIDs: AllAIs
   onDrop: ({ x, y }: { x: number; y: number }) => string | undefined
   selectedShip?: string
   setSelectedShip: (id: string | undefined) => void
-  // ais: AI[]
+  ais: AI[]
   team: string
   onUpdate: (id: string, x: number, y: number) => void
+  quickEdition: boolean
+  setQuickEdition: () => void
 }
 export const Grid = (props: GridProps) => {
   const { ships, team, onUpdate } = props
   const [displayGuides, setDisplayGuides] = useState(true)
+  const [displayAIs, setDisplayAIs] = useState(true)
   return (
     <Column gap="xl">
-      <Column background="var(--eee)" padding="xl" gap="m">
+      <Column background="var(--eee)" padding="xl" gap="l">
         <Column>
           <Title content="Options" />
           <p style={{ color: 'var(--888)' }}>Set options for the grid below</p>
         </Column>
-        <Row align="center" gap="s">
-          <Checkbox
-            checked={displayGuides}
-            onChange={() => setDisplayGuides(s => !s)}
-          />
-          <div>Display guides</div>
-        </Row>
+        <Column gap="s">
+          <Row tag="label" align="center" gap="s">
+            <Checkbox
+              checked={displayGuides}
+              onChange={() => setDisplayGuides(s => !s)}
+            />
+            <div>Display guides</div>
+          </Row>
+          <Row tag="label" align="center" gap="s">
+            <Checkbox
+              checked={displayAIs}
+              onChange={() => setDisplayAIs(s => !s)}
+            />
+            <div>Display AI</div>
+          </Row>
+          <Row tag="label" align="center" gap="s">
+            <Checkbox
+              checked={props.quickEdition}
+              onChange={props.setQuickEdition}
+            />
+            <div>Quick edition</div>
+          </Row>
+        </Column>
       </Column>
       <Column
         background="var(--eee)"
@@ -240,6 +262,7 @@ export const Grid = (props: GridProps) => {
         style={{ alignSelf: 'flex-start' }}
       >
         <div
+          onMouseDown={() => props.setSelectedShip(undefined)}
           onDragOver={event => event.preventDefault()}
           onDragEnter={event => event.preventDefault()}
           onDragLeave={event => event.preventDefault()}
@@ -260,21 +283,26 @@ export const Grid = (props: GridProps) => {
             background: `url(${background})`,
           }}
         >
-          {ships.map(ship => (
-            <MovableShip
-              ai={props.ais.find(ai => ai.id === ship.id)?.ai}
-              selected={props.selectedShip === ship.id}
-              displayGuides={displayGuides}
-              key={ship.id}
-              x={ship.x}
-              y={ship.y}
-              rotation={ship.rotation}
-              ship={ship.shipClass}
-              team={team}
-              onClick={() => props.setSelectedShip(ship.id)}
-              onUpdate={(x, y) => onUpdate(ship.id, x, y)}
-            />
-          ))}
+          {ships.map(ship => {
+            const aid = props.aiIDs.find(ai => ai.sid === ship.id)?.aid
+            const ai = props.ais.find(ai => ai.id === aid)
+            return (
+              <MovableShip
+                ai={ai}
+                selected={props.selectedShip === ship.id}
+                displayGuides={displayGuides}
+                displayAIs={displayAIs}
+                key={ship.id}
+                x={ship.x}
+                y={ship.y}
+                rotation={ship.rotation}
+                ship={ship.shipClass}
+                team={team}
+                onClick={() => props.setSelectedShip(ship.id)}
+                onUpdate={(x, y) => onUpdate(ship.id, x, y)}
+              />
+            )
+          })}
         </div>
       </Column>
     </Column>

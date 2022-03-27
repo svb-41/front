@@ -208,3 +208,7 @@
 .rotationShipImg {
   width: 25px;
 }
+
+.aiDescription {
+  font-size: 0.9rem;
+}
