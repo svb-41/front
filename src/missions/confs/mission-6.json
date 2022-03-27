@@ -5,6 +5,7 @@
   "description": "The opponent developped a new weapon for the fight. While it’s an old technology, they just rediscovered it, why now? Nobody knows. Be careful commander, the torpedo they’re using are able to seek for their target. Once seen, you won’t be able to save your ship. Apparently, they keep an undercover strategy: not moving, have large radars, and try to shoot everything that comes in.\nGo there and kill them. Good luck, commander.",
   "credit": 320,
   "size": { "height": 1000, "width": 2000 },
+  "start": { "x": 0, "y": 400 },
   "rewards": {
     "ships": ["bomber"],
     "missions": ["7"]

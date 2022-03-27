@@ -56,14 +56,16 @@ export class Engine extends EventTarget {
   constructor(
     canvas: HTMLCanvasElement,
     div: HTMLElement,
-    engine: engine.Engine
+    engine: engine.Engine,
+    opts: { pos?: { x: number; y: number }; scale?: number }
   ) {
     super()
     helpers.console.log('=> [RendererEngine] Start Engine')
     const view = canvas
     const antialias = true
-    this.#scale = 1
-    this.#pos = { x: 0, y: 0 }
+    this.#scale = opts.scale ? opts.scale : 1
+    this.#pos = opts.pos ? opts.pos : { x: 0, y: 0 }
+    console.log(this.#pos)
     this.#dragStart = { x: 0, y: 0 }
     this.#downTS = Date.now()
     this.#drag = false
@@ -190,7 +192,7 @@ export class Engine extends EventTarget {
       scroll: (e: any) => {
         const { offsetX, offsetY, deltaY } = e
         const zoomFactor = 0.96
-        if (this.#scale > 0.5 || deltaY < 0) {
+        if (this.#scale > 0.3 || deltaY < 0) {
           const factor = deltaY > 0 ? zoomFactor : 1 / zoomFactor
           this.#scale = this.#scale * factor
           const dx = (offsetX / this.#scale) * (factor - 1)

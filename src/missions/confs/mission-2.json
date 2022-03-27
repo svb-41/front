@@ -5,6 +5,7 @@
   "description": "A bigger ship has been seen in the centaurus belt during the last couple of hours. Its in formation with two scouts ships. Are you used to scouts ships? They're tiny ships without any weapon, but those bitches have huge radars. Almost three times your fighters and one and half of your cruisers. Be careful, the scouts also have powerful communications engine. As soon as one of them detect one of us, it will transmit all the informations to the others. Good luck commander.",
   "credit": 320,
   "size": { "height": 1000, "width": 2000 },
+  "start": { "x": 0, "y": 400 },
   "rewards": {
     "ships": ["scout"],
     "missions": ["3"]

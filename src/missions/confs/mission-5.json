@@ -5,6 +5,7 @@
   "description": "A large fleet of cruisers are coming commander. It seems that they team up with scouts to increase their detection range. One is weak and don’t have weapon, but you won’t be able to destroy them first. Try to find an opportunity. Use as many ships as you want. We all know you’ll do it, that times like all the others times. Good luck!",
   "credit": 320,
   "size": { "height": 1000, "width": 2000 },
+  "start": { "x": 0, "y": 400 },
   "rewards": {
     "ships": [],
     "missions": ["6"]

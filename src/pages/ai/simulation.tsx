@@ -98,7 +98,12 @@ export const Simulation = ({ ai, beforeLaunch }: Props) => {
           />
         </Row>
       </Row>
-      {state === 'engine' && <Renderer engine={engine!} />}
+      {state === 'engine' && (
+        <Renderer
+          engine={engine!}
+          opts={{ scale: 0.8, pos: { x: 0, y: -200 } }}
+        />
+      )}
       {state === 'preparation' && <Preparation onClick={onLaunch} />}
       {state === 'loading' && <RenderLoading />}
     </div>

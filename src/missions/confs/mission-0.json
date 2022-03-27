@@ -5,6 +5,7 @@
   "description": "According to our informers, fortunately the enemy is not so dangerous.\nTheir radar is not so evolved, so our ships should not have so much endangered.\nIf the enemy still behaves like he did before, its behavior is rather simple: he flies straightforward, and shoots everything on its path when it enters its radar.\n\nTake your time, prepare, give your orders. Your men obey blindly. Try to spare human lives.",
   "credit": 100,
   "size": { "height": 1000, "width": 1000 },
+  "start": { "x": 0, "y": 400 },
   "rewards": {
     "ships": [],
     "missions": ["1"]

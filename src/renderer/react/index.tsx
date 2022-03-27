@@ -50,8 +50,11 @@ const RenderShip = ({ ship }: { ship: engine.ship.Ship }) => (
   </div>
 )
 
-export type Props = { engine: engine.Engine }
-export const Renderer = ({ engine }: Props) => {
+export type Props = {
+  engine: engine.Engine
+  opts: { pos?: { x: number; y: number }; scale?: number }
+}
+export const Renderer = ({ engine, opts }: Props) => {
   const [ship, setShip] = useState<engine.ship.Ship | undefined>()
   const [pausedState, setPausedState] = useState<PausedState>('resumed')
   const [running, setRunning] = useState(false)
@@ -76,7 +79,7 @@ export const Renderer = ({ engine }: Props) => {
       const updater = () => setRunning(false)
       const handler = handleLog(setLogs)
       const clearHandler = () => setLogs([])
-      renderer.current = new Engine(canvas.current, div.current, engine)
+      renderer.current = new Engine(canvas.current, div.current, engine, opts)
       setRunning(true)
       renderer.current.addEventListener('state.end', updater)
       renderer.current.addEventListener('log.add', handler)

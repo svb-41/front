@@ -126,6 +126,17 @@ export const Missions = () => {
   const reset = () => navigate('/missions')
   const [selected, setSelected] = useState<string>()
   const [selectedTeam, setSelectedTeam] = useState<string>()
+  let pos
+  if (details.mission.start) {
+    pos = {
+      x: -details.mission.start.x / 2,
+      y: details.mission.start.y,
+    }
+  }
+  const opts = {
+    pos,
+    scale: details.mission.size.height > 2000 ? 0.5 : 1,
+  }
   return (
     <>
       <Main links={state === 'preparation'}>
@@ -145,7 +156,7 @@ export const Missions = () => {
             }}
           />
         )}
-        {state === 'engine' && <Renderer engine={engine.engine!} />}
+        {state === 'engine' && <Renderer engine={engine.engine!} opts={opts} />}
         {state === 'preparation' && (
           <div className={styles.missions}>
             <presentation.MissionSelector reset={reset} {...details} />

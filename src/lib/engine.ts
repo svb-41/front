@@ -23,13 +23,14 @@ export type UseEngine = {
 }
 
 const prepareData = (props: UseEngine, fleetData: fleet.Data): Data => {
+  const start = props.mission.start ? props.mission.start : { x: 0, y: 0 }
   return fleetData.ships.reduce((acc, { x, y, shipClass, rotation, id }) => {
     const value = shipClass.toUpperCase()
     const builder = findBuilder(value)
     const direction = rotation * (Math.PI / 180) - Math.PI / 2
     const x_ = x + 50
     const y_ = Math.abs(600 - y) + (props.mission.size.height / 2 - 300)
-    const position = { pos: { x: x_, y: y_ }, direction }
+    const position = { pos: { x: x_ + start.x, y: y_ + start.y }, direction }
     const code = props.ais.find(
       ai => ai.id === fleetData.ais.find(ai => ai.sid === id)?.aid
     )?.compiledValue
@@ -68,6 +69,9 @@ const outOfBound = (
   ship.position.pos.x > size.width * 3 ||
   ship.position.pos.y > size.height * 3
 
+const outOfAmo = (ship: svb.engine.ship.Ship) =>
+  ship.weapons.map(w => w.amo <= 0).reduce((acc, val) => acc && val, true)
+
 const teamDestroyed = (
   ships: svb.engine.ship.Ship[],
   team: string,
@@ -75,19 +79,16 @@ const teamDestroyed = (
 ) => {
   return ships
     .filter(s => s.team === team)
-    .map(s => s.destroyed || outOfBound(s, size))
+    .map(s => s.destroyed || outOfBound(s, size) || outOfAmo(s))
     .reduce((acc, val) => acc && val, true)
 }
 
 const isEnded = (teams: Teams, size: { height: number; width: number }) => {
   return (state: svb.engine.State): boolean => {
     const { ships } = state
-    const [fst, snd] = teams
-    return (
-      teamDestroyed(ships, fst, size) ||
-      teamDestroyed(ships, snd, size) ||
-      false
-    )
+    return teams
+      .map(t => teamDestroyed(ships, t, size))
+      .reduce((acc, val) => acc || val, false)
   }
 }
 

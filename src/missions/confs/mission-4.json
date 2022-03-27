@@ -5,6 +5,7 @@
   "description": "Eight cruisers are coming in the area. Nobody know where they came from. Maybe a jump from the outer space. Who knows, with those traitors in command. Be extra careful commander, their radar have bigger range than most of our fighters. And they’re heavily armed. Count on bullets, torpedos, mines, and more.\nTry to avoid losing your men, you’ll maybe need them for later missions.",
   "credit": 320,
   "size": { "height": 1000, "width": 2000 },
+  "start": { "x": 0, "y": 400 },
   "rewards": {
     "ships": [],
     "missions": ["5"]
