@@ -1,7 +1,7 @@
 import { Effect } from '@/store/types'
 import { Color } from '@/lib/color'
-// import { Data } from '@/components/fleet-manager'
-import { v4 } from 'uuid'
+import { Data } from '@/components/fleet-manager'
+import { v4 as uuid } from 'uuid'
 
 export const UPDATE_USER_ID = 'user/LOAD_ID'
 export const UPDATE_USER = 'user/LOAD_USER'
@@ -22,12 +22,10 @@ export const unlockRewards: (rewards: Rewards) => Effect<void> = rewards => {
   }
 }
 
-// export const saveFleetConfig: (data: Data, confId?: string) => Effect<void> = (
-//   data: Data,
-//   confId?: string
-// ) => {
-//   return async dispatch => {
-//     const id = confId ?? v4()
-//     dispatch({ type: SAVE_FLEET_CONFIG, conf: { id, data } })
-//   }
-// }
+export const saveFleetConfig = (data: Data, cid?: string): Effect<string> => {
+  return async dispatch => {
+    const id = cid ?? uuid()
+    dispatch({ type: SAVE_FLEET_CONFIG, conf: { id, data } })
+    return id
+  }
+}

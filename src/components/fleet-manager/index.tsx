@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from '@/store/hooks'
 import * as actions from '@/store/actions/user'
 import { Title, SubTitle, Explanations } from '@/components/title'
 import { Row, Column } from '@/components/flex'
+import { Icon } from '@/components/ship'
 import { ShipSelector } from './tabs'
 import { Grid } from './grid'
 import { AllShips, AllAIs, Ship, Data, SHIP_CLASS } from './type'
@@ -15,17 +16,27 @@ import * as helpers from '@/helpers'
 import { v4 as uuid } from 'uuid'
 import * as svb from '@svb-41/engine'
 import styles from './fleet-manager.module.css'
+import { Movable } from '@/components/movable'
+
 export type { Data } from './type'
 
 type FleetTitleProps = {
   team: string
-  onLoad: () => void
+  onLoad?: () => void
+  onErase: () => void
   onSave: () => void
-  isConf: boolean
+  usedConf?: string
+  isValid: boolean
 }
-const FleetTitle = ({ team, isConf, onLoad, onSave }: FleetTitleProps) => {
+const FleetTitle = ({
+  usedConf,
+  team,
+  onLoad,
+  onErase,
+  onSave,
+  isValid,
+}: FleetTitleProps) => {
   const background = `var(--team-${team})`
-  const conf = isConf ? '' : 'new '
   return (
     <Column background="var(--eee)" padding="m" gap="s">
       <Row justify="space-between" gap="m">
@@ -35,15 +46,35 @@ const FleetTitle = ({ team, isConf, onLoad, onSave }: FleetTitleProps) => {
             {team.toUpperCase()}
           </span>
         </Row>
-        <Column gap="s" className={styles.alignSelfStart}>
-          <Button small text="Load fleet config" onClick={onLoad} secondary />
-          <Button
-            small
-            text={`Save ${conf} config`}
-            onClick={onSave}
-            secondary
-          />
-        </Column>
+        <Row gap="s" align="flex-start">
+          <Row background="var(--ddd)" padding="s">
+            {usedConf && `Config: ${usedConf.replace(/-/g, '').slice(0, 10)}…`}
+            {!usedConf && `No config used`}
+          </Row>
+          <Column gap="s" className={styles.alignSelfStart}>
+            <Button
+              disabled={!onLoad}
+              small
+              text="Load fleet config"
+              onClick={() => onLoad?.()}
+              secondary
+            />
+            <Button
+              disabled={!usedConf || !isValid}
+              small
+              text="Erase config"
+              onClick={onErase}
+              secondary
+            />
+            <Button
+              disabled={!isValid}
+              small
+              text="Save new config"
+              onClick={onSave}
+              secondary
+            />
+          </Column>
+        </Row>
       </Row>
       <Explanations
         color="var(--888)"
@@ -74,6 +105,7 @@ const RotationShip = ({
       justify="center"
     >
       <img
+        alt="ship"
         className={styles.rotationShipImg}
         style={{
           transform: `rotate(${rotation}deg)`,
@@ -224,6 +256,157 @@ const ShipDetails = ({
   )
 }
 
+const useConfig = ({ onValidConfiguration }: Props) => {
+  const dispatch = useDispatch()
+  const confs = useSelector(selectors.fleetConfigs)
+  const [visibleLoad, setVisibleLoad] = useState(false)
+  const [ships, setShips] = useState<AllShips>([])
+  const [ais, setAIs] = useState<AllAIs>([])
+  const [usedConf, setUsedConf] = useState<string>()
+  const validConfig = useMemo(() => ({ ships, ais }), [ships, ais])
+  const isValid = useMemo(() => {
+    if (ships.length <= 0) return false
+    const f = (id: string) => ais.find(ai => ai.sid === id)
+    return ships.reduce((acc, val) => acc && Boolean(f(val.id)), true)
+  }, [ships, ais])
+  useEffect(() => {
+    const data = isValid ? validConfig : null
+    onValidConfiguration(data)
+  }, [isValid, validConfig, onValidConfiguration])
+  const loadDataFromStore = () => setVisibleLoad(true)
+  const erase = () => {
+    if (isValid && usedConf) {
+      const action = actions.saveFleetConfig(validConfig, usedConf)
+      dispatch(action)
+    }
+  }
+  const saveFleetConfig = async () => {
+    if (isValid) {
+      const action = actions.saveFleetConfig(validConfig)
+      const id = await dispatch(action)
+      setUsedConf(id)
+    }
+  }
+  return {
+    isValid,
+    usedConf,
+    ships,
+    ais,
+    setShips,
+    setAIs,
+    loadDataFromStore,
+    saveFleetConfig,
+    erase,
+    visibleLoad,
+    confs,
+    closeVisible: () => {
+      setVisibleLoad(false)
+    },
+    onLoad: (id: string) => {
+      const value = confs[id]
+      if (value) {
+        const { ships, ais } = value
+        setUsedConf(id)
+        setShips(ships)
+        setAIs(ais)
+        setVisibleLoad(false)
+      }
+    },
+  }
+}
+
+const LoadSaveFleet = ({
+  onClose,
+  confs,
+  team,
+  ais,
+  onLoad,
+}: {
+  onClose: () => void
+  onLoad: (id: string) => void
+  confs: { [id: string]: Data }
+  team: string
+  ais: any
+}) => {
+  const [selectedConfig, setSelectedConfig] = useState('')
+  const ships = !selectedConfig
+    ? {}
+    : confs[selectedConfig].ships.reduce((acc, val) => {
+        const n = val.shipClass
+        return { ...acc, [n]: (acc[n] ?? 0) + 1 }
+      }, {} as { [key: string]: number })
+  return (
+    <Movable onClose={onClose}>
+      <Column padding="xl" background="var(--ddd)" gap="l">
+        <Title content="Saved configurations" />
+        <Row gap="xl" align="flex-start">
+          <Column
+            gap="m"
+            background="var(--eee)"
+            padding="s"
+            style={{ alignSelf: 'stretch' }}
+          >
+            {Object.keys(confs).map(key => (
+              <Row
+                key={key}
+                background={
+                  selectedConfig === key ? 'var(--ccc)' : 'var(--ddd)'
+                }
+                padding="s"
+                onClick={() => setSelectedConfig(key)}
+                style={{ fontSize: '1.2rem' }}
+              >
+                0x{key.replace(/-/g, '').slice(0, 10)}…
+              </Row>
+            ))}
+          </Column>
+          <Column>
+            <Grid
+              ships={confs[selectedConfig]?.ships ?? []}
+              aiIDs={confs[selectedConfig]?.ais ?? []}
+              ais={ais}
+              team={team}
+            />
+          </Column>
+          <Column gap="xl" width={350}>
+            <div className={styles.renderShips}>
+              {helpers.ships.ships.map((ship, index) => {
+                const unlocked = Object.keys(ships).includes(ship)
+                return (
+                  <Column
+                    key={index}
+                    padding="m"
+                    gap="m"
+                    align="center"
+                    background={unlocked ? 'var(--eee)' : 'var(--fff)'}
+                    style={
+                      unlocked
+                        ? { background: 'var(--ccc)' }
+                        : { filter: 'brightness(0.2)' }
+                    }
+                  >
+                    <div>{unlocked ? `${ships[ship]} x ${ship}` : 'None'}</div>
+                    <Icon shipClass={ship as any} team={team} />
+                  </Column>
+                )
+              })}
+            </div>
+            <Row gap="m" justify="flex-end" align="center">
+              {false && <Button warning text="Delete" onClick={() => {}} />}
+              <Button
+                disabled={!selectedConfig}
+                primary
+                text="Load"
+                onClick={() => onLoad(selectedConfig)}
+              />
+            </Row>
+          </Column>
+        </Row>
+      </Column>
+    </Movable>
+  )
+}
+
 export type Props = {
   ships: string[]
   team: string
@@ -234,63 +417,50 @@ export type Props = {
 }
 export const FleetManager: FC<Props> = props => {
   const { team } = props
-  const [ships, setShips] = useState<AllShips>([])
-  const [ais, setAIs] = useState<AllAIs>([])
-  const [loadedConf, setLoadedConf] = useState<string>()
   const [selectedShip, setSelectedShip] = useState<string>()
   const dragVal = useRef<string | undefined>()
-  const confs = useSelector(selectors.fleetConfigs)
-  const dispatch = useDispatch()
   const [tab, setTab] = useState<'ships' | 'ai'>('ships')
   const [quickEdition, setQuickEdition] = useState(true)
+  const { ships, ais, setShips, setAIs, ...config } = useConfig(props)
 
-  // const loadDataFromStore = (id: string) => {
-  //   const conf = confs?.[id]
-  //   if (conf) {
-  //     setData(conf)
-  //     setLoadedConf(id)
-  //   }
-  // }
-  //
-  // const saveFleetConfig = () => {
-  //   dispatch(actions.saveFleetConfig(data, loadedConf))
-  // }
-
-  const onDragStart = (ship: string) => {
-    dragVal.current = ship
-  }
+  const lastPlacement = useRef({ x: 30, y: 30 })
+  const onDragStart = (ship: string) => (dragVal.current = ship)
   const onDrop = ({ x, y }: { x: number; y: number }) => {
     if (dragVal.current) {
       const shipClass = dragVal.current as SHIP_CLASS
       const id = uuid()
-      setShips(ships => {
-        const s = { id, x, y, shipClass, rotation: 0 }
-        return [...ships, s]
-      })
+      setShips(ships => [...ships, { id, x, y, shipClass, rotation: 0 }])
       dragVal.current = undefined
       return id
     }
   }
-  const validConfig = useMemo(() => ({ ships, ais }), [ships, ais])
-  useEffect(() => {
-    const isValid =
-      ships.length > 0 &&
-      ships.reduce(
-        (acc, val) => acc && Boolean(ais.find(ai => ai.sid === val.id)),
-        true
-      )
-    props.onValidConfiguration(isValid ? validConfig : null)
-  }, [ships, ais, props.onValidConfiguration])
-  const lastPlacement = useRef({ x: 30, y: 30 })
-  const selectedAID = ais.find(ai => ai.sid === selectedShip)?.aid
-  const selectedAI = props.ais.find(ai => ai.id === selectedAID)
+
+  const selectedAI = useMemo(() => {
+    const selectedAID = ais.find(ai => ai.sid === selectedShip)?.aid
+    return props.ais.find(ai => ai.id === selectedAID)
+  }, [ais, selectedShip, props.ais])
   return (
     <Column gap="xl" flex={3}>
+      {config.visibleLoad && (
+        <LoadSaveFleet
+          onClose={config.closeVisible}
+          confs={config.confs}
+          team={team}
+          ais={props.ais}
+          onLoad={config.onLoad}
+        />
+      )}
       <FleetTitle
         team={team}
-        onSave={() => {}}
-        onLoad={() => {}}
-        isConf={!!loadedConf}
+        isValid={config.isValid}
+        usedConf={config.usedConf}
+        onSave={config.saveFleetConfig}
+        onErase={config.erase}
+        onLoad={
+          Object.entries(config.confs).length > 0
+            ? config.loadDataFromStore
+            : undefined
+        }
       />
       <Row gap="xl" flex={1}>
         <ShipSelector

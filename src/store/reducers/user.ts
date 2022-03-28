@@ -8,7 +8,7 @@ import {
   Rewards,
 } from '@/store/actions/user'
 import { Color } from '@/lib/color'
-// import { any } from '@/components/fleet-manager'
+import { Data } from '@/components/fleet-manager'
 
 export type User = string | null
 
@@ -17,7 +17,7 @@ export type State = {
   unlockedShips: Array<string>
   unlockedMissions: Array<string>
   color: Color
-  fleetConfigs: { [id: string]: any }
+  fleetConfigs: { [id: string]: Data }
 }
 
 const init: State = {
@@ -32,13 +32,13 @@ export type Action =
   | { type: 'user/LOAD_ID'; id: string }
   | { type: 'user/UPDATE_COLOR'; color: Color }
   | { type: 'user/UNLOCK_REWARDS'; rewards: Rewards }
-  | { type: 'user/SAVE_FLEET_CONFIG'; conf: { data: any; id: string } }
+  | { type: 'user/SAVE_FLEET_CONFIG'; conf: { data: Data; id: string } }
   | {
       type: 'user/LOAD_USER'
       unlockedShips: Array<string>
       unlockedMissions: Array<string>
       color: Color
-      fleetConfigs: { [id: string]: any }
+      fleetConfigs: { [id: string]: Data }
     }
 
 const unique = <T>(arr: T[]): T[] => [...new Set(arr)]

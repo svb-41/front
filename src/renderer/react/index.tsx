@@ -93,7 +93,7 @@ export const Renderer = ({ engine, opts }: Props) => {
         renderer.current?.unmount()
       }
     }
-  }, [engine])
+  }, [engine, opts])
   return (
     <div className={styles.fullHeight} ref={div}>
       <Logger.Render logs={logs} />

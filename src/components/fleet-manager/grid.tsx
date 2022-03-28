@@ -143,6 +143,7 @@ const Guides = ({ displayGuides, visible, position }: GuidesProps) => {
 }
 
 type MovableShipProps = {
+  disabled: boolean
   selected: boolean
   ship: SHIP_CLASS
   ai?: AI
@@ -161,7 +162,7 @@ const MovableShip = (props: MovableShipProps) => {
   const st = {
     position: 'absolute',
     zIndex: visible ? 1000000 : 10000,
-    cursor: 'pointer',
+    cursor: props.disabled ? 'auto' : 'pointer',
     ...pos.position,
   } as any
   return (
@@ -172,7 +173,7 @@ const MovableShip = (props: MovableShipProps) => {
         position={pos.position}
       />
       <div
-        onMouseDown={pos.onMouseDown}
+        onMouseDown={props.disabled ? undefined : pos.onMouseDown}
         style={st}
         onMouseEnter={() => setVisible(true)}
         onMouseLeave={() => setVisible(false)}
@@ -212,14 +213,14 @@ const MovableShip = (props: MovableShipProps) => {
 export type GridProps = {
   ships: AllShips
   aiIDs: AllAIs
-  onDrop: ({ x, y }: { x: number; y: number }) => string | undefined
+  onDrop?: ({ x, y }: { x: number; y: number }) => string | undefined
   selectedShip?: string
-  setSelectedShip: (id: string | undefined) => void
+  setSelectedShip?: (id: string | undefined) => void
   ais: AI[]
   team: string
-  onUpdate: (id: string, x: number, y: number) => void
-  quickEdition: boolean
-  setQuickEdition: () => void
+  onUpdate?: (id: string, x: number, y: number) => void
+  quickEdition?: boolean
+  setQuickEdition?: () => void
 }
 export const Grid = (props: GridProps) => {
   const { ships, team, onUpdate } = props
@@ -247,13 +248,15 @@ export const Grid = (props: GridProps) => {
             />
             <div>Display AI</div>
           </Row>
-          <Row tag="label" align="center" gap="s">
-            <Checkbox
-              checked={props.quickEdition}
-              onChange={props.setQuickEdition}
-            />
-            <div>Quick edition</div>
-          </Row>
+          {props.quickEdition !== undefined && (
+            <Row tag="label" align="center" gap="s">
+              <Checkbox
+                checked={props.quickEdition}
+                onChange={props.setQuickEdition}
+              />
+              <div>Quick edition</div>
+            </Row>
+          )}
         </Column>
       </Column>
       <Column
@@ -263,7 +266,7 @@ export const Grid = (props: GridProps) => {
         style={{ alignSelf: 'flex-start' }}
       >
         <div
-          onMouseDown={() => props.setSelectedShip(undefined)}
+          onMouseDown={() => props.setSelectedShip?.(undefined)}
           onDragOver={event => event.preventDefault()}
           onDragEnter={event => event.preventDefault()}
           onDragLeave={event => event.preventDefault()}
@@ -273,8 +276,8 @@ export const Grid = (props: GridProps) => {
             const rect = (target as HTMLDivElement).getBoundingClientRect()
             const x = Math.round(clientX - rect.x - 16)
             const y = Math.round(600 - (clientY - rect.y) - 16)
-            const id = props.onDrop({ x, y })
-            props.setSelectedShip(id)
+            const id = props.onDrop?.({ x, y })
+            props.setSelectedShip?.(id)
           }}
           style={{
             position: 'relative',
@@ -289,6 +292,7 @@ export const Grid = (props: GridProps) => {
             const ai = props.ais.find(ai => ai.id === aid)
             return (
               <MovableShip
+                disabled={!onUpdate}
                 ai={ai}
                 selected={props.selectedShip === ship.id}
                 displayGuides={displayGuides}
@@ -299,8 +303,8 @@ export const Grid = (props: GridProps) => {
                 rotation={ship.rotation}
                 ship={ship.shipClass}
                 team={team}
-                onClick={() => props.setSelectedShip(ship.id)}
-                onUpdate={(x, y) => onUpdate(ship.id, x, y)}
+                onClick={() => props.setSelectedShip?.(ship.id)}
+                onUpdate={(x, y) => onUpdate?.(ship.id, x, y)}
               />
             )
           })}
