@@ -1,4 +1,4 @@
-import { FC, useState, useRef, useEffect, useCallback, useMemo } from 'react'
+import { FC, useState, useRef, useEffect, useMemo } from 'react'
 import { AI } from '@/lib/ai'
 import { Button } from '@/components/button'
 import * as selectors from '@/store/selectors'
@@ -153,7 +153,7 @@ const ShipDetails = ({
                 onChange={event => {
                   if (!ship) return
                   const y_ = parseInt(event.target.value)
-                  const y = isNaN(y_) ? 4 : Math.max(4, Math.min(560, y_))
+                  const y = isNaN(y_) ? 4 : Math.max(4, Math.min(556, y_))
                   onUpdate({ ...ship, y })
                 }}
               />

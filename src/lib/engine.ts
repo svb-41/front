@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 import * as svb from '@svb-41/engine'
 import { Mission } from '@/services/mission'
 import { AI } from '@/lib/ai'
@@ -29,9 +29,8 @@ const prepareData = (props: UseEngine, fleetData: fleet.Data): Data => {
     const builder = findBuilder(value)
     const direction = rotation * (Math.PI / 180) - Math.PI / 2
     const position = { pos: { x: x + start.x, y: y + start.y }, direction }
-    const code = props.ais.find(
-      ai => ai.id === fleetData.ais.find(ai => ai.sid === id)?.aid
-    )?.compiledValue
+    const aid = fleetData.ais.find(ai => ai.sid === id)?.aid
+    const code = props.ais.find(ai => ai.id === aid)?.compiledValue
     if (builder && code) {
       const { team } = props
       const ship = builder.builder({ position, team })

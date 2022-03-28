@@ -27,23 +27,23 @@ const usePosition = (
   onClick: () => void,
   onUpdate: (x: number, y: number) => void
 ) => {
-  const [position, setPosition] = useState({ top, left })
+  const [position, setPosition] = useState({ top: 600 - 32 - 8 - top, left })
   useEffect(() => {
-    setPosition({ top, left })
+    setPosition({ top: 600 - 32 - 8 - top, left })
   }, [top, left])
   const popupRef = useRef<any>(null)
   const handlerRef = useRef<any>(null)
   const mouseupHandlerRef = useRef<any>(null)
   const mouseMove = (event: MouseEvent) => {
     if (popupRef.current) {
-      const x_ = event.clientX - popupRef.current.x
-      const y_ = event.clientY - popupRef.current.y
-      const left_ = x_ + popupRef.current.initialPosition.left
-      const top_ = y_ + popupRef.current.initialPosition.top
+      const deltaX = event.clientX - popupRef.current.x
+      const deltaY = event.clientY - popupRef.current.y
+      const left_ = deltaX + popupRef.current.initialPosition.left
+      const top_ = deltaY + popupRef.current.initialPosition.top
       const left = Math.min(300 - 32 - 8, Math.max(4, left_))
-      const top = Math.min(600 - 32 - 8, Math.max(4, top_))
+      const top = Math.min(600 - 32 - 12, Math.max(4, top_))
       setPosition({ top, left })
-      onUpdate(left, top)
+      onUpdate(left, 600 - 32 - 8 - top)
     }
   }
   const mouseUp = () => {
@@ -125,7 +125,7 @@ const Guides = ({ displayGuides, visible, position }: GuidesProps) => {
       )}
       {left <= 130 && (displayGuides || visible) && (
         <div className={clNum} style={{ top: top + 10, left: -32 }}>
-          {top}
+          {600 - 32 - 8 - top}
         </div>
       )}
       {top > 280 && (displayGuides || visible) && (
@@ -135,7 +135,7 @@ const Guides = ({ displayGuides, visible, position }: GuidesProps) => {
       )}
       {left > 130 && (displayGuides || visible) && (
         <div className={clNum} style={{ top: top + 10, right: -32 }}>
-          {top}
+          {600 - 32 - 8 - top}
         </div>
       )}
     </>
@@ -161,6 +161,7 @@ const MovableShip = (props: MovableShipProps) => {
   const st = {
     position: 'absolute',
     zIndex: visible ? 1000000 : 10000,
+    cursor: 'pointer',
     ...pos.position,
   } as any
   return (
@@ -271,7 +272,7 @@ export const Grid = (props: GridProps) => {
             const { target, clientX, clientY } = event
             const rect = (target as HTMLDivElement).getBoundingClientRect()
             const x = Math.round(clientX - rect.x - 16)
-            const y = Math.round(clientY - rect.y - 16)
+            const y = Math.round(600 - (clientY - rect.y) - 16)
             const id = props.onDrop({ x, y })
             props.setSelectedShip(id)
           }}
