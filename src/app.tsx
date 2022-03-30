@@ -14,6 +14,8 @@ import { NotFound } from '@/pages/not-found'
 import { Overlay } from '@/pages/overlay'
 import { Database } from '@/pages/database'
 import * as documentation from '@/doc'
+import silom from '@/assets/fonts/silom.ttf'
+import unifont from '@/assets/fonts/unifont.ttf'
 
 const App = () => {
   const [visible, setVisible] = useState(true)
@@ -22,14 +24,24 @@ const App = () => {
     const run = async () => {
       const time = Date.now()
       await dispatch(initStore)
-      await Promise.all([document.fonts.ready, documentation.load()])
-      const delta = Date.now() - time
-      if (process.env.NODE_ENV) setVisible(false)
-      const temp = 5000 - delta
-      const timeout = temp < 0 ? 0 : temp
-      setTimeout(() => {
-        setVisible(false)
-      }, timeout)
+      document.fonts.add(new FontFace('Silom', `url(${silom})`))
+      document.fonts.add(new FontFace('Unifont', `url(${unifont})`))
+      const results = Promise.all([
+        document.fonts.load('1rem Silom'),
+        document.fonts.load('1rem Unifont'),
+        document.fonts.ready,
+        documentation.load(),
+      ])
+      if (process.env.NODE_ENV === 'development') setVisible(false)
+      if (process.env.NODE_ENV !== 'development') {
+        await results
+        const delta = Date.now() - time
+        const temp = 5000 - delta
+        const timeout = temp < 0 ? 0 : temp
+        setTimeout(() => {
+          setVisible(false)
+        }, timeout)
+      }
     }
     run()
   }, [dispatch])

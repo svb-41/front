@@ -3,6 +3,8 @@
     sans-serif, Apple Color Emoji, Segoe UI Emoji;
   --monospace: Silom, ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas,
     Liberation Mono, monospace;
+  --unifont: Unifont, ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas,
+    Liberation Mono, monospace;
 
   --xs: 3px;
   --s: 6px;
@@ -95,13 +97,13 @@ a {
 
 p {
   white-space: pre-line;
-  font-family: 'Unifont';
+  font-family: var(--unifont);
 }
 
 input {
   color: inherit;
   border: none;
-  font-family: 'Unifont';
+  font-family: var(--unifont);
   padding: var(--s);
   font-size: 1rem;
   outline: none;
@@ -110,14 +112,4 @@ input {
 
 textarea {
   color: inherit;
-}
-
-@font-face {
-  font-family: 'Silom';
-  src: url('./assets/fonts/silom.ttf');
-}
-
-@font-face {
-  font-family: 'Unifont';
-  src: url('./assets/fonts/unifont.ttf');
 }
