@@ -13,6 +13,7 @@ import { Onboarding } from '@/pages/onboarding'
 import { NotFound } from '@/pages/not-found'
 import { Overlay } from '@/pages/overlay'
 import { Database } from '@/pages/database'
+import * as documentation from '@/doc'
 
 const App = () => {
   const [visible, setVisible] = useState(true)
@@ -21,7 +22,7 @@ const App = () => {
     const run = async () => {
       const time = Date.now()
       await dispatch(initStore)
-      await document.fonts.ready
+      await Promise.all([document.fonts.ready, documentation.load()])
       const delta = Date.now() - time
       if (process.env.NODE_ENV) setVisible(false)
       const temp = 5000 - delta

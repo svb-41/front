@@ -6,6 +6,8 @@ import App from './app'
 import { store } from '@/store'
 import reportWebVitals from './reportWebVitals'
 import './index.css'
+import './remark.scss'
+import './atom-one-dark-theme.css'
 
 ReactDOM.render(
   <React.StrictMode>

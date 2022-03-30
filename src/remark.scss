@@ -1,0 +1,57 @@
+.remark-render {
+  color: var(--222);
+
+  & * {
+    font-family: 'Unifont';
+  }
+
+  h1,
+  h2 {
+    font-size: 3rem;
+    margin: var(--xl) 0;
+    &::after {
+      content: '';
+      display: block;
+      border-top: 1px solid var(--ccc);
+      width: 100%;
+    }
+  }
+
+  h2 {
+    font-size: 2rem;
+    margin: var(--l) 0;
+  }
+
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: var(--m) 0;
+  }
+
+  pre {
+    margin: var(--m) 0;
+  }
+
+  p {
+    // font-size: 0.3rem;
+    font-size: 1rem;
+    margin: var(--m) 0;
+    display: block;
+  }
+
+  code {
+    background: var(--fff);
+    font-size: 0.9rem;
+    padding: 2px 4px;
+  }
+
+  pre code {
+    display: block;
+    padding: var(--s);
+  }
+
+  img {
+    max-width: 100%;
+  }
+}

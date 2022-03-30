@@ -3,7 +3,6 @@
 # Documentation
 
 This documentation is here to help you to understand how to use ships in SVB 41.
-
 Your AI will get this context at every frames.
 
 ```typescript
@@ -43,7 +42,7 @@ export const ai: svb.AI<Data> = ({ ship }) => {
 }
 ```
 
-<img src='./img/thrust.gif'>
+![Thrust](img/thrust.gif)
 
 Thrust will only increase or decrease speed, there is no friction in space so you ship will keep its speed if it idle.
 
@@ -59,7 +58,7 @@ export const ai: svb.AI<Data> = ({ ship }) => {
 }
 ```
 
-<img src='./img/turn.gif'>
+![turn](/img/turn.gif)
 
 If you turn when your ship is moving it will keep its speed but change its direction.
 
@@ -70,7 +69,7 @@ export const ai: svb.AI<Data> = ({ ship, stats }) => {
 }
 ```
 
-<img src='./img/turn2.gif'>
+![turn2](/img/turn2.gif)
 
 To turn left or right you can use `ship.turnRight` or `ship.turnLeft`.
 But you can use also `ship.turn(-1)` to turn right or `ship.turn(0.1)` to turn left but for a smaller angle than the defaut stat of your ship.
@@ -87,7 +86,7 @@ export const ai: svb.AI<Data> = ({ ship }) => {
 }
 ```
 
-<img src='./img/bullet.gif'>
+![bullet](/img/bullet.gif)
 
 You can chose the weapon you are using with `ship.fire(1)`
 
@@ -97,7 +96,7 @@ It is a weapon than fly in straight line from the front of your ship.
 
 Bullet have a limited range.
 
-<img src='./img/bullets.gif'>
+![bullets](/img/bullets.gif)
 
 #### torpedos
 
@@ -109,7 +108,7 @@ export const ai: svb.AI<Data> = ({ ship }) => {
 }
 ```
 
-<img src='./img/torpedo.gif'>
+![torpedo](/img/torpedo.gif)
 
 ## radar
 
@@ -130,7 +129,7 @@ You can use the `closeEnemies` from the helper radar, it will respond a list of 
 type Enemy = { enemy: RadarResult; dist2: number }
 ```
 
-<img src='./img/radar.gif'>
+![radar](/img/radar.gif)
 
 ```typescript
 export const ai: svb.AI<Data> = ({ stats, radar, ship }) => {
@@ -179,4 +178,4 @@ export const ai: svb.AI<Data> = ({ ship, comm }) => {
 }
 ```
 
-<img src='./img/radar2.gif'>
+![radar2](/img/radar2.gif)

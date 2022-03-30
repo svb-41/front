@@ -53,6 +53,7 @@ export const Simulation = ({ ai, beforeLaunch }: Props) => {
 
   useEffect(() => {
     defaultFleet()
+    setState('preparation')
   }, [ship, ai, defaultFleet])
 
   const onLaunch = async () => {
