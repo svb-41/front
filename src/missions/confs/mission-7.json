@@ -1,10 +1,10 @@
 {
   "id": "7",
-  "title": "Mine",
-  "subtitle": "Commander? New day, new mission. As one of the best of us, you’re in charge of a new mission.\nAre you ready to tackle it seriously?",
-  "description": "The opponent developped a new weapon for the fight. While it’s an old technology, they just rediscovered it, why now? Nobody knows. Be careful commander, the torpedo they’re using are able to seek for their target. Once seen, you won’t be able to save your ship. Apparently, they keep an undercover strategy: not moving, have large radars, and try to shoot everything that comes in.\nGo there and kill them. Good luck, commander.",
+  "title": "I want more",
+  "subtitle": "Commander. We need you. NOW.\nThe three previous ships were sent as pathfinders. An army is flying in our direction.\nPrepare yourself, prepare your men, prepare your fleet. You have to stop them.\nAll of our best commanders has been assigned on that mission. You’re not alone.",
+  "description": "The informers told us that there's at least 8 ships. Maybe more, but not less. We don’t know what types of ships they are. You need to organise a solid defense, or we’ll lose all our precious planets in this parsec. We tried to isolate the forces into small groups. We want to make skirmishes to take advantage. They have huge armed cruisers for sure. We can’t afford to lose the area.",
   "credit": 320,
-  "size": { "height": 1000, "width": 3000 },
+  "size": { "height": 1000, "width": 2000 },
   "start": { "x": 0, "y": 400 },
   "rewards": {
     "ships": [],
@@ -13,101 +13,74 @@
   "ships": [
     {
       "classShip": "FIGHTER",
-      "ai": "hold",
+      "ai": "patrol",
       "position": {
         "direction": 3.141592653589793,
         "speed": 0,
-        "pos": { "x": 2800, "y": 200 }
+        "pos": { "x": 1800, "y": 300 }
       }
     },
     {
       "classShip": "FIGHTER",
-      "ai": "hold",
+      "ai": "patrol",
       "position": {
         "direction": 3.141592653589793,
         "speed": 0,
-        "pos": { "x": 2800, "y": 400 }
+        "pos": { "x": 1800, "y": 500 }
       }
     },
     {
       "classShip": "FIGHTER",
-      "ai": "hold",
+      "ai": "patrol",
       "position": {
         "direction": 3.141592653589793,
         "speed": 0,
-        "pos": { "x": 2800, "y": 600 }
+        "pos": { "x": 1800, "y": 700 }
       }
     },
     {
       "classShip": "FIGHTER",
+      "ai": "patrol",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 1800, "y": 900 }
+      }
+    },
+    {
+      "classShip": "CRUISER",
       "ai": "hold",
       "position": {
         "direction": 3.141592653589793,
         "speed": 0,
-        "pos": { "x": 2800, "y": 800 }
+        "pos": { "x": 2000, "y": 300 }
       }
     },
     {
-      "classShip": "FIGHTER",
+      "classShip": "CRUISER",
       "ai": "hold",
       "position": {
         "direction": 3.141592653589793,
         "speed": 0,
-        "pos": { "x": 2800, "y": 1000 }
+        "pos": { "x": 2000, "y": 500 }
       }
     },
     {
-      "classShip": "FIGHTER",
+      "classShip": "CRUISER",
       "ai": "hold",
       "position": {
         "direction": 3.141592653589793,
         "speed": 0,
-        "pos": { "x": 2800, "y": 1200 }
+        "pos": { "x": 2000, "y": 700 }
       }
     },
     {
-      "classShip": "BOMBER",
-      "ai": "bomber",
+      "classShip": "CRUISER",
+      "ai": "hold",
       "position": {
         "direction": 3.141592653589793,
         "speed": 0,
-        "pos": { "x": 2800, "y": 700 }
-      }
-    },
-    {
-      "classShip": "BOMBER",
-      "ai": "bomber",
-      "position": {
-        "direction": 3.141592653589793,
-        "speed": 0,
-        "pos": { "x": 2800, "y": 300 }
-      }
-    },
-    {
-      "classShip": "BOMBER",
-      "ai": "bomber",
-      "position": {
-        "direction": 3.141592653589793,
-        "speed": 0,
-        "pos": { "x": 2800, "y": 1100 }
-      }
-    },
-    {
-      "classShip": "BOMBER",
-      "ai": "bomber",
-      "position": {
-        "direction": 3.141592653589793,
-        "speed": 0,
-        "pos": { "x": 2800, "y": 900 }
-      }
-    },
-    {
-      "classShip": "BOMBER",
-      "ai": "bomber",
-      "position": {
-        "direction": 3.141592653589793,
-        "speed": 0,
-        "pos": { "x": 2800, "y": 500 }
+        "pos": { "x": 2000, "y": 900 }
       }
     }
   ]

@@ -1,5 +1,5 @@
 {
-  "id": "9",
+  "id": "10",
   "title": "Yin and yang",
   "subtitle": "Two enemies has been spotted near the asteroids belt. Commander, \ngo there as quick as possible. We need a reliable man nearby.\nOh, and congratulations for the previous mission. It was a brilliant success.",
   "description": "During a regular watch, one boy spotted two opponents ships, apparently there to defend something. Strangely, it seems to be a rather empty space. Maybe we missed something during our observations.\nThere's huge chance that they're seeking for transluminiae, because they're technology is still beyond us for its extraction. Go there, and exterminate them. Nobody can insult us like that.\n\nFor your information, Sonia, our best officer in the area is unfortunately unavailable at that time. We couldn't provide more informations, but be sure we don't have alternatives than sending you. You're only 1 parsec away. Hurry.",
@@ -8,7 +8,7 @@
   "start": { "x": 0, "y": 400 },
   "rewards": {
     "ships": [],
-    "missions": ["10"]
+    "missions": ["11"]
   },
   "ships": [
     {
