@@ -179,3 +179,21 @@ export const ai: svb.AI<Data> = ({ ship, comm }) => {
 ```
 
 ![radar2](/img/radar2.gif)
+
+## memory
+
+If you want to keep informations between two execution of your AI function during the battle you can use the memory object provided in the context.
+
+The object have the type `Data` you provided to the `svb.AI`.
+
+You can access this object during execution and its value is stored between execution of your AI.
+
+```typescript
+type Data = { initialDir?: number }
+
+export const data: Data = {}
+export const ai: svb.AI<Data> = ({ stats, radar, ship, memory }) => {
+  if (!memory.initialDir) memory.initialDir = stats.position.direction
+  return ship.idle()
+}
+```
