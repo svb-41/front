@@ -148,3 +148,18 @@ export const useEngine = (props: UseEngine) => {
   const setFleet = setFleetData
   return { engine, start, reset, fleet, setFleet }
 }
+
+export const winnerTeam = (
+  engine: svb.engine.Engine,
+  size: { height: number; width: number }
+): string | void => {
+  const teams = engine.state.teams.map(team => ({
+    team,
+    win: engine.state.ships
+      .filter(s => s.team === team)
+      .map(s => !s.destroyed || outOfBound(s, size) || outOfAmo(s))
+      .reduce((acc, val) => acc || val, false),
+  }))
+  const winners = teams.filter(({ team, win }) => win)
+  if (winners.length === 1) return winners[0].team
+}

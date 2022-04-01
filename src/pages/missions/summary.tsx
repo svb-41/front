@@ -10,6 +10,7 @@ import { Title, SubTitle, Jumbotron } from '@/components/title'
 import { Icon } from '@/components/ship'
 import { getImage } from '@/helpers/ships'
 import { Mission, getMission } from '@/services/mission'
+import { winnerTeam } from '@/lib/engine'
 import styles from './Missions.module.css'
 import trophy from '@/assets/icons/trophy.svg'
 import cry from '@/assets/icons/cry.svg'
@@ -141,10 +142,7 @@ export const Summary = ({ engine, restart, mission, replay, back }: Props) => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const state = engine.state
-  const playerWin = state.ships
-    .filter(s => s.team === playerData.color)
-    .map(s => !s.destroyed)
-    .reduce((acc, val) => acc || val, false)
+  const playerWin = winnerTeam(engine, mission.size) === playerData.color
   useEffect(() => {
     if (mission.rewards && playerWin) {
       const action = unlockRewards(mission.rewards)
