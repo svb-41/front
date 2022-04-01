@@ -8,7 +8,7 @@ A ship is made of some characteristics, and some tools. It is by default equippe
 
 ## Radars
 
-A ship is equipped with a radar which constantly and passively listens to everything around the ship. Every time the ship needs to act, it reads its environment, and transfer them to the AI. All radars can have different capabilities, mainly on range detection.
+A ship is equipped with a radar which constantly and passively listens to everything around the ship. It is the only detection capacity of the ship. Every time the ship needs to act, it reads its environment, and transfer them to the AI. All radars can have different capabilities, mainly on range detection.
 
 The radar returns a list of `RadarResult` at every step. Technically, a `RadarResult` is an object, containing few informations: the position of the object, its size, its obedience (the team of the object) and its living status (it can alive or destroyed).
 
@@ -24,7 +24,7 @@ type RadarResult = {
 
 You can use the results of the scan to get some informations and act accordingly. To simplify AI developments, you can use the helpers provided by `@svb-41/core` for the radar, i.e. `closeEnemies` and `nearestEnemy`. The first function returns the close enemies of the ship on the radar list, and the second function returns the first enemy near the ship.
 
-Below an example AI using the radar.
+Below an example AI using the radar, with the visual representation.
 
 ```ts
 import * as svb from '@svb-41/core'
@@ -41,10 +41,19 @@ export const ai: svb.AI = ({ ship, stats, radar }) => {
   svb.console.log(near2)
   svb.console.log(close)
 
+  // Approach the enemy.
+  if (enemies.length > 0 && stats.position.speed > -0.1) return ship.thrust(-0.1)
+  // Get back from the enemy.
+  if (stats.position.speed < 0.1) return ship.thrust(0.1 - stats.position.speed)
+  // Don't do anything.
+  return ship.idle()
+
   // Here we do nothing, but you can do what you want.
   return ship.idle()
 }
 ```
+
+![radar](/img/radar.gif)
 
 ## Positions
 
@@ -132,6 +141,51 @@ export const ai: svb.AI = ({ ship, comm }) => {
   return ship.idle()
 }
 ```
+
+Below an illustration with a scout to spot enemy ships, thanks to its larger radar range, and a bomber using its instructions to fire on the target.
+
+```ts
+// scout.ts
+export const ai: svb.AI<Data> = ({ stats, radar, ship, comm }) => {
+  // Read the enemies.
+  const enemies = svb.radar.closeEnemies(radar, stats.team, stats.position)
+
+  // For each enemy, signal its position, and move back from the enemy to keep
+  //   them to the maximum range possible.
+  if (enemies.length > 0) {
+    enemies.forEach(e => comm.sendMessage(e.enemy.position.pos))
+    if (stats.position.speed > -0.1) return ship.thrust(-0.1)
+  }
+
+  // Move straight to the enemy to get them back in the radar.
+  if (stats.position.speed < 0.1) return ship.thrust(0.1 - stats.position.speed)
+
+  // Don't do nothing if everything is perfect.
+  return ship.idle()
+}
+```
+
+And use those informations to fire from an other ship
+
+```ts
+// bomber.ts
+export const ai: svb.AI<Data> = ({ ship, comm }) => {
+  // Read the last messages.
+  const messages = comm.messagesSince(0)
+
+  // Fire on the target seen by scout.
+  if (messages) {
+    const target = messages[0].content.message
+    const params = { target, armedTime: 400 }
+    return ship.fire(0, params)
+  }
+
+  // Otherwise don't do nothing.
+  return ship.idle()
+}
+```
+
+![radar2](/img/radar2.gif)
 
 ## Weapons
 
