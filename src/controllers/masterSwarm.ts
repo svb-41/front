@@ -1,5 +1,6 @@
 import * as svb from '@svb-41/core'
-
+const AREA_THRESHHOLD2 = 4000
+const REFRESH_TIMEOUT = 20000
 type SwarmMessage =
   | {
       messageType: 'RADAR'
@@ -27,10 +28,25 @@ type SwarmMessage =
       shipClass?: string
     }
 
-type Data = { ships: Array<{ id: string; shipClass?: string }> }
+type Data = {
+  init: boolean
+  ships: Array<{
+    id: string
+    shipClass?: string
+  }>
+  targetArea: Array<{
+    pos: svb.ship.Position
+    ships: Array<string>
+    refresh: number
+  }>
+}
 
 const start = { speed: 0, direction: 0, pos: { x: 3000, y: 4500 } }
-export const data: Data = { ships: [] }
+export const data: Data = {
+  init: false,
+  ships: [],
+  targetArea: [],
+}
 export const ai: svb.AI<Data> = ({ stats, radar, ship, comm, memory }) => {
   const messages: Array<SwarmMessage> = comm
     .messagesSince(0)
@@ -45,23 +61,57 @@ export const ai: svb.AI<Data> = ({ stats, radar, ship, comm, memory }) => {
         id: rest.id,
       }
       comm.sendMessage(m)
-      svb.console.log(JSON.stringify(m))
     }
   })
-  const enemy = svb.radar.nearestEnemy(
-    svb.radar.closeEnemies(radar, stats.team, stats.position)
-  )
-  if (enemy)
-    return svb.geometry.aim({
-      source: stats.position,
-      target: start,
-      ship,
-      weapon: stats.weapons.findIndex(w => w.amo > 0) ?? 0,
-    })
-  if (stats.position.speed < 0.6) ship.thrust()
-  return svb.geometry.turnToTarget({
-    source: stats.position,
-    target: start,
-    ship,
-  })
+  if (!memory.init) {
+    memory.init = true
+  }
+
+  if (messages.length > 0) {
+    //@ts-ignore
+    const enemiesDetected: Array<{
+      messageType: 'RADAR'
+      pos: Array<svb.ship.RadarResult>
+      id: string
+    }> = messages.filter(m => m.messageType === 'RADAR')
+
+    enemiesDetected
+      .flatMap(m => m.pos.map(r => r.position))
+      .filter(
+        (pos, i, arr) =>
+          i ===
+          arr.findIndex(p => p.pos.x === pos.pos.x && p.pos.y === pos.pos.y)
+      )
+      .map(pos => {
+        const nearPos = memory.targetArea.find(
+          ta => svb.geometry.dist2(ta.pos, pos) < AREA_THRESHHOLD2
+        )
+        if (!nearPos)
+          memory.targetArea.push({ pos, ships: [], refresh: Date.now() })
+        else nearPos.refresh = Date.now()
+      })
+    memory.targetArea = memory.targetArea
+      .filter(ta => Date.now() - ta.refresh <= REFRESH_TIMEOUT)
+      .map(ta => {
+        if (ta.ships.length === 0) {
+          const affected = memory.targetArea.flatMap(ta => ta.ships)
+          const available = memory.ships
+            .filter(s => s.shipClass !== svb.ship.SHIP_CLASS.SCOUT)
+            .find(s => !affected.includes(s.id))
+          if (available) {
+            const message: SwarmMessage = {
+              messageType: 'ATTACK',
+              pos: ta.pos,
+              id: available.id,
+            }
+            comm.sendMessage(message)
+          }
+        }
+        return ta
+      })
+  }
+
+  if (stats.position.speed < 0.1) return ship.thrust()
+
+  return ship.idle()
 }
