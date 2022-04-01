@@ -1,5 +1,3 @@
-# SVB 41
-
 # Documentation
 
 This documentation is here to help you to understand how to use ships in SVB 41.
@@ -42,7 +40,7 @@ export const ai: svb.AI<Data> = ({ ship }) => {
 }
 ```
 
-![Thrust](img/thrust.gif)
+![Thrust](/img/thrust.gif)
 
 Thrust will only increase or decrease speed, there is no friction in space so you ship will keep its speed if it idle.
 

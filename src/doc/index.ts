@@ -1,4 +1,5 @@
-import mainDoc from './E-001-encyclopaedia.md'
+import aiReference from './E-001-ai-reference.md'
+import shipReference from './E-002-ship-reference.md'
 import whatIsThis from './G-001-what-is-svb-41.md'
 import howtoPlay from './G-002-how-to-play.md'
 
@@ -8,7 +9,8 @@ export let all: { title: string; number: string; text: string }[] = []
 
 export const load = async () => {
   const encyclopaedia_ = [
-    { url: mainDoc, number: 'E-001', title: 'Encyclopaedia' },
+    { url: aiReference, number: 'E-001', title: 'AI Reference' },
+    { url: shipReference, number: 'E-002', title: 'Ship Reference' },
   ]
   const guides_ = [
     { url: whatIsThis, number: 'G-001', title: 'What is SVB-41?' },

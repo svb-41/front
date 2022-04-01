@@ -55,7 +55,7 @@ export const Database = () => {
             ))}
           </Column>
         </Column>
-        <div style={{ flex: 1, maxWidth: 1000, background: 'var(--eee)' }}>
+        <div style={{ flex: 1, maxWidth: 800, background: 'var(--eee)' }}>
           <div style={{ margin: 'var(--xl)' }}>
             {params.id && page && (
               <ReactMarkdown className="remark-render" rehypePlugins={[hglt]}>
