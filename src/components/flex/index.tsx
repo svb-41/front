@@ -40,7 +40,7 @@ export type Props = {
   color?: string
   onClick?: () => void
   style?: CSSProperties
-  height?: number
+  height?: number | string
 }
 
 const Flex = (r: { row: boolean; col: boolean }): FC<Props> => {

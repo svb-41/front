@@ -1,0 +1,9 @@
+.buttonItem {
+  padding: var(--xs);
+  padding-left: var(--m);
+  color: var(--888);
+}
+
+.buttonItem:global(.active) {
+  color: var(--000);
+}

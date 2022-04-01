@@ -30,8 +30,8 @@ const App = () => {
         document.fonts.load('1rem Silom'),
         document.fonts.load('1rem Unifont'),
         document.fonts.ready,
-        documentation.load(),
       ])
+      await documentation.load()
       if (process.env.NODE_ENV === 'development') setVisible(false)
       if (process.env.NODE_ENV !== 'development') {
         await results
@@ -58,6 +58,7 @@ const App = () => {
       <Route path="mission/:id" element={<Missions />} />
       <Route path="onboarding" element={<Onboarding />} />
       <Route path="database" element={<Database />} />
+      <Route path="database/:id" element={<Database />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   )

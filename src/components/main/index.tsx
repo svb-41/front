@@ -23,6 +23,7 @@ export const Main = ({ children, links = true }: Props) => (
       background="var(--eee)"
       padding="xl"
       gap="xxl"
+      height={85}
     >
       <router.Link to="/">
         <div className={styles.logo}>{s.svb}</div>
