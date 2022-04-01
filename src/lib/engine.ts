@@ -157,7 +157,7 @@ export const winnerTeam = (
     team,
     win: engine.state.ships
       .filter(s => s.team === team)
-      .map(s => !s.destroyed || outOfBound(s, size) || outOfAmo(s))
+      .map(s => !s.destroyed && !outOfBound(s, size) && !outOfAmo(s))
       .reduce((acc, val) => acc || val, false),
   }))
   const winners = teams.filter(({ team, win }) => win)
