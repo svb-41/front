@@ -10,9 +10,12 @@ const weaponType = (stats: svb.ship.Ship) => {
 }
 
 export const data: Data = {}
-export const ai: svb.AI<Data> = ({ stats, radar, memory, ship }) => {
+export const ai: svb.AI<Data> = ({ stats, radar, memory, ship, comm }) => {
   if (!memory.initialDir) memory.initialDir = stats.position.direction
   if (stats.position.speed < 0.6) return ship.thrust()
+
+  const enemies = svb.radar.closeEnemies(radar, stats.team, stats.position)
+  if (enemies.length > 0) comm.sendMessage(enemies.map(r => r.enemy.position))
 
   const ally = radar.find(res => {
     const isSameTeam = res.team === stats.team
@@ -24,7 +27,7 @@ export const ai: svb.AI<Data> = ({ stats, radar, memory, ship }) => {
     return Math.abs(direction) < 0.1
   })
 
-  const near = svb.radar.nearestEnemy(radar, stats.team, stats.position)
+  const near = svb.radar.nearestEnemy(enemies)
   if (near) {
     const source = stats.position
     const target = near.enemy.position

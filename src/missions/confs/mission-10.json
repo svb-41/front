@@ -4,7 +4,7 @@
   "subtitle": "Two enemies has been spotted near the asteroids belt. Commander, \ngo there as quick as possible. We need a reliable man nearby.\nOh, and congratulations for the previous mission. It was a brilliant success.",
   "description": "During a regular watch, one boy spotted two opponents ships, apparently there to defend something. Strangely, it seems to be a rather empty space. Maybe we missed something during our observations.\nThere's huge chance that they're seeking for transluminiae, because they're technology is still beyond us for its extraction. Go there, and exterminate them. Nobody can insult us like that.\n\nFor your information, Sonia, our best officer in the area is unfortunately unavailable at that time. We couldn't provide more informations, but be sure we don't have alternatives than sending you. You're only 1 parsec away. Hurry.",
   "credit": 100,
-  "size": { "height": 1000, "width": 1000 },
+  "size": { "height": 1000, "width": 2000 },
   "start": { "x": 0, "y": 400 },
   "rewards": {
     "ships": [],
@@ -13,20 +13,156 @@
   "ships": [
     {
       "classShip": "FIGHTER",
-      "ai": "hold",
+      "ai": "fastAssault",
       "position": {
         "direction": 3.141592653589793,
         "speed": 0,
-        "pos": { "x": 1000, "y": 600 }
+        "pos": { "x": 2000, "y": 0 }
       }
     },
     {
       "classShip": "FIGHTER",
-      "ai": "hold",
+      "ai": "fastAssault",
       "position": {
         "direction": 3.141592653589793,
         "speed": 0,
-        "pos": { "x": 1000, "y": 800 }
+        "pos": { "x": 2000, "y": 100 }
+      }
+    },
+
+    {
+      "classShip": "FIGHTER",
+      "ai": "fastAssault",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 200 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "fastAssault",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 300 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "fastAssault",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 400 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "fastAssault",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 500 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "fastAssault",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 600 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "fastAssault",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 700 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "fastAssault",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 900 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "fastAssault",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 800 }
+      }
+    },
+    {
+      "classShip": "FIGHTER",
+      "ai": "fastAssault",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 1000 }
+      }
+    },
+    {
+      "classShip": "BOMBER",
+      "ai": "torpedo",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 0 }
+      }
+    },
+    {
+      "classShip": "BOMBER",
+      "ai": "torpedo",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 200 }
+      }
+    },
+    {
+      "classShip": "BOMBER",
+      "ai": "torpedo",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 400 }
+      }
+    },
+    {
+      "classShip": "BOMBER",
+      "ai": "torpedo",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 600 }
+      }
+    },
+    {
+      "classShip": "BOMBER",
+      "ai": "torpedo",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 800 }
+      }
+    },
+    {
+      "classShip": "BOMBER",
+      "ai": "torpedo",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 1000 }
       }
     }
   ]
