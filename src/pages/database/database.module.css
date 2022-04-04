@@ -7,3 +7,50 @@
 .buttonItem:global(.active) {
   color: var(--000);
 }
+
+.toc {
+  color: var(--666);
+  font-size: 0.9rem;
+  padding-top: var(--xs);
+}
+
+.toc div {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dash {
+  border-right: 1px dashed var(--ccc);
+}
+
+.tocColumn {
+  position: sticky;
+  top: 109px;
+  overflow: hidden auto;
+  textoverflow: ellipsis;
+}
+
+.cardDocs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 150px);
+  grid-auto-rows: 150px;
+  gap: var(--xl);
+}
+
+.cardDoc {
+  white-space: wrap;
+  font-size: 1.5rem;
+  text-align: center;
+  padding: var(--m);
+  line-height: 1.5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--fff);
+}
+
+.writeUs {
+  color: var(--888);
+  font-family: var(--unifont);
+}
