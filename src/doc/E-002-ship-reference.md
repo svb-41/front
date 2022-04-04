@@ -3,8 +3,13 @@
 A ship is made of some characteristics, and some tools. It is by default equipped with radars, reactors, and communication system. It can also have weapons. A ship reacts according to the AI bundled with it. A ship can only have one AI linked.
 
 ## Characteristics
+  - turn: lorsque que le vaisseaux tourne sans préciser de valeur (inférieure) on modifie `direction` de la valeur de turn (en radian)
+  - acceleration: lorsque le vaisseaux accélère ou ralenti sans préciser de valeur (inférieure) on modifie `speed` de la valeur d'acceleration
+  (pour rappel speed: (maximum 1) le vaisseaux se déplace de 10 fois ça entre chaque appel de l'AI)
+  - size: taille du vaisseaux, il est représenté par un cercle size est son rayon
+  - detection: rayon du radar du vaisseaux
+  - stealth: si le vaisseaux est furtif lorsqu'il est immobile pendant 60 appel de AI. Il n'est plus détectable par un radar. Il redevient détectable si il fait une action (autre chose que ship.idle()).
 
-<!-- TODO @Arthur -->
 
 ## Radars
 
