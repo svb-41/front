@@ -3,12 +3,18 @@
 A ship is made of some characteristics, and some tools. It is by default equipped with radars, reactors, and communication system. It can also have weapons. A ship reacts according to the AI bundled with it. A ship can only have one AI linked.
 
 ## Characteristics
-  - turn: lorsque que le vaisseaux tourne sans préciser de valeur (inférieure) on modifie `direction` de la valeur de turn (en radian)
-  - acceleration: lorsque le vaisseaux accélère ou ralenti sans préciser de valeur (inférieure) on modifie `speed` de la valeur d'acceleration
-  (pour rappel speed: (maximum 1) le vaisseaux se déplace de 10 fois ça entre chaque appel de l'AI)
-  - size: taille du vaisseaux, il est représenté par un cercle size est son rayon
-  - detection: rayon du radar du vaisseaux
-  - stealth: si le vaisseaux est furtif lorsqu'il est immobile pendant 60 appel de AI. Il n'est plus détectable par un radar. Il redevient détectable si il fait une action (autre chose que ship.idle()).
+
+- `turn`: Used when the ship is turning. When turning, you can specify how much you want to turn (in radian), and the amount of rotation will be at most the `turn` value. When turning, we’re modifying `direction`.
+
+- `acceleration`: Used when the ship is accelerating or decelerating. You can specify a value to `thrust` to add small amount of acceleration, or when leaved empty or higher than `acceleration`, then the `acceleration` value is used. The `speed` value is then modified.
+
+  > Remember, the ship will move ten times between each AI call, so a `speed` of 1 (which is the maximum) means that the ship will move 10 pixels between each call.
+
+- `size`: Ship size. In game, its representation is a circle (like a hitbox) with the `size` as radius.
+
+- `detection`: Correspond to the radius size of the radar. Its corresponding area is drawn on the map in-game.
+
+- `stealth`: A ship can be considered as furtive when it does not move after 60 AI  calls. It becomes detectable again by a radar if it acts (an action different of `ship.idle()`).
 
 
 ## Radars
