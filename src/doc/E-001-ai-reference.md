@@ -48,17 +48,17 @@ type Context<Data = any> = {
 
 ### Control Panel
 
-The `ship` field represents the control panel of your ship. That control panel allows to send an Instruction easily: it is made a functions returning instructions exclusively.
+The `ship` field represents the control panel of your ship. That control panel allows to send an Instruction easily: it is made of functions returning instructions exclusively.
 
 ```typescript
 // ControlPanel is defined in @svb-41/core.
 type ControlPanel = {
   idle:      () => Idle
-  turn:      (arg?: number) => Turn
-  turnRight: (arg?: number) => Turn
-  turnLeft:  (arg?: number) => Turn
-  fire:      (arg?: number, target?: Target) => Fire
-  thrust:    (arg?: number) => Thrust
+  turn:      (amount?: number) => Turn
+  turnRight: (amount?: number) => Turn
+  turnLeft:  (amount?: number) => Turn
+  fire:      (id?: number, target?: Target) => Fire
+  thrust:    (amount?: number) => Thrust
 }
 ```
 
@@ -68,7 +68,7 @@ It exists 4 different instructions: `Idle`, `Turn`, `Thrust` and `Fire`. Only on
 
 ### Idle
 
-The default state, you ship will do nothing. In case your ship has some speed, your ship will simply continue its road through space (unlike on Earth, there's no lose of speed through time).
+The default state, your ship will do nothing. In case your ship has some speed, your ship will simply continue its road through space (unlike on Earth, there's no friction in space, and thus no lose of speed through time).
 
 ```ts
 // Dumb AI doing nothing.
@@ -80,7 +80,7 @@ export const ai: svb.AI = ({ ship }) => {
 
 ### Thrust
 
-Thrust is used to increase or decrease speed. It controls the reactors of your ship. Remember as said earlier, there is no friction in space so you ship will keep its speed if it idle.
+Thrust is used to increase or decrease speed. It controls the reactors of your ship. Remember as said earlier, there is no friction in space so your ship will keep its speed if it idle.
 
 Fortunately, you can back thrust with `ship.thrust(-1)` or you can be more precise with your speed with `ship.thrust(0.05)` if you need something delicate. By default, thrust will take the default value of ship speed.
 
@@ -94,21 +94,28 @@ export const ai: svb.AI = ({ ship }) => {
 
 ![Thrust](/img/thrust.gif)
 
-### turn
+### Turn
 
-```typescript
-export const ai: svb.AI<Data> = ({ ship }) => {
+Turning allows to reposition your ship in a new direction. The `direction` of the ship is computed in radian, and turning increase or decrease the radian `direction` according to the amount of the instruction (with the ship stat `turn` value as a maximum value).
+
+```ts
+// AI turning around.
+import * as svb from '@svb-41/core'
+export const ai: svb.AI = ({ ship }) => {
   return ship.turn()
 }
 ```
 
 ![turn](/img/turn.gif)
 
-If you turn when your ship is moving it will keep its speed but change its direction.
+You have to note a little difference with "normal" behavior in real life: when changing your direction when your ship is moving, you will keep your speed and the ship will still continue its way straight.
 
-```typescript
-export const ai: svb.AI<Data> = ({ ship, stats }) => {
-  if (stats.position.speed < 1) return ship.thrust()
+```ts
+// AI turning around with speed.
+import * as svb from '@svb-41/core'
+export const ai: svb.AI = ({ ship, stats }) => {
+  if (stats.position.speed < 1)
+    return ship.thrust()
   return ship.turn()
 }
 ```
@@ -118,56 +125,60 @@ export const ai: svb.AI<Data> = ({ ship, stats }) => {
 To turn left or right you can use `ship.turnRight` or `ship.turnLeft`.
 But you can use also `ship.turn(-1)` to turn right or `ship.turn(0.1)` to turn left but for a smaller angle than the defaut stat of your ship.
 
-### fire
+### Fire
 
-Ships have different kind of weapons bullets or torpedo. Every weapon have unique stats and each ship have a limited amount of there weapon.
+When equipped with weapons, ships can fire bullets or torpedoes, according to what they have. Every weapon has unique stats and each ship have limited amount of munitions. The instruction itself is made of two optional parameters: the `id` of the weapon (0 for bullets, 1 for torpedoes) and the `target`. In case you forget the `id`, the ship will fire bullet, and if you don't give `target`, the torpedo will just go straight.
 
-You can view those stats in the ship's page.
+All weapons stats are similar to ships stats, and can be found on the ship's corresponding page.
 
-```typescript
-export const ai: svb.AI<Data> = ({ ship }) => {
+```ts
+// AI firing all of their bullets in front of it.
+import * as svb from '@svb-41/core'
+export const ai: svb.AI = ({ ship }) => {
   return ship.fire()
 }
 ```
 
 ![bullet](/img/bullet.gif)
 
-You can chose the weapon you are using with `ship.fire(1)`
+## Weapons type
 
-#### bullets
+### Bullets
 
-It is a weapon than fly in straight line from the front of your ship.
-
-Bullet have a limited range.
+Bullets are weapon flying straightforward at high speed on a small distance. After the bullet go through its limited range, it simply disappears.
 
 ![bullets](/img/bullets.gif)
 
-#### torpedos
+### Torpedoes
 
-Torpedos are self propelled weapons. You only have to specify a target when you firing it and the torpedo will be able to cruise toward the target.
+Contrarily to bullets which are dumb weapons, torpedoes are self propelled weapons with some intelligence. You can specify a target when firing a torpedo, and it will fly toward the target, following it to crush it.
 
-```typescript
-export const ai: svb.AI<Data> = ({ ship }) => {
-  return ship.fire(1, { target: { x: 1000, y: 600 }, armedTime: 400 })
+```ts
+// AI firing all of their bullets in front of it.
+import * as svb from '@svb-41/core'
+export const ai: svb.AI = ({ ship }) => {
+  const target = { x: 1000, y: 600 }
+  const options = { target, armedTime: 400 }
+  return ship.fire(1, options)
 }
 ```
 
 ![torpedo](/img/torpedo.gif)
 
-## memory
+## Memory
 
-If you want to keep informations between two execution of your AI function during the battle you can use the memory object provided in the context.
+Because AI are agents, they have direct access to some memory to store data and reuse them later. We’re talking about a computer intelligence after all! To represent this, you have access to some memory when developing your AI. The memory is provided in the `Context` at each run of the AI. It is an arbitrary object, and have the type `Data` you provided to the `svb.AI`.
 
-The object have the type `Data` you provided to the `svb.AI`.
-
-You can access this object during execution and its value is stored between execution of your AI.
-
-```typescript
+```ts
+// Dumb AI saving its position in memory.
+import * as svb from '@svb-41/core'
 type Data = { initialDir?: number }
 
 export const data: Data = {}
 export const ai: svb.AI<Data> = ({ stats, radar, ship, memory }) => {
-  if (!memory.initialDir) memory.initialDir = stats.position.direction
+  // memory is Data
+  if (!memory.initialDir)
+    memory.initialDir = stats.position.direction
   return ship.idle()
 }
 ```
