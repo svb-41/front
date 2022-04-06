@@ -5,6 +5,7 @@ import { BrowserRouter } from 'react-router-dom'
 import * as Sentry from '@sentry/react'
 import { BrowserTracing } from '@sentry/tracing'
 import App from './app'
+import { CookieConsent } from '@/components/cookie-consent'
 import { store } from '@/store'
 import reportWebVitals from './reportWebVitals'
 import './index.css'
@@ -26,6 +27,7 @@ ReactDOM.render(
       <BrowserRouter>
         <App />
       </BrowserRouter>
+      <CookieConsent />
     </Redux.Provider>
   </React.StrictMode>,
   document.getElementById('root')

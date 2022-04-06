@@ -9,6 +9,15 @@
     "hideLogs": "Hide Logs",
     "showLogs": "Show Logs"
   },
+  "cookieConsent": {
+    "title": "One moment please!",
+    "needHelp": "Would you help us improving SVB-41? We need your help!",
+    "helpUs": "First, you could accept to send us some anonymous data. We promise not using them for marketing purposes, and you have always the right to ask to delete them. That would be of huge help.\nWe’ll never bother you again with this after that!",
+    "no": "Thanks no",
+    "yes": "Send some data",
+    "youCould": "You could also",
+    "writeMessage": "write us an email"
+  },
   "pages": {
     "home": {
       "welcome": "Welcome commander, on",

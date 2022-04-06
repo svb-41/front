@@ -24,7 +24,27 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>Starships</title>
+    <title>SVB-41</title>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-DG0GB15JDQ"
+    ></script>
+    <script>
+      const status = localStorage.getItem('svb-cookie-consent')
+      const granted = status ? JSON.parse(status) : false
+      const analytics_storage = granted ? 'granted' : 'denied'
+      window.dataLayer = window.dataLayer || []
+      window.gtag = function () {
+        dataLayer.push(arguments)
+      }
+      gtag('js', new Date())
+      gtag('config', 'G-DG0GB15JDQ')
+      gtag('consent', 'default', {
+        ad_storage: 'denied',
+        analytics_storage,
+      })
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

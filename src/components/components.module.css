@@ -58,3 +58,16 @@
   padding: 3px 6px;
   font-size: 1rem;
 }
+
+.cookieConsent {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10000000;
+  padding: var(--xl);
+}
+
+.link {
+  text-decoration: underline;
+}
