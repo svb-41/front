@@ -18,6 +18,7 @@ import unknownLogo from '@/components/monaco/question-mark.svg'
 import loader from '@/assets/icons/loader.gif'
 import valid from '@/assets/icons/valid.svg'
 import error from '@/assets/icons/error.svg'
+import { AI } from '@/lib/ai'
 import styles from './ai.module.css'
 import s from '@/strings.json'
 
@@ -60,7 +61,12 @@ const CompileStatus = ({ updatedAt, onClick, loading }: any) => (
       <img className={styles.loader} src={error} alt="Error" />
     )}
     {updatedAt && <div className={styles.updatedAt}>{updatedAt}</div>}
-    <Button primary small onClick={onClick} text={s.pages.editor.compile} />
+    <Button
+      primary
+      small
+      onClick={() => onClick()}
+      text={s.pages.editor.compile}
+    />
   </Row>
 )
 
@@ -68,7 +74,12 @@ const FormatStatus = ({ formatOnSave, onClick, onChange }: any) => (
   <Row align="center" gap="s">
     <Checkbox checked={formatOnSave} onChange={onChange} />
     <div className={styles.updatedAt}>{s.pages.editor.formatOnSave}</div>
-    <Button primary small onClick={onClick} text={s.pages.editor.format} />
+    <Button
+      primary
+      small
+      onClick={() => onClick(undefined, true)}
+      text={s.pages.editor.format}
+    />
   </Row>
 )
 
@@ -109,9 +120,16 @@ const useAI = (id: string) => {
       setPath(ai.file.path)
     }
   }, [ai])
-  const format = async () => {
-    if (ai && formatOnSave) {
-      const code = prettier.format(ai.file.code, {
+  const format = async (
+    offset?: number,
+    shouldFormat?: boolean
+  ): Promise<{
+    result?: prettier.CursorResult
+    newAI?: AI
+  }> => {
+    if (ai && (formatOnSave || shouldFormat)) {
+      const result = prettier.formatWithCursor(ai.file.code, {
+        cursorOffset: offset ?? 0,
         parser: 'babel',
         plugins: [parserTypescript],
         semi: false,
@@ -119,25 +137,31 @@ const useAI = (id: string) => {
         trailingComma: 'all',
         tabWidth: 2,
       })
+      const code = result.formatted
       const file = { ...ai.file, code }
       const action = updateAI({ ...ai, file })
       const newAI = await dispatch(action)
       setFile(file)
-      return newAI
+      return { result, newAI }
     }
-    return ai
+    return {
+      newAI: ai,
+      result: { cursorOffset: offset ?? 0, formatted: ai?.file?.code ?? '' },
+    }
   }
   const save = async (file: Monaco.File) => {
     const action = ai ? updateAI({ ...ai, file }) : createAI(id)
     await dispatch(action)
     setFile(file)
   }
-  const compile = async () => {
-    const ai = await format()
-    if (ai) {
-      const action = compileAI(ai)
-      await dispatch(action)
+  const compile = async (offset?: number) => {
+    const ai = await format(offset)
+    if (ai.newAI) {
+      const action = compileAI(ai.newAI)
+      const wait = Promise.resolve(dispatch(action))
+      return { ai, wait }
     }
+    return { ai, wait: Promise.resolve() }
   }
   const rename = () => {
     if (ai && path) {
@@ -164,10 +188,16 @@ export const AIEditor = () => {
   const ai = useAI(id)
   const selectedAI = useSelector(selectors.ai(id))
   const [loading, setLoading] = useState(false)
-  const onClick = async () => {
+  const onClick = async (offset?: number) => {
     setLoading(true)
-    await ai.methods.compile().catch(console.error)
-    setLoading(false)
+    return ai.methods
+      .compile(offset)
+      .then(result => {
+        if (!result) return
+        result.wait.then(() => setLoading(false))
+        return result.ai
+      })
+      .catch(console.error)
   }
   return (
     <Main>
@@ -202,7 +232,14 @@ export const AIEditor = () => {
           </div>
         </Column>
         <div className={styles.sidePanel}>
-          {selectedAI && <Simulation ai={selectedAI} beforeLaunch={onClick} />}
+          {selectedAI && (
+            <Simulation
+              ai={selectedAI}
+              beforeLaunch={async () => {
+                await onClick()
+              }}
+            />
+          )}
         </div>
       </div>
     </Main>
