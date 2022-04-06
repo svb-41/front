@@ -407,6 +407,23 @@ const LoadSaveFleet = ({
   )
 }
 
+const Credits = (props: { credits: number; maxCredits: number }) => {
+  const percent = (props.credits / props.maxCredits) * 100
+  const fst = Math.min(percent, 100)
+  const snd = Math.max(Math.min(100, percent - 100), 0)
+  return (
+    <Column gap="s">
+      Credits ${props.credits} / ${props.maxCredits}
+      <div className={styles.creditsGauge}>
+        <div className={styles.gaugeInside} style={{ width: `${fst}%` }}>
+          <div className={styles.gaugeInside2} style={{ width: `${snd}%` }} />
+        </div>
+        <div className={styles.inscriptionGauge}>{percent.toFixed(0)} %</div>
+      </div>
+    </Column>
+  )
+}
+
 export type Props = {
   ships: string[]
   team: string
@@ -414,6 +431,7 @@ export type Props = {
   onValidConfiguration: (data: Data | null) => void
   onShipClick: (id: string) => void
   onAIClick: (id: string) => void
+  maxCredits: number
 }
 export const FleetManager: FC<Props> = props => {
   const { team } = props
@@ -422,7 +440,6 @@ export const FleetManager: FC<Props> = props => {
   const [tab, setTab] = useState<'ships' | 'ai'>('ships')
   const [quickEdition, setQuickEdition] = useState(true)
   const { ships, ais, setShips, setAIs, ...config } = useConfig(props)
-
   const lastPlacement = useRef({ x: 30, y: 30 })
   const onDragStart = (ship: string) => (dragVal.current = ship)
   const onDrop = ({ x, y }: { x: number; y: number }) => {
@@ -434,7 +451,6 @@ export const FleetManager: FC<Props> = props => {
       return id
     }
   }
-
   const selectedAI = useMemo(() => {
     const selectedAID = ais.find(ai => ai.sid === selectedShip)?.aid
     return props.ais.find(ai => ai.id === selectedAID)
@@ -516,6 +532,7 @@ export const FleetManager: FC<Props> = props => {
           }}
         />
         <Column flex={1} gap="xl">
+          {false && <Credits credits={50} maxCredits={props.maxCredits} />}
           <ShipDetails
             team={team}
             ship={ships.find(s => s.id === selectedShip)}

@@ -212,3 +212,33 @@
 .aiDescription {
   font-size: 0.9rem;
 }
+
+.creditsGauge {
+  position: relative;
+  height: 50px;
+  width: 100%;
+  border: 2px solid var(--space-yellow);
+}
+
+.gaugeInside {
+  transition: all 1s;
+  background: var(--space-yellow);
+  height: 100%;
+}
+
+.gaugeInside2 {
+  composes: gaugeInside;
+  background: var(--warn-red);
+}
+
+.inscriptionGauge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+}

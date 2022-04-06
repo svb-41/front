@@ -170,6 +170,7 @@ export const Missions = () => {
             {!details.opened && (
               <Row className={styles.prepareMission} gap="xl">
                 <FleetManager
+                  maxCredits={details.mission.credit}
                   team={preferences.player.color}
                   ships={preferences.player.unlockedShips}
                   ais={preferences.ais}
