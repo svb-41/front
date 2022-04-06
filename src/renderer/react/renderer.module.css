@@ -28,3 +28,13 @@
   background: var(--eee);
   z-index: 10000;
 }
+
+.tab {
+  padding: var(--m);
+  background: var(--ccc);
+}
+
+.activeTab {
+  composes: tab;
+  background: var(--ddd);
+}

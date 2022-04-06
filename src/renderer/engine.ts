@@ -57,7 +57,11 @@ export class Engine extends EventTarget {
     canvas: HTMLCanvasElement,
     div: HTMLElement,
     engine: engine.Engine,
-    opts: { pos?: { x: number; y: number }; scale?: number }
+    opts: {
+      pos?: { x: number; y: number }
+      scale?: number
+      onTick?: () => void
+    }
   ) {
     super()
     helpers.console.log('=> [RendererEngine] Start Engine')
@@ -65,7 +69,6 @@ export class Engine extends EventTarget {
     const antialias = true
     this.#scale = opts.scale ? opts.scale : 1
     this.#pos = opts.pos ? opts.pos : { x: 0, y: 0 }
-    console.log(this.#pos)
     this.#dragStart = { x: 0, y: 0 }
     this.#downTS = Date.now()
     this.#drag = false
@@ -101,6 +104,7 @@ export class Engine extends EventTarget {
     this.addEventListener('state.pause', this.onStatePause)
     this.preload().then(async () => {
       this.#app.ticker.add(this.run)
+      if (opts.onTick) this.#app.ticker.add(opts.onTick)
     })
   }
 
@@ -240,7 +244,7 @@ export class Engine extends EventTarget {
     const radar = new PIXI.Graphics()
     radar.x = x
     radar.y = y
-    radar.lineStyle(2, radarColor)
+    radar.beginFill(radarColor, 0.6)
     const filter = new PIXI.filters.ColorMatrixFilter()
     filter.brightness(0.2, false)
     radar.filters = [filter]

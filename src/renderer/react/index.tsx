@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { engine, helpers } from '@svb-41/engine'
-import { Details } from '@/components/ship'
+import { Labeled } from '@/components/ship'
+import { Row, Column } from '@/components/flex'
+import { getImage } from '@/helpers/ships'
 import * as Logger from '@/renderer/logger'
 import { Engine } from '@/renderer/engine'
 import styles from '@/renderer/react/renderer.module.css'
+import shipStyles from '@/components/ship/ship.module.css'
 import backgroundTile from '@/assets/backgrounds/black.png'
 import s from '@/strings.json'
 
@@ -31,7 +34,8 @@ const Pause = ({ state, onClick }: PauseProps) => {
     return () => document.removeEventListener('keydown', handler)
   }, [onClick])
   const text = state === 'paused' ? s.renderer.resume : s.renderer.pause
-  const background = state === 'resumed' ? 'var(--ts-blue)' : 'var(--green)'
+  const background =
+    state === 'resumed' ? 'var(--ts-blue)' : 'var(--team-green)'
   return (
     <button className={styles.pause} style={{ background }} onClick={onClick}>
       {text}
@@ -39,16 +43,146 @@ const Pause = ({ state, onClick }: PauseProps) => {
   )
 }
 
-const RenderShip = ({ ship }: { ship: engine.ship.Ship }) => (
-  <div className={styles.renderShip}>
-    <Details
-      ship={ship.shipClass}
-      color={ship.team}
-      infoCard="var(--ddd)"
-      locked={false}
-    />
-  </div>
-)
+const RenderShip = ({ ship }: { ship: engine.ship.Ship }) => {
+  const [activeTab, setActiveTab] = useState<'details' | 'stats'>('details')
+  const name = ship.shipClass.toUpperCase()
+  const stats: any = (engine.config.ship as any)[name]
+  const isActive = (value: string) =>
+    activeTab === value ? styles.activeTab : styles.tab
+  return (
+    <Row className={styles.renderShip} padding="m" align="center">
+      <Column gap="s" className={shipStyles.infos}>
+        <Labeled label="ID" content={stats.id} className={shipStyles.id} />
+        <Column>
+          <Row>
+            <button
+              className={isActive('details')}
+              onClick={() => setActiveTab('details')}
+            >
+              Details
+            </button>
+            <button
+              className={isActive('stats')}
+              onClick={() => setActiveTab('stats')}
+            >
+              Stats
+            </button>
+          </Row>
+          {activeTab === 'details' && (
+            <Row gap="m" flex={1} background="var(--ddd)" padding="m">
+              <Column gap="s">
+                Infos
+                <Column gap="xs" background="var(--ccc)" padding="m">
+                  <Labeled
+                    label="Bullets Fired"
+                    content={ship.bulletsFired.toFixed(0)}
+                  />
+                  <Labeled
+                    label="Destroyed"
+                    content={ship.destroyed ? 'true' : 'false'}
+                  />
+                  <Labeled label="Stealth" content={ship.stealth} />
+                </Column>
+              </Column>
+              <Column gap="s">
+                Position
+                <Column gap="xs" background="var(--ccc)" padding="m">
+                  <Labeled label="x" content={ship.position.pos.x} />
+                  <Labeled label="x" content={ship.position.pos.y} />
+                  <Labeled label="x" content={ship.position.speed} />
+                  <Labeled label="x" content={ship.position.direction} />
+                </Column>
+              </Column>
+              {ship.weapons.map((weapon, index) => (
+                <Column gap="s" key={index}>
+                  Weapon #{index}
+                  <Column gap="xs" background="var(--ccc)" padding="m">
+                    <Labeled
+                      label="Bullet"
+                      style={{ textTransform: 'capitalize' }}
+                      content={weapon.bullet.id.replace(/-/g, ' ')}
+                    />
+                    <Labeled
+                      label="Munitions"
+                      content={weapon.amo.toFixed(0)}
+                    />
+                    <Labeled
+                      label="Cool down"
+                      content={weapon.coolDown.toFixed(0)}
+                    />
+                  </Column>
+                </Column>
+              ))}
+            </Row>
+          )}
+          {activeTab === 'stats' && (
+            <Row gap="m" flex={1} background="var(--ddd)" padding="m">
+              <Column gap="s">
+                Infos
+                <Column gap="s" background="var(--ccc)" padding="m">
+                  <Labeled
+                    label="Class"
+                    content={stats.shipClass}
+                    className={shipStyles.class}
+                  />
+                  <Labeled label="Size" content={stats.stats.size} />
+                  <Labeled
+                    label="Acceleration"
+                    content={stats.stats.acceleration}
+                  />
+                  <Labeled label="Turn" content={stats.stats.turn} />
+                  <Labeled label="Detection" content={stats.stats.detection} />
+                  <Labeled label="Visibility" content={stats.stealth} />
+                </Column>
+              </Column>
+              <div className={shipStyles.weapons}>
+                {stats.weapons.map((weapon: any, index: number) => (
+                  <Column gap="s" key={index}>
+                    Weapon #{index}
+                    <Column gap="s" background="var(--ccc)" padding="m">
+                      <Labeled label="ID" content={weapon.bullet.id} />
+                      <Labeled
+                        label="Speed"
+                        content={weapon.bullet.position.speed}
+                      />
+                      <Labeled
+                        label="Size"
+                        content={weapon.bullet.stats.size}
+                      />
+                      <Labeled
+                        label="Acceleration"
+                        content={weapon.bullet.stats.acceleration}
+                      />
+                      <Labeled
+                        label="Turn"
+                        content={weapon.bullet.stats.turn}
+                      />
+                      <Labeled
+                        label="Detection"
+                        content={weapon.bullet.stats.detection}
+                      />
+                      <Labeled label="Range" content={weapon.bullet.range} />
+                      <Labeled
+                        label="Cool Down"
+                        content={weapon.bullet.coolDown}
+                      />
+                      <Labeled label="Munitions" content={weapon.amo} />
+                    </Column>
+                  </Column>
+                ))}
+              </div>
+            </Row>
+          )}
+        </Column>
+      </Column>
+      <img
+        src={getImage(name, ship.team)}
+        className={shipStyles.img}
+        alt="ship"
+      />
+    </Row>
+  )
+}
 
 export type Props = {
   engine: engine.Engine
@@ -79,7 +213,15 @@ export const Renderer = ({ engine, opts }: Props) => {
       const updater = () => setRunning(false)
       const handler = handleLog(setLogs)
       const clearHandler = () => setLogs([])
-      renderer.current = new Engine(canvas.current, div.current, engine, opts)
+      renderer.current = new Engine(canvas.current, div.current, engine, {
+        ...opts,
+        onTick: () => {
+          setShip(s => {
+            if (!s) return
+            return engine.state.ships.find(s_ => s_.id === s.id)
+          })
+        },
+      })
       setRunning(true)
       renderer.current.addEventListener('state.end', updater)
       renderer.current.addEventListener('log.add', handler)

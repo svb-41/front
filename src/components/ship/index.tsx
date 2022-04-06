@@ -7,11 +7,12 @@ type LabeledProps = {
   label: string
   content: string | number
   className?: string
+  style?: any
 }
-const Labeled = ({ label, content, className }: LabeledProps) => {
+export const Labeled = ({ label, content, className, style }: LabeledProps) => {
   const val = typeof content === 'number' ? content.toFixed(2) : content
   return (
-    <div>
+    <div style={style}>
       <div className={styles.label}>{label}</div>
       <div className={className}>{val ?? 'None'}</div>
     </div>
