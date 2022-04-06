@@ -28,6 +28,7 @@
   align-items: center;
   justify-content: center;
   color: var(--000);
+  z-index: 10000000000000000;
 }
 
 .github {
