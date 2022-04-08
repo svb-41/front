@@ -45,17 +45,22 @@ export const ai: svb.AI<Data> = ({ stats, radar, memory, ship, comm }) => {
       memory.target = undefined
       return ship.fire(weapon, { target: target.pos, armedTime: d - 100 })
     }
-
-    const resAim = svb.geometry.aim({
-      ship,
-      source: stats.position,
-      target,
-      weapon,
-      delay,
-    })
-    if (resAim.id === svb.Instruction.FIRE) memory.target = undefined
-    return resAim
+    if (
+      stats.weapons[weapon].bullet.range >
+      svb.geometry.dist(stats.position, target)
+    ) {
+      const resAim = svb.geometry.aim({
+        ship,
+        source: stats.position,
+        target,
+        weapon,
+        delay,
+      })
+      if (resAim.id === svb.Instruction.FIRE) memory.target = undefined
+      return resAim
+    } else {
+      memory.target = undefined
+    }
   }
-
   return ship.idle()
 }
