@@ -1,13 +1,13 @@
 {
   "id": "10",
-  "title": "Yin and yang",
-  "subtitle": "Two enemies has been spotted near the asteroids belt. Commander, \ngo there as quick as possible. We need a reliable man nearby.\nOh, and congratulations for the previous mission. It was a brilliant success.",
-  "description": "During a regular watch, one boy spotted two opponents ships, apparently there to defend something. Strangely, it seems to be a rather empty space. Maybe we missed something during our observations.\nThere's huge chance that they're seeking for transluminiae, because they're technology is still beyond us for its extraction. Go there, and exterminate them. Nobody can insult us like that.\n\nFor your information, Sonia, our best officer in the area is unfortunately unavailable at that time. We couldn't provide more informations, but be sure we don't have alternatives than sending you. You're only 1 parsec away. Hurry.",
-  "credit": 100,
+  "title": "Torpedo",
+  "subtitle": "Commander? New day, new mission. As one of the best of us, you’re in charge of a new mission.\nAre you ready to tackle it seriously?",
+  "description": "The opponent developped a new weapon for the fight. While it’s an old technology, they just rediscovered it, why now? Nobody knows. Be careful commander, the torpedo they’re using are able to seek for their target. Once seen, you won’t be able to save your ship. Apparently, they keep an undercover strategy: not moving, have large radars, and try to shoot everything that comes in.\nGo there and kill them. Good luck, commander.",
+  "credit": 320,
   "size": { "height": 1000, "width": 2000 },
   "start": { "x": 0, "y": 400 },
   "rewards": {
-    "ships": [],
+    "ships": ["bomber"],
     "missions": ["11"]
   },
   "ships": [
@@ -112,39 +112,21 @@
       }
     },
     {
-      "classShip": "BOMBER",
-      "ai": "torpedo",
+      "classShip": "SCOUT",
+      "ai": "staticScout",
       "position": {
         "direction": 3.141592653589793,
         "speed": 0,
-        "pos": { "x": 2000, "y": 0 }
+        "pos": { "x": 1800, "y": 700 }
       }
     },
     {
-      "classShip": "BOMBER",
-      "ai": "torpedo",
+      "classShip": "SCOUT",
+      "ai": "staticScout",
       "position": {
         "direction": 3.141592653589793,
         "speed": 0,
-        "pos": { "x": 2000, "y": 200 }
-      }
-    },
-    {
-      "classShip": "BOMBER",
-      "ai": "torpedo",
-      "position": {
-        "direction": 3.141592653589793,
-        "speed": 0,
-        "pos": { "x": 2000, "y": 400 }
-      }
-    },
-    {
-      "classShip": "BOMBER",
-      "ai": "torpedo",
-      "position": {
-        "direction": 3.141592653589793,
-        "speed": 0,
-        "pos": { "x": 2000, "y": 600 }
+        "pos": { "x": 1800, "y": 900 }
       }
     },
     {
@@ -162,7 +144,34 @@
       "position": {
         "direction": 3.141592653589793,
         "speed": 0,
+        "pos": { "x": 2000, "y": 400 }
+      }
+    },
+    {
+      "classShip": "BOMBER",
+      "ai": "torpedo",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 1200 }
+      }
+    },
+    {
+      "classShip": "BOMBER",
+      "ai": "torpedo",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
         "pos": { "x": 2000, "y": 1000 }
+      }
+    },
+    {
+      "classShip": "BOMBER",
+      "ai": "torpedo",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 2000, "y": 600 }
       }
     }
   ]

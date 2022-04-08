@@ -4,11 +4,24 @@ type Data = {
   mine: Array<{ x: number; y: number }>
   init: boolean
   lastFire: number
+  initialPos: svb.ship.Position
+  objPos: svb.ship.Position
 }
 
-export const data: Data = { mine: [], init: false, lastFire: 0 }
+export const data: Data = {
+  mine: [],
+  init: false,
+  lastFire: 0,
+  initialPos: { speed: 0, direction: 0, pos: { x: 0, y: 0 } },
+  objPos: { speed: 0, direction: 0, pos: { x: 0, y: 0 } },
+}
 export const ai: svb.AI<Data> = ({ stats, radar, ship, comm, memory }) => {
   if (!memory.init) {
+    memory.objPos = {
+      ...stats.position,
+      pos: { x: stats.position.pos.x - 400, y: stats.position.pos.y },
+    }
+    memory.initialPos = stats.position
     const angle = Math.PI / 8
     const dist = 280
     const direction = stats.position.direction
@@ -24,12 +37,21 @@ export const ai: svb.AI<Data> = ({ stats, radar, ship, comm, memory }) => {
     svb.console.log(memory.mine.length)
     return ship.idle()
   }
-
+  if (
+    stats.position.speed > -0.4 &&
+    svb.geometry.dist2(stats.position, memory.initialPos) > 400
+  )
+    return ship.thrust(-1)
+  if (
+    stats.position.speed !== 0 &&
+    svb.geometry.dist2(stats.position, memory.initialPos) < 400
+  )
+    return ship.thrust()
   if (stats.weapons[2].amo > memory.mine.length) {
     const angle = Math.PI / 8
     const dist = 280
     const direction = stats.position.direction
-    const pos = stats.position.pos
+    const pos = memory.initialPos.pos
     memory.mine = [
       ...memory.mine,
       ...new Array(4 - (stats.weapons[2].amo - memory.mine.length))

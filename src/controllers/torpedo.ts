@@ -13,7 +13,6 @@ export const ai: svb.AI<Data> = ({ stats, radar, memory, ship, comm }) => {
     memory.target = messages
       .flatMap(m => m.content.message.map((res: any) => res))
       .find(p => svb.geometry.dist(p, stats.position))
-
   const weapon =
     stats.weapons[0].coolDown === 0
       ? 0
@@ -23,8 +22,12 @@ export const ai: svb.AI<Data> = ({ stats, radar, memory, ship, comm }) => {
       : undefined
   if (memory.target && weapon !== undefined) {
     const speed = stats.weapons[weapon].bullet.position.speed
-    const delay =
-      Math.sqrt(svb.geometry.dist2(stats.position, memory.target)) / speed
+    const delay = Math.floor(
+      Math.sqrt(svb.geometry.dist2(stats.position, memory.target)) / speed === 0
+        ? 0.6
+        : speed
+    )
+
     const target = svb.geometry.nextPosition(delay)(memory.target)
     memory.target = undefined
     const d = Math.sqrt(dist2(stats.position, target))
