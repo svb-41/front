@@ -19,7 +19,7 @@ export const ai: svb.AI<Data> = ({ stats, radar, ship, comm, memory }) => {
   if (!memory.init) {
     memory.objPos = {
       ...stats.position,
-      pos: { x: stats.position.pos.x - 400, y: stats.position.pos.y },
+      pos: { x: stats.position.pos.x + 1000, y: stats.position.pos.y },
     }
     memory.initialPos = stats.position
     const angle = Math.PI / 8
@@ -34,19 +34,8 @@ export const ai: svb.AI<Data> = ({ stats, radar, ship, comm, memory }) => {
         y: dist * Math.sin(a) + pos.y,
       }))
     memory.init = true
-    svb.console.log(memory.mine.length)
     return ship.idle()
   }
-  if (
-    stats.position.speed > -0.4 &&
-    svb.geometry.dist2(stats.position, memory.initialPos) > 400
-  )
-    return ship.thrust(-1)
-  if (
-    stats.position.speed !== 0 &&
-    svb.geometry.dist2(stats.position, memory.initialPos) < 400
-  )
-    return ship.thrust()
   if (stats.weapons[2].amo > memory.mine.length) {
     const angle = Math.PI / 8
     const dist = 280
@@ -75,7 +64,6 @@ export const ai: svb.AI<Data> = ({ stats, radar, ship, comm, memory }) => {
   const mine = stats.weapons[2]
   if (mine.coolDown === 0 && mine.amo > 0 && memory.mine.length > 0) {
     const target = memory.mine.pop()
-    svb.console.log(memory.mine.length + ' ' + mine.amo)
     return ship.fire(2, { target, armedTime: 250 })
   }
 
@@ -89,7 +77,6 @@ export const ai: svb.AI<Data> = ({ stats, radar, ship, comm, memory }) => {
       })
   }
   const messages = comm.messagesSince(0)
-  if (messages.length === 0) return ship.idle()
   if (messages && messages.length > 0) {
     const target: svb.ship.Position = messages.pop()?.content.message.pop()
     if (target && Date.now() - memory.lastFire > 200)
@@ -98,5 +85,9 @@ export const ai: svb.AI<Data> = ({ stats, radar, ship, comm, memory }) => {
         armedTime: 100,
       })
   }
+  if (stats.position.speed > -0.2 && stats.position.pos.x < memory.objPos.pos.x)
+    return ship.thrust(-1)
+  if (stats.position.pos.x > memory.objPos.pos.x)
+    return ship.thrust(-stats.position.speed)
   return ship.idle()
 }
