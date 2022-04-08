@@ -7,7 +7,7 @@
   "size": { "height": 1000, "width": 1000 },
   "rewards": {
     "ships": [],
-    "missions": ["1"]
+    "missions": []
   },
   "ships": [
     {

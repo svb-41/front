@@ -103,6 +103,24 @@
     },
     {
       "classShip": "SCOUT",
+      "ai": "fastScout",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 1600, "y": 450 }
+      }
+    },
+    {
+      "classShip": "SCOUT",
+      "ai": "fastScout",
+      "position": {
+        "direction": 3.141592653589793,
+        "speed": 0,
+        "pos": { "x": 1600, "y": 750 }
+      }
+    },
+    {
+      "classShip": "SCOUT",
       "ai": "scout",
       "position": {
         "direction": 3.141592653589793,

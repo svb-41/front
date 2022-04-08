@@ -2,7 +2,7 @@ import * as svb from '@svb-41/core'
 const { dist2 } = svb.geometry
 
 type Position = svb.ship.Position
-type Data = { targets: Array<Position> }
+type Data = { target?: Position }
 
 const weaponType = (stats: svb.ship.Ship) => {
   const weapon = stats.weapons
@@ -12,61 +12,48 @@ const weaponType = (stats: svb.ship.Ship) => {
   return 0
 }
 
-export const data: Data = { targets: [] }
+export const data: Data = {}
 export const ai: svb.AI<Data> = ({ stats, radar, memory, ship, comm }) => {
-  if (stats.position.speed < 0.1) return ship.thrust(0.1 - stats.position.speed)
   const messages = comm.messagesSince(0)
-
-  const ally = radar.find(res => {
-    const isSameTeam = res.team === stats.team
-    if (!isSameTeam) return false
-    const source = stats.position
-    const target = svb.geometry.nextPosition(200)(res.position)
-    const finalAngle = svb.geometry.angle({ source, target })
-    const direction = finalAngle - stats.position.direction
-    return Math.abs(direction) < 0.1
-  })
-
+  const weapon = weaponType(stats)
+  const isTorpedo = stats.weapons[weapon].bullet.stats.acceleration > 0
   const near = svb.radar.nearestEnemy(radar, stats.team, stats.position)
-  if (near) {
-    const source = stats.position
-    const target = near.enemy.position
-    const threshold = 4 / Math.sqrt(near.dist2)
-    const speed = stats.weapons[0]?.bullet.position.speed
-    const delay = Math.sqrt(near.dist2) / speed
-    const resAim = svb.geometry.aim({
-      ship,
-      source,
-      target,
-      threshold,
-      delay,
-      weapon: weaponType(stats),
-    })
-    if (resAim.id === svb.Instruction.FIRE && ally) return ship.idle()
-    return resAim
-  }
-
-  if (messages.length > 0) {
-    const targets: Array<Position> = messages
-      .map(m => m.content.message.map((res: any) => res))
-      .reduce((acc, val) => [...acc, ...val])
-    memory.targets = targets
-  }
-
-  if (memory.targets.length > 0) {
-    const target = svb.geometry.nextPosition(200)(
-      memory.targets
-        .map(res => ({ res, dist: dist2(res, stats.position) }))
-        .reduce((a, v) => (a.dist > v.dist ? v : a)).res
+  if (near && !memory.target) memory.target = near.enemy.position
+  if (messages.length > 0 && !memory.target) {
+    const targets: Array<Position> = messages.flatMap(m =>
+      m.content.message.map((res: any) => res)
     )
-    memory.targets = memory.targets.filter(t => t !== target)
+    const dists = targets.sort((p1, p2) =>
+      svb.geometry.dist2(p1, stats.position) >
+      svb.geometry.dist2(p2, stats.position)
+        ? -1
+        : 1
+    )
+    memory.target = dists.pop()
+  }
+
+  if (memory.target) {
+    const speed = stats.weapons[weapon].bullet.position.speed
+    const delay = Math.floor(
+      Math.sqrt(svb.geometry.dist2(stats.position, memory.target)) / speed === 0
+        ? 0.6
+        : speed
+    )
+    const target = svb.geometry.nextPosition(delay)(memory.target)
+    if (isTorpedo) {
+      const d = Math.sqrt(dist2(stats.position, target))
+      memory.target = undefined
+      return ship.fire(weapon, { target: target.pos, armedTime: d - 100 })
+    }
+
     const resAim = svb.geometry.aim({
       ship,
       source: stats.position,
       target,
-      weapon: weaponType(stats),
+      weapon,
+      delay,
     })
-    if (resAim.id === svb.Instruction.FIRE && ally) return ship.idle()
+    if (resAim.id === svb.Instruction.FIRE) memory.target = undefined
     return resAim
   }
 
