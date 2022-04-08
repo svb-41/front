@@ -1,5 +1,5 @@
 {
-  "id": "18",
+  "id": "14",
   "title": "Kill the hive",
   "subtitle": "Finally we’re here. All the hard work finished to pay. We found the headquarters of the fleet.\nA huge number of ships. A huge number of weapons. And lots of generals.\nThe big final is there.",
   "description": "While you may not know commander, we’re in war with the moonlanders since a while now. They escaped from the Earth a long time ago, and they never surrender. Surprinsigly, they’re especially strong in space conditions. Thanks to moon gravity I think. Those little son of a bitch have to die, we need to conquer the moon back.\nBe careful, you’ll have a huge fleet against you. Prepare correctly, you won’t have a second chance.\nFuck the moonlanders. Kill ’em all.",
@@ -8,7 +8,7 @@
   "start": { "x": 0, "y": 400 },
   "rewards": {
     "ships": ["destroyer"],
-    "missions": ["19"]
+    "missions": ["15"]
   },
   "ships": [
     {
