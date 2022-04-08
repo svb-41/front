@@ -21,7 +21,6 @@ export const ai: svb.AI<Data> = ({ stats, radar, ship, comm, memory }) => {
         y: dist * Math.sin(a) + pos.y,
       }))
     memory.init = true
-    svb.console.log(memory.mine.length)
     return ship.idle()
   }
 
@@ -53,7 +52,6 @@ export const ai: svb.AI<Data> = ({ stats, radar, ship, comm, memory }) => {
   const mine = stats.weapons[2]
   if (mine.coolDown === 0 && mine.amo > 0 && memory.mine.length > 0) {
     const target = memory.mine.pop()
-    svb.console.log(memory.mine.length + ' ' + mine.amo)
     return ship.fire(2, { target, armedTime: 250 })
   }
 
@@ -67,13 +65,12 @@ export const ai: svb.AI<Data> = ({ stats, radar, ship, comm, memory }) => {
       })
   }
   const messages = comm.messagesSince(0)
-  if (messages.length === 0) return ship.idle()
   if (messages && messages.length > 0) {
     const target: svb.ship.Position = messages.pop()?.content.message.pop()
     if (target && Date.now() - memory.lastFire > 200)
       return ship.fire(torpedo.coolDown === 0 ? 0 : 1, {
         target: svb.geometry.nextPosition(200)(target).pos,
-        armedTime: 100,
+        armedTime: svb.geometry.dist(stats.position, target) - 100,
       })
   }
   return ship.idle()

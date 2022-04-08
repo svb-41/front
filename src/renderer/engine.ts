@@ -196,7 +196,7 @@ export class Engine extends EventTarget {
       scroll: (e: any) => {
         const { offsetX, offsetY, deltaY } = e
         const zoomFactor = 0.96
-        if (this.#scale > 0.3 || deltaY < 0) {
+        if (this.#scale > 0.02 || deltaY < 0) {
           const factor = deltaY > 0 ? zoomFactor : 1 / zoomFactor
           this.#scale = this.#scale * factor
           const dx = (offsetX / this.#scale) * (factor - 1)
@@ -249,6 +249,7 @@ export class Engine extends EventTarget {
     filter.brightness(0.2, false)
     radar.filters = [filter]
     radar.drawCircle(0, 0, size)
+    radar.zIndex = 0
     radar.endFill()
     this.#app.stage.addChild(radar)
     this.#radars.set(id, radar)
@@ -275,6 +276,7 @@ export class Engine extends EventTarget {
         this.createRadar(id, x, y, sprite.detection!, sprite.team!)
       const texture = selectTexture(this.#app, type, sprite)
       const sprite_ = new PIXI.Sprite(texture)
+      sprite_.zIndex = 1
       sprite_.position.set(x, y)
       sprite_.anchor.set(0.5, 0.5)
       sprite_.rotation = computeRotation(position.direction)
@@ -393,6 +395,7 @@ export class Engine extends EventTarget {
     }
     sprite.x = ship.x
     sprite.y = ship.y
+    sprite.zIndex = 12
     return sprite
   }
 

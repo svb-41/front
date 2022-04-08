@@ -82,7 +82,7 @@ export const ai: svb.AI<Data> = ({ stats, radar, ship, comm, memory }) => {
     if (target && Date.now() - memory.lastFire > 200)
       return ship.fire(torpedo.coolDown === 0 ? 0 : 1, {
         target: svb.geometry.nextPosition(200)(target).pos,
-        armedTime: 100,
+        armedTime: svb.geometry.dist(stats.position, target) - 100,
       })
   }
   if (stats.position.speed > -0.2 && stats.position.pos.x < memory.objPos.pos.x)
