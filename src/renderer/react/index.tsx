@@ -88,9 +88,12 @@ const RenderShip = ({ ship }: { ship: engine.ship.Ship }) => {
                 Position
                 <Column gap="xs" background="var(--ccc)" padding="m">
                   <Labeled label="x" content={ship.position.pos.x} />
-                  <Labeled label="x" content={ship.position.pos.y} />
-                  <Labeled label="x" content={ship.position.speed} />
-                  <Labeled label="x" content={ship.position.direction} />
+                  <Labeled label="y" content={ship.position.pos.y} />
+                  <Labeled label="speed" content={ship.position.speed} />
+                  <Labeled
+                    label="direction"
+                    content={ship.position.direction}
+                  />
                 </Column>
               </Column>
               {ship.weapons.map((weapon, index) => (
