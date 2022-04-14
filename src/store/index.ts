@@ -1,8 +1,10 @@
+import { Reducer } from 'redux'
 import { createStore, applyMiddleware, combineReducers } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import thunk from 'redux-thunk'
 import * as user from '@/store/reducers/user'
 import * as ai from '@/store/reducers/ai'
+import * as cross from '@/store/reducers/cross'
 import * as Types from '@/store/types'
 import * as local from '@/services/localStorage'
 
@@ -10,6 +12,11 @@ const reducer = combineReducers({
   user: user.reducer,
   ai: ai.reducer,
 })
+
+const crossReducer: Reducer<Types.State, Types.Action> = (state, action) => {
+  const result = reducer(state, action as any)
+  return cross.reducer(result, action as any)
+}
 
 const saveLocal = (store: any) => (next: any) => (action: any) => {
   const value = next(action)
@@ -26,4 +33,4 @@ const saveLocal = (store: any) => (next: any) => (action: any) => {
 }
 
 const composer = composeWithDevTools(applyMiddleware(thunk, saveLocal))
-export const store = createStore(reducer, composer)
+export const store = createStore(crossReducer, composer)

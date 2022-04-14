@@ -4,6 +4,8 @@ import { Data } from '@/components/fleet-manager'
 import { v4 as uuid } from 'uuid'
 import { IdToken } from '@auth0/auth0-react'
 import * as mappers from '@/store/mappers'
+import * as data from '@/services/data'
+import * as cross from '@/store/actions/cross'
 
 export const UPDATE_USER_ID = 'user/LOAD_ID'
 export const UPDATE_USER = 'user/LOAD_USER'
@@ -42,20 +44,17 @@ export const sync: Effect<void> = async (_, getState) => {
     ais: mappers.ais.fromState(state),
     fleetConfigs: mappers.fleetConfigs.fromState(state),
   }
-  await fetch('http://localhost:3333/data/sync', {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${accessToken}` },
-    body: JSON.stringify(body),
-  })
+  await data.sync(accessToken, body)
 }
 
-// Tables
-
-/// PvP
-//// uid <--> config
-
-/// Stats
-//// uid, matches, victories, defeats
+export const fetchData: Effect<void> = async (dispatch, getState) => {
+  const state = getState()
+  const accessToken = state.user.user?.accessToken
+  if (!accessToken) return
+  const response = await data.fetchData(accessToken)
+  // const data = doStuffWithData()
+  // await dispatch(cross.updateAfterFetch(data))
+}
 
 export const login = (
   idToken: IdToken | undefined,
@@ -65,6 +64,9 @@ export const login = (
 ): Effect<void> => {
   return async dispatch => {
     dispatch({ type: LOGIN, idToken, accessToken, username })
-    if (shouldSync) await dispatch(sync)
+    if (shouldSync) {
+      await dispatch(fetchData)
+      await dispatch(sync)
+    }
   }
 }
