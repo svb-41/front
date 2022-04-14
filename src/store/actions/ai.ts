@@ -14,7 +14,7 @@ export const DEL_FAVORITE = 'ai/DEL_FAVORITE'
 const defaultAI = (id: string): AI => {
   const createdAt = new Date()
   const code = templateAI.hold
-  const file: File = { language: 'typescript', code, path: 'new.ts', id }
+  const file: File = { language: 'typescript', code, path: 'new.ts' }
   return { id, file, updatedAt: createdAt, createdAt, tags: [] }
 }
 
@@ -41,13 +41,17 @@ export const deleteAI: (id: string) => Effect<void> = (id: string) => {
 }
 
 export const compileAI: (ai: AI) => Effect<void> = (ai: AI) => {
-  return async dispatch => {
-    const { code, path: name } = ai.file
-    const params: Compile = { code, uid: ai.id, name }
-    const compiledValue = await compile(params)
-    const updatedAt = new Date()
-    const newAI = { ...ai, compiledValue, updatedAt }
-    dispatch({ type: UPDATE_AI, id: ai.id, ai: newAI })
+  return async (dispatch, getState) => {
+    const { user } = getState()
+    const uid = user.user?.username ?? user.id
+    if (uid) {
+      const { code, path: name } = ai.file
+      const params: Compile = { code, uid, name, id: ai.id }
+      const compiledValue = await compile(params)
+      const updatedAt = new Date()
+      const newAI = { ...ai, compiledValue, updatedAt }
+      dispatch({ type: UPDATE_AI, id: ai.id, ai: newAI })
+    }
   }
 }
 

@@ -83,19 +83,31 @@ export const Home = () => (
           <SubTitle blinking content={s.incomingMessage} />
           <p>{s.pages.home.message}</p>
         </Column>
-        <Column gap="m">
-          <Link className={button.style({ primary: true })} to="/missions">
-            <div className={styles.mainLink}>Campaign</div>
-          </Link>
-          <Link className={button.style({ primary: true })} to="/ai">
-            <div className={styles.mainLink}>AI</div>
-          </Link>
-          <Link className={button.style({ primary: true })} to="/ships">
-            <div className={styles.mainLink}>Ships</div>
-          </Link>
-          <Link className={button.style({ primary: true })} to="/database">
-            <div className={styles.mainLink}>Database</div>
-          </Link>
+        <Column gap="xl">
+          <Column gap="s">
+            <SubTitle content="Play" />
+            <Link className={button.style({ primary: true })} to="/missions">
+              <div className={styles.mainLink}>Campaign</div>
+            </Link>
+            <Link className={button.style({ primary: true })} to="/ai">
+              <div className={styles.mainLink}>AI</div>
+            </Link>
+          </Column>
+          <Column gap="s">
+            <SubTitle content="Learn" />
+            <Link className={button.style({ primary: true })} to="/ships">
+              <div className={styles.mainLink}>Ships</div>
+            </Link>
+            <Link className={button.style({ primary: true })} to="/database">
+              <div className={styles.mainLink}>Database</div>
+            </Link>
+          </Column>
+          <Column gap="s">
+            <SubTitle content="Connect" />
+            <Link className={button.style({ primary: true })} to="/account">
+              <div className={styles.mainLink}>Account</div>
+            </Link>
+          </Column>
         </Column>
       </Column>
       <InfoTabs />

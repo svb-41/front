@@ -19,6 +19,21 @@
     "writeMessage": "write us an email"
   },
   "pages": {
+    "login": {
+      "title": "Login to your account",
+      "caption": "You can save and retrieve your AI, your fleets and your stats",
+      "first": "By creating your account, you will be able to save your AI, your fleets configuration. You will also be able to use the Skirmish (PvP) mode fleet registering.",
+      "second": "Except for registering a fleet and saving stats in Skirmish mode, you can use the entire app without an account.",
+      "third": "Creating an account is free and will always be. You can access all your data at any moment, and you’re free to ask to delete them whenever you want. We’ll never use your data in any commercial way, and we’ll never share them to third parties. We promise you won’t receive any commercial news from us.",
+      "connect": {
+        "username": "Connect with username and password",
+        "google": "Connect with Google"
+      }
+    },
+    "account": {
+      "sync": "Sync",
+      "hello": "Hello"
+    },
     "home": {
       "welcome": "Welcome commander, on",
       "message": "We’re glad to see you there, commander. It’s been a while, since the last time. In case you need to refresh your mind, you can try the virtualized environments. We made a fully-working training mode, and a perfectly working sandbox. We know you’ll make good use of it.\n\nYou should immediately try to create or use your first AI if you didn’t already. We also have some AI for you, ready to use. Remember, you won’t control your ships directly.\n\nOtherwise, you are awaited on the steering deck of your mothership. You missed your crew during your absence. Oh, and we’ll occasionally send you some message, directly here, in your room. Keep an eye of it. Or maybe you want to be notified directly? Well, our messaging system is broken at that time, but our engineers are working on it. We expect to put it back online in a couple of weeks at most. Covering the entire galaxy is not as easy as pie.",

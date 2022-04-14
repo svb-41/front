@@ -26,6 +26,7 @@
 }
 
 .button {
+  line-height: inherit;
   padding: 12px;
   font-size: 1.5rem;
   background: var(--ddd);

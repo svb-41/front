@@ -2,11 +2,13 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import * as Redux from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
+import { Auth0Provider } from '@auth0/auth0-react'
 import * as Sentry from '@sentry/react'
 import { BrowserTracing } from '@sentry/tracing'
 import App from './app'
 import { CookieConsent } from '@/components/cookie-consent'
 import { store } from '@/store'
+import env from './envs'
 import reportWebVitals from './reportWebVitals'
 import './index.css'
 import './remark.scss'
@@ -23,12 +25,22 @@ Sentry.init({
 
 ReactDOM.render(
   <React.StrictMode>
-    <Redux.Provider store={store}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-      <CookieConsent />
-    </Redux.Provider>
+    <Auth0Provider
+      domain={env.domain}
+      clientId={env.clientId}
+      audience="https://api.svb-41.com"
+      scope="openid profile email offline_access"
+      redirectUri={window.location.origin}
+      cacheLocation="localstorage"
+      useRefreshTokens
+    >
+      <Redux.Provider store={store}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+        <CookieConsent />
+      </Redux.Provider>
+    </Auth0Provider>
   </React.StrictMode>,
   document.getElementById('root')
 )

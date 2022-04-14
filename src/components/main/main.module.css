@@ -21,3 +21,15 @@
 .navLink:global(.active) {
   color: var(--222);
 }
+
+.identicon {
+  display: flex;
+  align-self: center;
+  align-items: center;
+  background: var(--ddd);
+}
+
+.identiconImg {
+  width: 30px;
+  height: 30px;
+}

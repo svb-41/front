@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="305px" height="305px" viewBox="0 0 305 305" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Group</title>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group">
+            <rect id="Rectangle" x="0" y="0" width="305" height="305"></rect>
+            <g id="refresh" transform="translate(23.000000, 2.000000)" fill="#FFFFFF" fill-rule="nonzero">
+                <polygon id="Path" points="0 86.15 21.539 86.15 21.539 258.46 2.84217094e-14 258.46"></polygon>
+                <polygon id="Path" points="236.92 86.15 258.459 86.15 258.459 258.46 236.92 258.46"></polygon>
+                <polygon id="Path" points="21.54 258.46 43.079 258.46 43.079 279.999 21.54 279.999"></polygon>
+                <polygon id="Path" points="21.54 64.62 43.079 64.62 43.079 86.159 21.54 86.159"></polygon>
+                <polygon id="Path" points="215.38 64.62 236.919 64.62 236.919 86.159 215.38 86.159"></polygon>
+                <polygon id="Path" points="43.08 280 215.39 280 215.39 301.539 43.08 301.539"></polygon>
+                <polygon id="Path" points="215.38 258.46 236.919 258.46 236.919 279.999 215.38 279.999"></polygon>
+                <polygon id="Path" points="86.15 86.15 107.689 86.15 107.689 107.689 86.15 107.689"></polygon>
+                <polygon id="Path" points="86.15 0 107.689 0 107.689 21.539 86.15 21.539"></polygon>
+                <polygon id="Path" points="150.77 43.08 129.231 43.08 129.231 21.541 107.692 21.541 107.692 43.08 43.079 43.08 43.079 64.619 107.692 64.619 107.692 86.154 129.231 86.154 129.231 64.619 150.77 64.619"></polygon>
+            </g>
+        </g>
+    </g>
+</svg>

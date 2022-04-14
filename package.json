@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@auth0/auth0-react": "^1.9.0",
     "@monaco-editor/react": "^4.2.2",
     "@sentry/react": "^6.19.4",
     "@sentry/tracing": "^6.19.4",
@@ -17,6 +18,7 @@
     "@types/react-dom": "^17.0.9",
     "craco": "^0.0.3",
     "craco-alias": "^3.0.1",
+    "jwt-decode": "^3.1.2",
     "monaco-themes": "^0.4.0",
     "pixi.js": "^6.1.2",
     "prettier": "^2.3.2",

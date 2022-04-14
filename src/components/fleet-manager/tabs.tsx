@@ -114,7 +114,7 @@ const RenderAIs = ({
 export const ShipSelector = (props: any) => {
   const subtitle = props.state === 'ai' ? 'Available AI' : 'Available ships'
   return (
-    <Column width={400}>
+    <Column className={styles.tabber}>
       <ShipSelectorTabs {...props} />
       <Column background="var(--eee)" padding="xl" gap="m" flex={1}>
         <Title content={subtitle} />

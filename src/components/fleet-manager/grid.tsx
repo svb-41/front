@@ -228,37 +228,6 @@ export const Grid = (props: GridProps) => {
   const [displayAIs, setDisplayAIs] = useState(true)
   return (
     <Column gap="xl">
-      <Column background="var(--eee)" padding="xl" gap="l">
-        <Column>
-          <Title content="Options" />
-          <p style={{ color: 'var(--888)' }}>Set options for the grid below</p>
-        </Column>
-        <Column gap="s">
-          <Row tag="label" align="center" gap="s">
-            <Checkbox
-              checked={displayGuides}
-              onChange={() => setDisplayGuides(s => !s)}
-            />
-            <div>Display guides</div>
-          </Row>
-          <Row tag="label" align="center" gap="s">
-            <Checkbox
-              checked={displayAIs}
-              onChange={() => setDisplayAIs(s => !s)}
-            />
-            <div>Display AI</div>
-          </Row>
-          {props.quickEdition !== undefined && (
-            <Row tag="label" align="center" gap="s">
-              <Checkbox
-                checked={props.quickEdition}
-                onChange={props.setQuickEdition}
-              />
-              <div>Quick edition</div>
-            </Row>
-          )}
-        </Column>
-      </Column>
       <Column
         background="var(--eee)"
         justify="center"
@@ -309,6 +278,37 @@ export const Grid = (props: GridProps) => {
             )
           })}
         </div>
+      </Column>
+      <Column background="var(--eee)" padding="xl" gap="l">
+        <Column>
+          <Title content="Options" />
+          <p style={{ color: 'var(--888)' }}>Set options for the grid below</p>
+        </Column>
+        <Column gap="s">
+          <Row tag="label" align="center" gap="s">
+            <Checkbox
+              checked={displayGuides}
+              onChange={() => setDisplayGuides(s => !s)}
+            />
+            <div>Display guides</div>
+          </Row>
+          <Row tag="label" align="center" gap="s">
+            <Checkbox
+              checked={displayAIs}
+              onChange={() => setDisplayAIs(s => !s)}
+            />
+            <div>Display AI</div>
+          </Row>
+          {props.quickEdition !== undefined && (
+            <Row tag="label" align="center" gap="s">
+              <Checkbox
+                checked={props.quickEdition}
+                onChange={props.setQuickEdition}
+              />
+              <div>Quick edition</div>
+            </Row>
+          )}
+        </Column>
       </Column>
     </Column>
   )

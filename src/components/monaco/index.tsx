@@ -13,7 +13,6 @@ export type File = {
   language: 'typescript' | 'javascript' | '?'
   path: string
   code: string
-  id: string
 }
 
 export type Props = {

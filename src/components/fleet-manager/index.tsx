@@ -40,18 +40,31 @@ const FleetTitle = ({
   return (
     <Column background="var(--eee)" padding="m" gap="s">
       <Row justify="space-between" gap="m">
-        <Row gap="l" align="center">
-          <Title content="Construct your fleet" />
-          <span className={styles.teamName} style={{ background }}>
-            {team.toUpperCase()}
-          </span>
-        </Row>
-        <Row gap="s" align="flex-start">
-          <Row background="var(--ddd)" padding="s">
-            {usedConf && `Config: ${usedConf.replace(/-/g, '').slice(0, 10)}…`}
-            {!usedConf && `No config used`}
+        <Column justify="center">
+          <Row gap="l" align="center">
+            <Title content="Construct your fleet" />
+            <span className={styles.teamName} style={{ background }}>
+              {team.toUpperCase()}
+            </span>
           </Row>
-          <Column gap="s" className={styles.alignSelfStart}>
+          <Explanations
+            color="var(--888)"
+            content="Select your ships, drag and drop, and give them an AI"
+          />
+        </Column>
+        <Row gap="s" align="flex-start">
+          <Column gap="s">
+            <div
+              style={{
+                padding: `3px 6px`,
+                fontSize: '1rem',
+                background: 'var(--ddd)',
+              }}
+            >
+              {usedConf &&
+                `Config: ${usedConf.replace(/-/g, '').slice(0, 10)}…`}
+              {!usedConf && `No config used`}
+            </div>
             <Button
               disabled={!onLoad}
               small
@@ -59,6 +72,8 @@ const FleetTitle = ({
               onClick={() => onLoad?.()}
               secondary
             />
+          </Column>
+          <Column gap="s" className={styles.alignSelfStart}>
             <Button
               disabled={!usedConf || !isValid}
               small
@@ -76,10 +91,6 @@ const FleetTitle = ({
           </Column>
         </Row>
       </Row>
-      <Explanations
-        color="var(--888)"
-        content="Select your ships, drag and drop, and give them an AI"
-      />
     </Column>
   )
 }
@@ -156,7 +167,7 @@ const ShipDetails = ({
           />
         </Row>
       </Row>
-      <Row gap="l">
+      <Row gap="l" className={styles.positionAndAI}>
         <Column gap="s">
           <SubTitle content="Position" />
           <Row gap="s">
