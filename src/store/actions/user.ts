@@ -6,6 +6,7 @@ import { IdToken } from '@auth0/auth0-react'
 import * as mappers from '@/store/mappers'
 import * as data from '@/services/data'
 import * as cross from '@/store/actions/cross'
+import * as local from '@/services/localStorage'
 
 export const UPDATE_USER_ID = 'user/LOAD_ID'
 export const UPDATE_USER = 'user/LOAD_USER'
@@ -64,6 +65,7 @@ export const login = (
 ): Effect<void> => {
   return async dispatch => {
     dispatch({ type: LOGIN, idToken, accessToken, username })
+    if (idToken) local.setUserId(idToken?.sub)
     if (shouldSync) {
       await dispatch(fetchData)
       await dispatch(sync)

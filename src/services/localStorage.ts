@@ -34,6 +34,8 @@ export const getUser = (uid: string): StoredData | undefined => {
 export const setUser = (uid: string, data: StoredData) =>
   localStorage.setItem(`${USER_KEY}-${uid}`, JSON.stringify(data))
 
+export const setUserId = (uid: string) => localStorage.setItem(UID_KEY, uid)
+
 export const getAI = (uid: string): AI | undefined => {
   const aiData = localStorage.getItem(`${AI_KEY}-${uid}`)
   if (aiData) return JSON.parse(aiData)

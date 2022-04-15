@@ -62,7 +62,8 @@ export const reducer: Reducer<State, Action> = (state = init, action) => {
     case LOGIN: {
       const { idToken, accessToken, username } = action
       const user = { username, idToken, accessToken }
-      return { ...state, id: accessToken.sub, user }
+      const id = idToken?.sub ?? state.id
+      return { ...state, id, user }
     }
     case UPDATE_USER_ID: {
       const { id } = action

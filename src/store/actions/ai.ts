@@ -43,7 +43,7 @@ export const deleteAI: (id: string) => Effect<void> = (id: string) => {
 export const compileAI: (ai: AI) => Effect<void> = (ai: AI) => {
   return async (dispatch, getState) => {
     const { user } = getState()
-    const uid = user.user?.username ?? user.id
+    const uid = user.user?.idToken?.sub ?? user.id
     if (uid) {
       const { code, path: name } = ai.file
       const params: Compile = { code, uid, name, id: ai.id }
