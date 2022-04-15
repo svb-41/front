@@ -9,7 +9,8 @@ export const compile = async (params: Compile): Promise<string> => {
 }
 
 export type AIparams = { uid: string; id: string; token?: string }
-export const getAI = async (params: AIparams) => {
+export type FetchedAI = { ts?: string; id: string; compiled: string }
+export const getAI = async (params: AIparams): Promise<FetchedAI> => {
   const { uid, id, token } = params
   const queryStringParameters = [
     ['uid', uid],

@@ -6,6 +6,8 @@ import { IdToken } from '@auth0/auth0-react'
 import * as mappers from '@/store/mappers'
 import * as data from '@/services/data'
 import * as cross from '@/store/actions/cross'
+import * as ai from '@/store/actions/ai'
+import { getAI } from '@/services/compile'
 import * as local from '@/services/localStorage'
 
 export const UPDATE_USER_ID = 'user/LOAD_ID'
@@ -51,10 +53,22 @@ export const sync: Effect<void> = async (_, getState) => {
 export const fetchData: Effect<void> = async (dispatch, getState) => {
   const state = getState()
   const accessToken = state.user.user?.accessToken
-  if (!accessToken) return
+  const id = state.user.user?.idToken?.sub
+  console.log(accessToken)
+  if (!accessToken || !id) return
   const response = await data.fetchData(accessToken)
-  // const data = doStuffWithData()
-  // await dispatch(cross.updateAfterFetch(data))
+  if (response) {
+    const { preferences, fleetConfigs, ais } = response
+    dispatch(ai.fetchAIs(ais, id))
+    const parsedFleetConfigs = mappers.parseFleetConfigs(fleetConfigs)
+    dispatch({
+      type: UPDATE_USER,
+      unlockedShips: preferences.unlockedShips,
+      unlockedMissions: preferences.unlockedMissions,
+      color: mappers.stringToColor(preferences.color),
+      fleetConfigs: parsedFleetConfigs,
+    })
+  }
 }
 
 export const login = (
@@ -66,9 +80,7 @@ export const login = (
   return async dispatch => {
     dispatch({ type: LOGIN, idToken, accessToken, username })
     if (idToken) local.setUserId(idToken?.sub)
-    if (shouldSync) {
-      await dispatch(fetchData)
-      await dispatch(sync)
-    }
+    await dispatch(fetchData)
+    await dispatch(sync)
   }
 }

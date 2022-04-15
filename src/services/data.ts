@@ -10,7 +10,31 @@ export const sync = async (accessToken: string, body: any) => {
   return null
 }
 
-export const fetchData = async (accessToken: string) => {
+export type ResponseAIS = {
+  [key: string]: {
+    createdAt: string
+    path: string
+    language: string
+    updatedAt: string
+    tags: Array<string>
+    description?: string
+  }
+}
+export type ResponseFetchData = {
+  preferences: {
+    color: string
+    unlockedMissions: Array<string>
+    favoritesAI: Array<string>
+    ais: Array<string>
+    fleetConfigs: Array<string>
+    unlockedShips: Array<string>
+  }
+  ais: ResponseAIS
+  fleetConfigs: { [key: string]: string }
+}
+export const fetchData = async (
+  accessToken: string
+): Promise<ResponseFetchData | null> => {
   const headers = { Authorization: `Bearer ${accessToken}` }
   const response = await fetch(`${URL}/data/fetch`, { headers })
   if (response.ok) return response.json()

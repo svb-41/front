@@ -1,4 +1,8 @@
 import type { State } from './types'
+import type { Data } from '@/components/fleet-manager'
+import { Color } from '@/lib/color'
+import { AI } from '@/lib/ai'
+import { FetchedAI } from '@/services/compile'
 
 export const preferences = {
   fromState(state: State) {
@@ -37,4 +41,41 @@ export const fleetConfigs = {
   },
 }
 
-export const fromSync = (data: any) => {}
+export const fromSync = (data: any) => {
+  console.log(data)
+}
+
+export const parseFleetConfigs = (data: {
+  [key: string]: string
+}): { [key: string]: Data } =>
+  Object.entries(data)
+    .map(([key, val]) => [key, JSON.parse(val)])
+    .reduce((acc, [key, val]) => ({ ...acc, [key]: val }), {}) as {
+    [key: string]: Data
+  }
+
+export const stringToColor = (color: string): Color => color as Color
+
+export const fetchedAIToAI = (
+  fai: FetchedAI,
+  pai: {
+    createdAt: string
+    path: string
+    language: string
+    updatedAt: string
+    tags: Array<string>
+    description?: string
+  }
+): AI => ({
+  id: fai.id,
+  file: {
+    language: pai.language as 'typescript' | 'javascript' | '?',
+    path: pai.path,
+    code: fai.ts ?? '',
+  },
+  updatedAt: pai.updatedAt,
+  createdAt: pai.createdAt,
+  compiledValue: fai.compiled,
+  tags: pai.tags,
+  description: pai.description,
+})

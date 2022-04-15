@@ -3,6 +3,9 @@ import { AI } from '@/lib/ai'
 import { File } from '@/components/monaco'
 import { compile, Compile } from '@/services/compile'
 import templateAI from '@/default-controllers/assets.json'
+import { getAI } from '@/services/compile'
+import { ResponseAIS } from '@/services/data'
+import * as mappers from '@/store/mappers'
 
 export const LOAD_AI = 'ai/LOAD_AI'
 export const UPDATE_AI = 'ai/UPDATE_AI'
@@ -52,6 +55,20 @@ export const compileAI: (ai: AI) => Effect<void> = (ai: AI) => {
       const newAI = { ...ai, compiledValue, updatedAt }
       dispatch({ type: UPDATE_AI, id: ai.id, ai: newAI })
     }
+  }
+}
+
+export const fetchAIs: (
+  ids: ResponseAIS,
+  uid: string,
+  token?: string
+) => Effect<void> = (rais: ResponseAIS, uid: string, token?: string) => {
+  return async (dispatch, getState) => {
+    const fetchedAis = await Promise.all(
+      Object.entries(rais).map(([id, value]) => getAI({ uid, id, token }))
+    )
+    const ais = fetchedAis.map(ai => mappers.fetchedAIToAI(ai, rais[ai.id]))
+    dispatch({ type: LOAD_AI, ais })
   }
 }
 
