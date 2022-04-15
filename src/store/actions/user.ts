@@ -54,7 +54,6 @@ export const fetchData: Effect<void> = async (dispatch, getState) => {
   const state = getState()
   const accessToken = state.user.user?.accessToken
   const id = state.user.user?.idToken?.sub
-  console.log(accessToken)
   if (!accessToken || !id) return
   const response = await data.fetchData(accessToken)
   if (response) {
