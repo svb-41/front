@@ -68,6 +68,7 @@ export const Main = ({ children, links = true }: Props) => {
             {false && <Link title="Sandbox" to="/sandbox" />}
           </Row>
         )}
+        {!links && <div style={{ flexGrow: 1 }} />}
         {username && <Identicon username={username} />}
       </Row>
       <Column tag="main" flex={1}>

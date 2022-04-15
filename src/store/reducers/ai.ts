@@ -33,7 +33,9 @@ const setAllAIs = (ais: Array<AI>) => ais.map(local.setAI)
 export const reducer: Reducer<State, Action> = (state = init, action) => {
   switch (action.type) {
     case LOAD_AI: {
-      const { ais } = action
+      const oldAis = state.ais
+      const newAis = action.ais.filter(ai => !oldAis.find(a => a.id === ai.id))
+      const ais = [...newAis, ...oldAis]
       setAllAIs(ais)
       return { ...state, ais }
     }

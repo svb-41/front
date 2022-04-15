@@ -88,13 +88,13 @@ export class Engine extends EventTarget {
     const { scroll, onClick, onDragMove, onDragEnd, onDragStart } =
       this.moveFunctions()
     this.#app.view.addEventListener('wheel', scroll)
-    this.#app.view.addEventListener('mouseup', onClick)
     this.#app.view.addEventListener('mousemove', onDragMove)
     this.#app.view.addEventListener('mousedown', onDragStart)
     this.#app.view.addEventListener('touchstart', onDragStart)
     this.#app.view.addEventListener('mouseup', onDragEnd)
+    this.#app.view.addEventListener('mouseup', onClick)
+    this.#app.view.addEventListener('touchend', onClick)
     this.#app.view.addEventListener('touchend', onDragEnd)
-    this.#app.view.addEventListener('mousemove', onDragMove)
     this.#app.view.addEventListener('touchmove', onDragMove)
     this.#engine.addEventListener('sprite.remove', this.onSpriteRemove)
     this.#engine.addEventListener('sprite.explosion', this.onSpriteExplosion)
@@ -110,6 +110,7 @@ export class Engine extends EventTarget {
 
   unmount() {
     helpers.console.log('=> [RendererEngine] Unmount and clear')
+    this.#app.ticker.remove(this.run)
     this.#engine.removeEventListener('sprite.remove', this.onSpriteRemove)
     this.#engine.removeEventListener('sprite.explosion', this.onSpriteExplosion)
     this.#engine.removeEventListener('log.add', this.onLog)
@@ -121,8 +122,7 @@ export class Engine extends EventTarget {
       resource.texture?.destroy(true)
       Object.values(resource.textures ?? {}).forEach(t => t.destroy(true))
     })
-    this.#app.ticker.remove(this.run)
-    this.#app.destroy()
+    this.#app.destroy(false, true)
   }
 
   private brightness(value: number, boolean = false) {
@@ -137,12 +137,12 @@ export class Engine extends EventTarget {
       if (!selectedShip) {
         const isDestroyed = this.#shipsDestroyed.has(key)
         value.filters = isDestroyed ? [this.brightness(0.2)] : []
-        if (radar) radar.filters = [this.brightness(0.2)]
+        if (radar) radar.filters = []
       } else if (key !== selectedShip?.id) {
         value.filters = [this.brightness(0.2)]
         if (radar) {
           const filter = new PIXI.filters.ColorMatrixFilter()
-          filter.brightness(0.15, false)
+          filter.brightness(0.2, false)
           radar.filters = [filter]
         }
       } else {
@@ -157,7 +157,9 @@ export class Engine extends EventTarget {
       onClick: (e: any) => {
         if (!this.#app) return
         if (Date.now() - this.#downTS < 200) {
-          const { offsetX: x, offsetY: y } = e
+          const bcr = e.target.getBoundingClientRect()
+          const x = e.offsetX ?? e.changedTouches[0].clientX - bcr.x
+          const y = e.offsetY ?? e.changedTouches[0].clientY - bcr.y
           const scale = this.#scale
           const pos = {
             x: Math.floor(x / scale - this.#pos.x),
@@ -174,10 +176,14 @@ export class Engine extends EventTarget {
           this.dispatchEvent(event)
         }
       },
-      onDragEnd: (_e: any) => (this.#drag = false),
-      onDragMove: (e: any) => {
+      onDragEnd: (_e: any) => {
+        console.log('triggered')
+        this.#drag = false
+      },
+      onDragMove: (e: MouseEvent | TouchEvent) => {
+        const x = e instanceof MouseEvent ? e.clientX : e.touches[0].clientX
+        const y = e instanceof MouseEvent ? e.clientY : e.touches[0].clientY
         if (this.#drag) {
-          const { x, y } = e
           const scale = this.#scale
           const pos = this.#pos
           this.#pos = {
@@ -187,13 +193,14 @@ export class Engine extends EventTarget {
           this.#dragStart = { x, y }
         }
       },
-      onDragStart: (e: any) => {
-        const { x, y } = e
+      onDragStart: (e: MouseEvent | TouchEvent) => {
+        const x = e instanceof MouseEvent ? e.clientX : e.touches[0].clientX
+        const y = e instanceof MouseEvent ? e.clientY : e.touches[0].clientY
         this.#dragStart = { x, y }
         this.#drag = true
         this.#downTS = Date.now()
       },
-      scroll: (e: any) => {
+      scroll: (e: WheelEvent) => {
         const { offsetX, offsetY, deltaY } = e
         const zoomFactor = 0.96
         if (this.#scale > 0.02 || deltaY < 0) {
@@ -244,9 +251,9 @@ export class Engine extends EventTarget {
     const radar = new PIXI.Graphics()
     radar.x = x
     radar.y = y
-    radar.beginFill(radarColor, 0.6)
+    radar.lineStyle(2, radarColor)
+    radar.beginFill(radarColor, 0.2)
     const filter = new PIXI.filters.ColorMatrixFilter()
-    filter.brightness(0.2, false)
     radar.filters = [filter]
     radar.drawCircle(0, 0, size)
     radar.zIndex = 0

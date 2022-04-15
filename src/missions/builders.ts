@@ -16,7 +16,7 @@ const {
 
 const builders: Array<{
   id: SHIP_CLASS
-  builder: (props: BuildShipProps) => Ship
+  builder: (props: BuildShipProps) => Promise<Ship>
 }> = [
   { id: SHIP_CLASS.FIGHTER, builder: buildFighter },
   { id: SHIP_CLASS.STEALTH, builder: buildStealth },

@@ -22,39 +22,47 @@ export type UseEngine = {
   mission: Mission
 }
 
-const prepareData = (props: UseEngine, fleetData: fleet.Data): Data => {
+const prepareData = (
+  props: UseEngine,
+  fleetData: fleet.Data
+): Promise<Data> => {
   const start = props.mission.start ? props.mission.start : { x: 0, y: 0 }
-  return fleetData.ships.reduce((acc, { x, y, shipClass, rotation, id }) => {
-    const value = shipClass.toUpperCase()
-    const builder = findBuilder(value)
-    const direction = rotation * (Math.PI / 180) - Math.PI / 2
-    const position = { pos: { x: x + start.x, y: y + start.y }, direction }
-    const aid = fleetData.ais.find(ai => ai.sid === id)?.aid
-    const code = props.ais.find(ai => ai.id === aid)?.compiledValue
-    if (builder && code) {
-      const { team } = props
-      const ship = builder.builder({ position, team })
-      const ai = { code, shipId: ship.id }
-      return { ...acc, ships: [...acc.ships, ship], ais: [...acc.ais, ai] }
-    }
-    return acc
-  }, emptyData)
+  return fleetData.ships.reduce(
+    async (acc_, { x, y, shipClass, rotation, id }) => {
+      const acc = await acc_
+      const value = shipClass.toUpperCase()
+      const builder = findBuilder(value)
+      const direction = rotation * (Math.PI / 180) - Math.PI / 2
+      const position = { pos: { x: x + start.x, y: y + start.y }, direction }
+      const aid = fleetData.ais.find(ai => ai.sid === id)?.aid
+      const code = props.ais.find(ai => ai.id === aid)?.compiledValue
+      if (builder && code) {
+        const { team } = props
+        const ship = await builder.builder({ position, team })
+        const ai = { code, shipId: ship.id }
+        return { ...acc, ships: [...acc.ships, ship], ais: [...acc.ais, ai] }
+      }
+      return acc
+    },
+    Promise.resolve(emptyData)
+  )
 }
 
-const prepareEnemyData = (props: UseEngine): Data => {
+const prepareEnemyData = (props: UseEngine): Promise<Data> => {
   const team = props.enemy
-  return props.mission.ships.reduce<Data>((acc, { position, ...dat }) => {
+  return props.mission.ships.reduce(async (acc_, { position, ...dat }) => {
+    const acc = await acc_
     const builder = findBuilder(dat.classShip)
     const code: string = require(`@/missions/ais/${dat.ai}.json`)
     if (builder && code) {
-      const ship = builder.builder({ position, team })
+      const ship = await builder.builder({ position, team })
       const ai = { code, shipId: ship.id }
       const ships = [...acc.ships, ship]
       const ais = [...acc.ais, ai]
       return { ...acc, ships, ais }
     }
     return acc
-  }, emptyData)
+  }, Promise.resolve(emptyData))
 }
 
 const outOfBound = (
@@ -130,10 +138,10 @@ export const useEngine = (props: UseEngine) => {
   const [engine, setEngine] = useState<svb.engine.Engine>()
   const [fleetData, setFleetData] = useState<fleet.Data>()
 
-  const start = (setState: SetState) => {
+  const start = async (setState: SetState) => {
     if (!fleetData) return
-    const data = prepareData(props, fleetData)
-    const enemy = prepareEnemyData(props)
+    const data = await prepareData(props, fleetData)
+    const enemy = await prepareEnemyData(props)
     const engine = setupEngine({ props, enemy, data, setState })
     setEngine(engine)
     setState('engine')

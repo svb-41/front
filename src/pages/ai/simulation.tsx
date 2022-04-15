@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { Button } from '@/components/button'
 import { Row, Column } from '@/components/flex'
 import { Title } from '@/components/title'
@@ -60,12 +60,12 @@ export const Simulation = ({ ai, beforeLaunch }: Props) => {
     setState('loading')
     try {
       await beforeLaunch()
-      start(setState)
+      await start(setState)
     } catch (error) {
       setState('preparation')
     }
   }
-
+  const opts = useMemo(() => ({ scale: 0.8, pos: { x: 0, y: -200 } }), [])
   return (
     <div className={styles.testRenderer}>
       <Row
@@ -99,12 +99,7 @@ export const Simulation = ({ ai, beforeLaunch }: Props) => {
           />
         </Row>
       </Row>
-      {state === 'engine' && (
-        <Renderer
-          engine={engine!}
-          opts={{ scale: 0.8, pos: { x: 0, y: -200 } }}
-        />
-      )}
+      {state === 'engine' && <Renderer engine={engine!} opts={opts} />}
       {state === 'preparation' && <Preparation onClick={onLaunch} />}
       {state === 'loading' && <RenderLoading />}
     </div>

@@ -58,7 +58,7 @@ export const fetchData: Effect<void> = async (dispatch, getState) => {
   const response = await data.fetchData(accessToken)
   if (response) {
     const { preferences, fleetConfigs, ais } = response
-    dispatch(ai.fetchAIs(ais, id))
+    dispatch(ai.fetchAIs(ais, id, accessToken))
     const parsedFleetConfigs = mappers.parseFleetConfigs(fleetConfigs)
     dispatch({
       type: UPDATE_USER,

@@ -21,6 +21,7 @@ export const getAI = async (params: AIparams): Promise<FetchedAI> => {
     .join('&')
   const res = await fetch(`${URL}/ai?${queryStringParameters}`, {
     method: 'GET',
+    headers: { Authorization: `Bearer ${token}` },
   })
   return await res.json()
 }
