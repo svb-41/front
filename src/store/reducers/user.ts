@@ -6,6 +6,7 @@ import {
   UNLOCK_REWARDS,
   SAVE_FLEET_CONFIG,
   LOGIN,
+  RESET,
   Rewards,
 } from '@/store/actions/user'
 import { Color } from '@/lib/color'
@@ -37,6 +38,7 @@ const init: State = {
 }
 
 export type Action =
+  | { type: 'user/RESET' }
   | { type: 'user/LOAD_ID'; id: string }
   | { type: 'user/UPDATE_COLOR'; color: Color }
   | { type: 'user/UNLOCK_REWARDS'; rewards: Rewards }
@@ -70,7 +72,18 @@ export const reducer: Reducer<State, Action> = (state = init, action) => {
       return { ...state, id }
     }
     case UPDATE_USER: {
-      const { unlockedShips, unlockedMissions, color, fleetConfigs } = action
+      const { color } = action
+      const fleetConfigs = { ...state.fleetConfigs, ...action.fleetConfigs }
+      const unlockedShips = [
+        ...state.unlockedShips,
+        ...action.unlockedShips.filter(u => !state.unlockedShips.includes(u)),
+      ]
+      const unlockedMissions = [
+        ...state.unlockedMissions,
+        ...action.unlockedMissions.filter(
+          u => !state.unlockedMissions.includes(u)
+        ),
+      ]
       return { ...state, unlockedShips, unlockedMissions, color, fleetConfigs }
     }
     case UPDATE_COLOR: {
@@ -88,6 +101,9 @@ export const reducer: Reducer<State, Action> = (state = init, action) => {
       const unlockedShips = unique([...state.unlockedShips, ...ships])
       const unlockedMissions = unique([...state.unlockedMissions, ...missions])
       return { ...state, unlockedShips, unlockedMissions }
+    }
+    case RESET: {
+      return init
     }
     default:
       return state

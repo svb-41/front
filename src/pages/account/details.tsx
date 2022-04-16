@@ -2,12 +2,14 @@ import { useState } from 'react'
 import { useSelector, useDispatch } from '@/store/hooks'
 import * as actions from '@/store/actions/user'
 import * as selectors from '@/store/selectors'
+import { useAuth } from '@/services/auth0'
 import { Main } from '@/components/main'
 import { Row, Column } from '@/components/flex'
 import { Title, Caption } from '@/components/title'
 import { Button } from '@/components/button'
 import refresh from './refresh.svg'
 import styles from './account.module.css'
+import { URL } from '@/envs'
 import s from '@/strings.json'
 
 const SyncButton = () => {
@@ -33,15 +35,26 @@ const SyncButton = () => {
 
 export const Details = () => {
   const user = useSelector(selectors.userData)
+  const auth = useAuth()
   if (!user.user) return null
   return (
     <Main>
-      <Row padding="xl" gap="xl">
-        <Column flex={1} background="var(--eee)" padding="l">
+      <Column padding="xl" gap="xl" align="flex-end">
+        <Row
+          flex={1}
+          background="var(--eee)"
+          align="center"
+          gap="l"
+          width="100%"
+        >
+          <img
+            className={styles.profilePictureDetails}
+            src={`${URL}/user/${user.user.username}.svg`}
+          />
           <Title content={`${s.pages.account.hello} @${user.user.username}`} />
-        </Column>
-        <SyncButton />{' '}
-      </Row>
+        </Row>
+        <Button secondary text="Disconnect" onClick={auth.logout} />
+      </Column>
     </Main>
   )
 }

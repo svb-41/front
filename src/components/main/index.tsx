@@ -56,12 +56,17 @@ export const Main = ({ children, links = true }: Props) => {
             align="center"
             className={styles.links}
             flex={1}
-            gap="l"
+            gap="xxl"
           >
-            <Link title="Campaign" to="/missions" />
-            <Link title="AI" to="/ai" />
-            <Link title="Ships" to="/ships" />
-            <Link title="Database" to="/database" />
+            <Row gap="m">
+              <Link title="Campaign" to="/missions" />
+              <Link title="Skirmishes" to="/skirmishes" />
+              <Link title="AI" to="/ai" />
+            </Row>
+            <Row gap="m">
+              <Link title="Ships" to="/ships" />
+              <Link title="Database" to="/database" />
+            </Row>
             <div style={{ flexGrow: 1 }} />
             {!username && <Link title="Account" to="/account" />}
             {false && <Link title="Training" to="/training" />}

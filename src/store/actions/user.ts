@@ -5,9 +5,7 @@ import { v4 as uuid } from 'uuid'
 import { IdToken } from '@auth0/auth0-react'
 import * as mappers from '@/store/mappers'
 import * as data from '@/services/data'
-import * as cross from '@/store/actions/cross'
 import * as ai from '@/store/actions/ai'
-import { getAI } from '@/services/compile'
 import * as local from '@/services/localStorage'
 
 export const UPDATE_USER_ID = 'user/LOAD_ID'
@@ -16,6 +14,7 @@ export const UPDATE_COLOR = 'user/UPDATE_COLOR'
 export const UNLOCK_REWARDS = 'user/UNLOCK_REWARDS'
 export const SAVE_FLEET_CONFIG = 'user/SAVE_FLEET_CONFIG'
 export const LOGIN = 'user/LOGIN'
+export const RESET = 'user/RESET'
 
 export const changeColor: (color: Color) => Effect<void> = (color: Color) => {
   return async dispatch => {
@@ -73,8 +72,7 @@ export const fetchData: Effect<void> = async (dispatch, getState) => {
 export const login = (
   idToken: IdToken | undefined,
   accessToken: any,
-  username: string,
-  shouldSync?: boolean
+  username: string
 ): Effect<void> => {
   return async dispatch => {
     dispatch({ type: LOGIN, idToken, accessToken, username })
@@ -82,4 +80,9 @@ export const login = (
     await dispatch(fetchData)
     await dispatch(sync)
   }
+}
+
+export const logout: Effect<void> = async dispatch => {
+  local.reset()
+  dispatch({ type: RESET })
 }

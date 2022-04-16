@@ -14,6 +14,7 @@ export type StoredData = {
   favoriteAIS: Array<string>
   color: Color
   fleetConfigs: any
+  skirmishes: any
 }
 
 export const getUid = (): string => {
@@ -58,4 +59,11 @@ export const deleteAI = (data: string) =>
 
 export const setFavoriteAIS = (favoriteAIS: string[]) => {
   localStorage.setItem(`${FAVORITE_AIS_KEY}`, JSON.stringify(favoriteAIS))
+}
+
+export const reset = () => {
+  const key = 'svb-cookie-consent'
+  const value = localStorage.getItem(key)
+  localStorage.clear()
+  if (value) localStorage.setItem(key, value)
 }

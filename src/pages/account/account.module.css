@@ -8,6 +8,11 @@
   font-size: 1.3rem;
 }
 
+.profilePictureDetails {
+  width: 60px;
+  height: 60px;
+}
+
 .turning {
   animation: turning 1s linear 0s infinite;
 }

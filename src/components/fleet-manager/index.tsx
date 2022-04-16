@@ -326,7 +326,7 @@ const useConfig = ({ onValidConfiguration }: Props) => {
   }
 }
 
-const LoadSaveFleet = ({
+export const LoadSaveFleet = ({
   onClose,
   confs,
   team,
@@ -443,6 +443,7 @@ export type Props = {
   onShipClick: (id: string) => void
   onAIClick: (id: string) => void
   maxCredits: number
+  title?: boolean
 }
 export const FleetManager: FC<Props> = props => {
   const { team } = props
@@ -477,18 +478,20 @@ export const FleetManager: FC<Props> = props => {
           onLoad={config.onLoad}
         />
       )}
-      <FleetTitle
-        team={team}
-        isValid={config.isValid}
-        usedConf={config.usedConf}
-        onSave={config.saveFleetConfig}
-        onErase={config.erase}
-        onLoad={
-          Object.entries(config.confs).length > 0
-            ? config.loadDataFromStore
-            : undefined
-        }
-      />
+      {(props.title ?? true) && (
+        <FleetTitle
+          team={team}
+          isValid={config.isValid}
+          usedConf={config.usedConf}
+          onSave={config.saveFleetConfig}
+          onErase={config.erase}
+          onLoad={
+            Object.entries(config.confs).length > 0
+              ? config.loadDataFromStore
+              : undefined
+          }
+        />
+      )}
       <Row gap="xl" flex={1}>
         <ShipSelector
           state={tab}

@@ -1,6 +1,7 @@
 import { UPDATE_USER_ID, UPDATE_USER } from '@/store/actions/user'
 import * as local from '@/services/localStorage'
 import { LOAD_AI, LOAD_FAVORITE_AIS } from '@/store/actions/ai'
+import { REPLACE_SKIRMISHES } from '@/store/actions/skirmishes'
 import { AI } from '@/lib/ai'
 import { Effect } from '@/store/types'
 import { Color } from '@/lib/color'
@@ -12,6 +13,16 @@ const defaultUser: local.StoredData = {
   favoriteAIS: [],
   color: Color.BLUE,
   fleetConfigs: {},
+  skirmishes: {
+    fleets: {
+      small: null,
+      huge: null,
+    },
+    stats: {
+      victories: 0,
+      defeats: 0,
+    },
+  },
 }
 
 export const initStore: Effect<void> = async dispatch => {
@@ -24,6 +35,7 @@ export const initStore: Effect<void> = async dispatch => {
   const favorites = data.favoriteAIS ?? local.favoriteAIS()
   dispatch({ type: LOAD_AI, ais })
   dispatch({ type: LOAD_FAVORITE_AIS, favorites })
+  dispatch({ type: REPLACE_SKIRMISHES, skirmishes: data.skirmishes })
   dispatch({
     type: UPDATE_USER,
     unlockedShips: data.ships,

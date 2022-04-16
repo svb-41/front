@@ -37,7 +37,7 @@ export const useAuth = () => {
         const idToken = await auth0.getIdTokenClaims()
         const accessToken = await auth0.getAccessTokenSilently()
         const username = idToken?.['https://app.svb41.com/username'] ?? ''
-        const action = actions.login(idToken, accessToken, username, true)
+        const action = actions.login(idToken, accessToken, username)
         await dispatch(action)
       } catch {
       } finally {
@@ -47,5 +47,14 @@ export const useAuth = () => {
     [dispatch, auth0]
   )
 
-  return useMemo(() => ({ update, login, loading }), [update, login, loading])
+  const logout = useCallback(async () => {
+    auth0.logout({ federated: true })
+    const action = actions.logout
+    await dispatch(action)
+  }, [dispatch, auth0])
+
+  return useMemo(
+    () => ({ update, login, logout, loading }),
+    [update, login, logout, loading]
+  )
 }

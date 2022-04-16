@@ -89,6 +89,9 @@ export const Home = () => (
             <Link className={button.style({ primary: true })} to="/missions">
               <div className={styles.mainLink}>Campaign</div>
             </Link>
+            <Link className={button.style({ primary: true })} to="/skirmishes">
+              <div className={styles.mainLink}>Skirmishes</div>
+            </Link>
             <Link className={button.style({ primary: true })} to="/ai">
               <div className={styles.mainLink}>AI</div>
             </Link>

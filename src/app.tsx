@@ -15,6 +15,7 @@ import { NotFound } from '@/pages/not-found'
 import { Overlay } from '@/pages/overlay'
 import { Database } from '@/pages/database'
 import { Account } from '@/pages/account'
+import { Skirmishes } from '@/pages/skirmishes'
 import * as documentation from '@/doc'
 import silom from '@/assets/fonts/silom.ttf'
 import unifont from '@/assets/fonts/unifont.ttf'
@@ -56,6 +57,7 @@ const App = () => {
       <Route path="ai" element={<Ia />} />
       <Route path="ships" element={<Ships />} />
       <Route path="ai/:id" element={<AIEditor />} />
+      <Route path="skirmishes" element={<Skirmishes />} />
       <Route path="sandbox" element={<Sandbox />} />
       <Route path="training" element={<Training />} />
       <Route path="missions" element={<Missions />} />

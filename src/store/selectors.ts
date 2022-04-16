@@ -10,3 +10,8 @@ export const ais = (state: State) => {
   const { ais, favorites } = state.ai
   return { ais, favorites }
 }
+
+export const skirmishes = (state: State) => {
+  const { stats, fleets } = state.skirmishes
+  return { stats, fleets }
+}
