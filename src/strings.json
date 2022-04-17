@@ -18,7 +18,26 @@
     "youCould": "You could also",
     "writeMessage": "write us an email"
   },
+  "components": {
+    "leaderboard": {
+      "title": "Leaderboard",
+      "caption": "Global ranking of best\nplayers",
+      "soon": "Soon, find the ranks\nof all users users…"
+    },
+    "matchmaking": {
+      "title": "Matchmaking",
+      "caption": "Duel against your friends",
+      "enterUsername": "Enter your friend username",
+      "selectSize": "Select your board size"
+    }
+  },
   "pages": {
+    "skirmishes": {
+      "notSelected": "You don’t have any selected fleet for",
+      "notSelectedNext": "fleet. By selecting one, opponents will be able to fight against it.",
+      "youSelected": "You selected ",
+      "fleet": " fleet."
+    },
     "login": {
       "title": "Login to your account",
       "caption": "You can save and retrieve your AI, your fleets and your stats",

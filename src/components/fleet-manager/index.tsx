@@ -267,12 +267,12 @@ const ShipDetails = ({
   )
 }
 
-const useConfig = ({ onValidConfiguration }: Props) => {
+const useConfig = ({ onValidConfiguration, initialConfig }: Props) => {
   const dispatch = useDispatch()
   const confs = useSelector(selectors.fleetConfigs)
   const [visibleLoad, setVisibleLoad] = useState(false)
-  const [ships, setShips] = useState<AllShips>([])
-  const [ais, setAIs] = useState<AllAIs>([])
+  const [ships, setShips] = useState<AllShips>(initialConfig?.ships ?? [])
+  const [ais, setAIs] = useState<AllAIs>(initialConfig?.ais ?? [])
   const [usedConf, setUsedConf] = useState<string>()
   const validConfig = useMemo(() => ({ ships, ais }), [ships, ais])
   const isValid = useMemo(() => {
@@ -440,10 +440,11 @@ export type Props = {
   team: string
   ais: AI[]
   onValidConfiguration: (data: Data | null) => void
-  onShipClick: (id: string) => void
-  onAIClick: (id: string) => void
+  onShipClick?: (id: string) => void
+  onAIClick?: (id: string) => void
   maxCredits: number
   title?: boolean
+  initialConfig?: Data
 }
 export const FleetManager: FC<Props> = props => {
   const { team } = props

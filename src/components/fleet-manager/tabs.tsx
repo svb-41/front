@@ -37,8 +37,8 @@ const RenderShips = ({
         <div
           key={index}
           className={styles.availableShip}
-          onClick={unlocked ? () => onShipClick(ship) : undefined}
-          onDoubleClick={unlocked ? () => setShipDetails(ship) : undefined}
+          onClick={unlocked ? () => onShipClick?.(ship) : undefined}
+          onDoubleClick={unlocked ? () => setShipDetails?.(ship) : undefined}
           style={unlocked ? undefined : { filter: 'brightness(0.2)' }}
         >
           <div>{unlocked ? ship : '???'}</div>
@@ -60,8 +60,8 @@ const RenderAIs = ({
   onAIClick,
 }: {
   ais: AI[]
-  setAIDetails: (value: string) => void
-  onAIClick: (value: string) => void
+  setAIDetails?: (value: string) => void
+  onAIClick?: (value: string) => void
 }) => {
   const [cols, remaining] = ais.reduce(
     (acc, val, index) => {
@@ -81,8 +81,8 @@ const RenderAIs = ({
             <div
               className={styles.cursor}
               key={ai.id}
-              onDoubleClick={() => setAIDetails(ai.id)}
-              onClick={() => onAIClick(ai.id)}
+              onDoubleClick={() => setAIDetails?.(ai.id)}
+              onClick={() => onAIClick?.(ai.id)}
             >
               <Column background="var(--ddd)" padding="s" gap="s">
                 <Row align="center" gap="s">

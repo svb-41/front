@@ -1,0 +1,14 @@
+.input {
+  background: var(--ddd);
+  width: auto;
+}
+
+.input:focus {
+  outline: 2px solid var(--fff);
+}
+
+.input:disabled {
+  background: var(--fff);
+  cursor: not-allowed;
+  color: var(--ddd);
+}

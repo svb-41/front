@@ -10,6 +10,9 @@ import { AI } from '@/lib/ai'
 import { Login } from '../login'
 import { FleetManager, LoadSaveFleet, Data } from '@/components/fleet-manager'
 import { Grid } from '@/components/fleet-manager/grid'
+import { Leaderboard } from '@/components/leaderboard'
+import { Matchmaking } from '@/components/matchmaking'
+import s from '@/strings.json'
 import styles from './skirmishes.module.css'
 
 type SavedFleetProps = {
@@ -20,32 +23,25 @@ type SavedFleetProps = {
   ais: AI[]
   onCreate: () => void
   selected: Data | null
-  selectedID: string | null
 }
-const SavedFleet = ({
-  fleet,
-  size,
-  fleetConfigs,
-  team,
-  ais,
-  onCreate,
-  selected,
-  selectedID,
-}: SavedFleetProps) => {
+const SavedFleet = (props: SavedFleetProps) => {
   const dispatch = useDispatch()
   const [visible, setVisible] = useState(false)
-  const selectable = Object.keys(fleetConfigs).length > 0
-  const id = selectedID?.replace(/-/g, '')
+  const selectable = Object.keys(props.fleetConfigs).length > 0
+  const id = props.fleet?.replace(/-/g, '')
+  const { notSelected, notSelectedNext, youSelected, fleet } =
+    s.pages.skirmishes
   return (
     <Column gap="s">
       <div style={{ maxWidth: 320 }}>
-        {!selected &&
-          `You don’t have any selected fleet for ${size} fleet. By selecting one, opponents will be able to fight against it.`}
-        {id &&
-          `You selected 0x${id.slice(0, 8)}...${id.slice(
-            id.length - 8,
-            id.length
-          )} fleet`}
+        {!props.selected && `${notSelected} ${props.size} ${notSelectedNext}`}
+        {id && youSelected}
+        {id && (
+          <code className={styles.code}>
+            0x{id.slice(0, 8)}…{id.slice(id.length - 8, id.length)}
+          </code>
+        )}
+        {id && fleet}
       </div>
       <Row gap="s">
         {selectable && (
@@ -61,7 +57,7 @@ const SavedFleet = ({
           style={{ flex: 1 }}
           primary
           small
-          onClick={onCreate}
+          onClick={props.onCreate}
           text="Create your fleet"
         />
       </Row>
@@ -69,29 +65,76 @@ const SavedFleet = ({
         <LoadSaveFleet
           onClose={() => setVisible(false)}
           onLoad={async id => {
-            const action = actions.skirmishes.selectFleet(id, size)
+            const action = actions.skirmishes.selectFleet(id, props.size)
             dispatch(action)
             setVisible(false)
           }}
-          confs={fleetConfigs}
-          team={team}
-          ais={ais}
+          confs={props.fleetConfigs}
+          team={props.team}
+          ais={props.ais}
         />
       )}
     </Column>
   )
 }
 
+const SavedFleetSelector = ({
+  page,
+  setPage,
+  fleets,
+  user,
+  setAddingFleet,
+  ais,
+}: any) => {
+  const selected = fleets[page] ? user.fleetConfigs[fleets[page]!] : null
+  return (
+    <Column gap="l">
+      <Column gap="s" padding="l" background="var(--eee)">
+        <Title content="Your saved fleets" />
+        <Row gap="s" justify="flex-end">
+          <Button
+            small
+            primary={page === 'small'}
+            text="small"
+            onClick={() => setPage('small')}
+          />
+          <Button
+            small
+            primary={page === 'huge'}
+            text="huge"
+            onClick={() => setPage('huge')}
+          />
+        </Row>
+        <SavedFleet
+          selected={selected}
+          onCreate={() => setAddingFleet(true)}
+          ais={ais.ais}
+          team={user.color}
+          fleetConfigs={user.fleetConfigs}
+          fleet={fleets[page]}
+          size={page}
+        />
+      </Column>
+      <Grid
+        options={false}
+        ships={selected?.ships ?? []}
+        aiIDs={selected?.ais ?? []}
+        team={user.color}
+        ais={ais.ais}
+      />
+    </Column>
+  )
+}
+
 const PlaySkirmishes = () => {
   const dispatch = useDispatch()
-  const [page, setPage] = useState<'small' | 'huge'>('small')
   const [fleet, setFleet] = useState<Data | null>(null)
   const user = useSelector(selectors.userData)
   const ais = useSelector(selectors.ais)
   const { stats, fleets } = useSelector(selectors.skirmishes)
   const { victories, defeats } = stats
   const [addingFleet, setAddingFleet] = useState(false)
-  const selected = fleets[page] ? user.fleetConfigs[fleets[page]!] : null
+  const [page, setPage] = useState<'small' | 'huge'>('small')
   return (
     <Main>
       <Column padding="l" gap="l">
@@ -111,43 +154,17 @@ const PlaySkirmishes = () => {
           </Row>
         </Row>
         {!addingFleet && (
-          <Row>
-            <Column gap="l">
-              <Column gap="s" padding="l" background="var(--eee)">
-                <Title content="Your saved fleets" />
-                <Row gap="s" justify="flex-end">
-                  <Button
-                    small
-                    primary={page === 'small'}
-                    text="small"
-                    onClick={() => setPage('small')}
-                  />
-                  <Button
-                    small
-                    primary={page === 'huge'}
-                    text="huge"
-                    onClick={() => setPage('huge')}
-                  />
-                </Row>
-                <SavedFleet
-                  selectedID={fleets[page]}
-                  selected={selected}
-                  onCreate={() => setAddingFleet(true)}
-                  ais={ais.ais}
-                  team={user.color}
-                  fleetConfigs={user.fleetConfigs}
-                  fleet={page === 'small' ? fleets.small : fleets.huge}
-                  size={page}
-                />
-              </Column>
-              <Grid
-                options={false}
-                ships={selected?.ships ?? []}
-                aiIDs={selected?.ais ?? []}
-                team={user.color}
-                ais={ais.ais}
-              />
-            </Column>
+          <Row gap="l">
+            <SavedFleetSelector
+              fleets={fleets}
+              user={user}
+              setAddingFleet={setAddingFleet}
+              ais={ais}
+              page={page}
+              setPage={setPage}
+            />
+            <Matchmaking />
+            <Leaderboard />
           </Row>
         )}
         {addingFleet && (
@@ -158,30 +175,32 @@ const PlaySkirmishes = () => {
             ships={user.unlockedShips}
             ais={ais.ais}
             onValidConfiguration={c => setFleet(c)}
-            onAIClick={id => {
-              // setSelected(id)
-              // setSelectedTeam(undefined)
-            }}
-            onShipClick={id => {
-              // setSelected(id)
-              // setSelectedTeam(preferences.player.color)
-            }}
+            initialConfig={fleet ?? undefined}
           >
-            <Button
-              primary
-              disabled={!fleet}
-              onClick={async () => {
-                if (fleet) {
-                  const save = actions.user.saveFleetConfig(fleet)
-                  const cid = await dispatch(save)
-                  setFleet(null)
-                  setAddingFleet(false)
-                  const select = actions.skirmishes.selectFleet(cid, page)
-                  await dispatch(select)
-                }
-              }}
-              text="Submit"
-            />
+            <Row gap="l">
+              <Button
+                warning
+                style={{ flex: 1 }}
+                text="Back"
+                onClick={() => setAddingFleet(false)}
+              />
+              <Button
+                style={{ flex: 1 }}
+                primary
+                disabled={!fleet}
+                onClick={async () => {
+                  if (fleet) {
+                    const save = actions.user.saveFleetConfig(fleet)
+                    const cid = await dispatch(save)
+                    setFleet(null)
+                    setAddingFleet(false)
+                    const select = actions.skirmishes.selectFleet(cid, page)
+                    await dispatch(select)
+                  }
+                }}
+                text="Submit"
+              />
+            </Row>
           </FleetManager>
         )}
       </Column>
