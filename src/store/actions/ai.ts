@@ -1,9 +1,8 @@
 import { Effect, Action } from '@/store/types'
 import { AI } from '@/lib/ai'
 import { File } from '@/components/monaco'
-import { compile, Compile } from '@/services/compile'
+import { compile, Compile, getAI } from '@/services/ais'
 import templateAI from '@/default-controllers/assets.json'
-import { getAI } from '@/services/compile'
 import { ResponseAIS } from '@/services/data'
 import * as mappers from '@/store/mappers'
 
@@ -63,9 +62,9 @@ export const fetchAIs: (
   uid: string,
   token?: string
 ) => Effect<void> = (rais: ResponseAIS, uid: string, token?: string) => {
-  return async (dispatch, getState) => {
+  return async dispatch => {
     const fetchedAis = await Promise.all(
-      Object.entries(rais).map(([id, value]) => getAI({ uid, id, token }))
+      Object.entries(rais).map(([id]) => getAI({ uid, id, token }))
     )
     const ais = fetchedAis.map(ai => mappers.fetchedAIToAI(ai, rais[ai.id]))
     dispatch({ type: LOAD_AI, ais })

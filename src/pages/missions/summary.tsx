@@ -28,8 +28,12 @@ const RenderShipsSummary = ({ ships, content }: RSSProps) => (
   </Column>
 )
 
-type SSProps = { ships: svb.engine.ship.Ship[]; team: string; name: string }
-const ShipsSummary = ({ ships, team, name }: SSProps) => {
+export type SSProps = {
+  ships: svb.engine.ship.Ship[]
+  team: string
+  name: string
+}
+export const ShipsSummary = ({ ships, team, name }: SSProps) => {
   const yours = ships.filter(ship => ship.team === team)
   const their = ships.filter(ship => ship.team !== team)
   const yText = s.pages.summary.yours
@@ -43,7 +47,7 @@ const ShipsSummary = ({ ships, team, name }: SSProps) => {
   )
 }
 
-const CongratsOrCry = ({ won }: { won: boolean }) => {
+export const CongratsOrCry = ({ won }: { won: boolean }) => {
   const { congratsOrCry } = s.pages.summary
   const { congrats, tooBad, brilliantVictory, youLost } = congratsOrCry
   return (

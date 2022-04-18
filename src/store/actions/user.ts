@@ -7,6 +7,7 @@ import * as mappers from '@/store/mappers'
 import * as data from '@/services/data'
 import * as ai from '@/store/actions/ai'
 import * as local from '@/services/localStorage'
+import * as skirmishes from '@/services/skirmishes'
 
 export const UPDATE_USER_ID = 'user/LOAD_ID'
 export const UPDATE_USER = 'user/LOAD_USER'
@@ -66,6 +67,8 @@ export const fetchData: Effect<void> = async (dispatch, getState) => {
       color: mappers.stringToColor(preferences.color),
       fleetConfigs: parsedFleetConfigs,
     })
+    const stats = await skirmishes.getStats(accessToken)
+    dispatch({ type: 'skirmishes/UPDATE_STATS', stats })
   }
 }
 

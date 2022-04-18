@@ -24,3 +24,33 @@ export const fight = async (
   }
   return null
 }
+
+export const profile = async (username: string) => {
+  if (username.length > 0) {
+    const endpoint = `${URL}/user/${username}`
+    const result = await fetch(endpoint, {})
+    return result.json()
+  }
+  return null
+}
+
+export type Stats = { victories: number; defeats: number }
+export const updateStats = async (
+  { victories, defeats }: Stats,
+  accessToken: string
+) => {
+  const body = JSON.stringify({ victories, defeats })
+  const headers = { Authorization: `Bearer ${accessToken}` }
+  const options = { method: 'post', headers, body }
+  const result = await fetch(`${URL}/stats`, options)
+  return result.json()
+}
+
+export const getStats = async (accessToken: string): Promise<Stats | null> => {
+  const headers = { Authorization: `Bearer ${accessToken}` }
+  const options = { method: 'get', headers }
+  const result = await fetch(`${URL}/stats`, options)
+  const data = await result.json()
+  if (data) return { victories: data.victories, defeats: data.defeats }
+  return data
+}

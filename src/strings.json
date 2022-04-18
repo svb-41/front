@@ -28,7 +28,8 @@
       "title": "Matchmaking",
       "caption": "Duel against your friends",
       "enterUsername": "Enter your friend username",
-      "selectSize": "Select your board size"
+      "selectSize": "Select your board size",
+      "noSetup": "Your friend has not setuped a fleet\nor he doesn't have an account.\nMake sure its username is correctly typed."
     }
   },
   "pages": {

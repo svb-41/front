@@ -2,7 +2,7 @@ import type { State } from './types'
 import type { Data } from '@/components/fleet-manager'
 import { Color } from '@/lib/color'
 import { AI } from '@/lib/ai'
-import { FetchedAI } from '@/services/compile'
+import { FetchedAI } from '@/services/ais'
 
 export const preferences = {
   fromState(state: State) {

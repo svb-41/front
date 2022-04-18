@@ -5,7 +5,7 @@ import { Mission } from '@/services/mission'
 import { countShips } from '@/lib/ship'
 import s from '@/strings.json'
 
-const renderShip = (team: string, onClick?: (id: string) => void) => {
+export const renderShip = (team: string, onClick?: (id: string) => void) => {
   return ([shipClass, count]: [string, number], i: number) => {
     const c = onClick ? () => onClick(shipClass) : undefined
     return (
