@@ -50,38 +50,45 @@ export const sync: Effect<void> = async (_, getState) => {
   await data.sync(accessToken, body)
 }
 
-export const fetchData: Effect<void> = async (dispatch, getState) => {
-  const state = getState()
-  const accessToken = state.user.user?.accessToken
-  const id = state.user.user?.idToken?.sub
-  if (!accessToken || !id) return
-  const response = await data.fetchData(accessToken)
-  if (response) {
-    const { preferences, fleetConfigs, ais } = response
-    dispatch(ai.fetchAIs(ais, id, accessToken))
-    const parsedFleetConfigs = mappers.parseFleetConfigs(fleetConfigs)
-    dispatch({
-      type: UPDATE_USER,
-      unlockedShips: preferences.unlockedShips,
-      unlockedMissions: preferences.unlockedMissions,
-      color: mappers.stringToColor(preferences.color),
-      fleetConfigs: parsedFleetConfigs,
-    })
-    const stats = await skirmishes.getStats(accessToken)
-    dispatch({ type: 'skirmishes/UPDATE_STATS', stats })
+export const fetchData = (accessToken: string, id: string): Effect<boolean> => {
+  return async dispatch => {
+    const response = await data.fetchData(accessToken)
+    if (response) {
+      const { preferences, fleetConfigs, fleetSkirmishes, ais } = response
+      await dispatch(ai.fetchAIs(ais, id, accessToken))
+      const stats = await skirmishes.getStats(accessToken)
+      dispatch({ type: 'skirmishes/UPDATE_STATS', stats })
+      dispatch({ type: 'skirmishes/UPDATE_FLEETS', fleets: fleetSkirmishes })
+      const parsedFleetConfigs = mappers.parseFleetConfigs(fleetConfigs)
+      dispatch({
+        type: UPDATE_USER,
+        unlockedShips: preferences.unlockedShips,
+        unlockedMissions: preferences.unlockedMissions,
+        color: mappers.stringToColor(preferences.color),
+        fleetConfigs: parsedFleetConfigs,
+        fleetSkirmishes,
+      })
+      return true
+    }
+    return false
   }
 }
 
 export const login = (
   idToken: IdToken | undefined,
   accessToken: any,
-  username: string
+  username: string,
+  shouldSync?: boolean
 ): Effect<void> => {
   return async dispatch => {
-    dispatch({ type: LOGIN, idToken, accessToken, username })
-    if (idToken) local.setUserId(idToken?.sub)
-    await dispatch(fetchData)
-    await dispatch(sync)
+    const id = idToken?.sub
+    if (id) {
+      local.setUserId(id)
+      const result = dispatch(fetchData(accessToken, id))
+      if (shouldSync) await result
+      dispatch({ type: LOGIN, idToken, accessToken, username })
+      await dispatch(sync)
+    }
   }
 }
 

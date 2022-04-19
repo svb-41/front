@@ -77,7 +77,7 @@ export const Matchmaking = ({
               usernameRef.current = username
             } catch (error) {
             } finally {
-              setSearched(true)
+              if (username.length > 0) setSearched(true)
               setLoading(false)
             }
           }}

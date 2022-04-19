@@ -4,6 +4,7 @@ import {
   REPLACE_SKIRMISHES,
   UPDATE_WON,
   UPDATE_STATS,
+  UPDATE_FLEETS,
 } from '@/store/actions/skirmishes'
 
 export type State = {
@@ -31,6 +32,10 @@ const init: State = {
 export type Action =
   | { type: 'skirmishes/REPLACE_SKIRMISHES'; skirmishes: State }
   | { type: 'skirmishes/SELECT_FLEET'; cid: string; size: 'small' | 'huge' }
+  | {
+      type: 'skirmishes/UPDATE_FLEETS'
+      fleets: { small: string | null; huge: string | null }
+    }
   | { type: 'skirmishes/UPDATE_WON'; won: boolean }
   | {
       type: 'skirmishes/UPDATE_STATS'
@@ -46,6 +51,10 @@ export const reducer: Reducer<State, Action> = (state = init, action) => {
       const { stats } = action
       if (!stats) return state
       return { ...state, stats }
+    }
+    case UPDATE_FLEETS: {
+      const { fleets } = action
+      return { ...state, fleets }
     }
     case UPDATE_WON: {
       const { won } = action

@@ -176,10 +176,7 @@ export class Engine extends EventTarget {
           this.dispatchEvent(event)
         }
       },
-      onDragEnd: (_e: any) => {
-        console.log('triggered')
-        this.#drag = false
-      },
+      onDragEnd: (_e: any) => (this.#drag = false),
       onDragMove: (e: MouseEvent | TouchEvent) => {
         const x = e instanceof MouseEvent ? e.clientX : e.touches[0].clientX
         const y = e instanceof MouseEvent ? e.clientY : e.touches[0].clientY

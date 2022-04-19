@@ -312,14 +312,21 @@ const Manager = ({
         ais={ais}
         onValidConfiguration={c => c && engine.setFleet(c)}
       >
-        <Column flex={1} gap="xl">
+        <Row gap="xl">
           <Button
+            style={{ flex: 1 }}
+            warning
+            onClick={() => setState('search')}
+            text="Back"
+          />
+          <Button
+            style={{ flex: 1 }}
             primary
             disabled={!engine.fleet}
             onClick={() => engine.start(setState)}
-            text={s.pages.missions.launch}
+            text="Start"
           />
-        </Column>
+        </Row>
       </FleetManager>
     </Row>
   )

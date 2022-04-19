@@ -37,7 +37,7 @@ export const useAuth = () => {
         const idToken = await auth0.getIdTokenClaims()
         const accessToken = await auth0.getAccessTokenSilently()
         const username = idToken?.['https://app.svb41.com/username'] ?? ''
-        const action = actions.login(idToken, accessToken, username)
+        const action = actions.login(idToken, accessToken, username, true)
         await dispatch(action)
       } catch {
       } finally {

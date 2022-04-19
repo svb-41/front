@@ -7,6 +7,7 @@ export const SELECT_FLEET = 'skirmishes/SELECT_FLEET'
 export const REPLACE_SKIRMISHES = 'skirmishes/REPLACE_SKIRMISHES'
 export const UPDATE_WON = 'skirmishes/UPDATE_WON'
 export const UPDATE_STATS = 'skirmishes/UPDATE_STATS'
+export const UPDATE_FLEETS = 'skirmishes/UPDATE_FLEETS'
 
 export const selectFleet = (
   cid: string,

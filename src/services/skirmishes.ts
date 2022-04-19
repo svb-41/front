@@ -25,6 +25,16 @@ export const fight = async (
   return null
 }
 
+export const get = async (username: string, accessToken: string) => {
+  if (username.length > 0) {
+    const options = { headers: { Authorization: `Bearer ${accessToken}` } }
+    const endpoint = `${URL}/skirmishes/fetch`
+    const result = await fetch(endpoint, options)
+    return result.json()
+  }
+  return null
+}
+
 export const profile = async (username: string) => {
   if (username.length > 0) {
     const endpoint = `${URL}/user/${username}`

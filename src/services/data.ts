@@ -29,6 +29,7 @@ export type ResponseFetchData = {
     fleetConfigs: Array<string>
     unlockedShips: Array<string>
   }
+  fleetSkirmishes: { small: string | null; huge: string | null }
   ais: ResponseAIS
   fleetConfigs: { [key: string]: string }
 }
