@@ -26,6 +26,7 @@ const ShipSelectorTabs = ({ state, setState }: any) => {
 const RenderShips = ({
   ships,
   setShipDetails,
+  prices,
   onDragStart,
   team,
   onShipClick,
@@ -48,6 +49,7 @@ const RenderShips = ({
             className={styles.img}
             alt={ship}
           />
+          {prices[ship] ? prices[ship] : ''}
         </div>
       )
     })}
