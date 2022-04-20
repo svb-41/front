@@ -3,7 +3,7 @@
   "title": "The eight crusaders",
   "subtitle": "Again an incredible victory, commander. Some were doubting about your abilites\nto lead your men in the HQ, but I was sure you’re one of our best elements.\nIt’s nice to have you by our side, and not as an opponent. Talking about opponents,\nwe destroyed all the invaders last day, but some ships are still to be killed in some areas.\nWe detected a bunch of cruisers recently.\nI’ll let them up to you.",
   "description": "Eight cruisers are coming in the area. Nobody know where they came from. Maybe a jump from the outer space. Who knows, with those traitors in command. Be extra careful commander, their radar have bigger range than most of our fighters. And they’re heavily armed. Count on bullets, torpedos, mines, and more.\nTry to avoid losing your men, you’ll maybe need them for later missions.",
-  "credit": 320,
+  "credit": 4000,
   "size": { "height": 1000, "width": 4000 },
   "start": { "x": 0, "y": 400 },
   "rewards": {

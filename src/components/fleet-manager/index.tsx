@@ -468,6 +468,13 @@ export const FleetManager: FC<Props> = props => {
     const selectedAID = ais.find(ai => ai.sid === selectedShip)?.aid
     return props.ais.find(ai => ai.id === selectedAID)
   }, [ais, selectedShip, props.ais])
+
+  const price = ships
+    .map(
+      //@ts-ignore
+      s => svb.engine.config.ship[s.shipClass.toUpperCase()].price
+    )
+    .reduce((acc, val) => acc + val)
   return (
     <Column gap="xl" flex={3}>
       {config.visibleLoad && (
@@ -547,7 +554,7 @@ export const FleetManager: FC<Props> = props => {
           }}
         />
         <Column flex={1} gap="xl">
-          {false && <Credits credits={50} maxCredits={props.maxCredits} />}
+          <Credits credits={price} maxCredits={props.maxCredits} />
           <ShipDetails
             team={team}
             ship={ships.find(s => s.id === selectedShip)}
