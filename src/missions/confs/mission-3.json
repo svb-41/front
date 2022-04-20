@@ -3,7 +3,7 @@
   "title": "I want more",
   "subtitle": "Commander. We need you. NOW.\nThe three previous ships were sent as pathfinders. An army is flying in our direction.\nPrepare yourself, prepare your men, prepare your fleet. You have to stop them.\nAll of our best commanders has been assigned on that mission. You’re not alone.",
   "description": "The informers told us that there's at least 8 ships. Maybe more, but not less. We don’t know what types of ships they are. You need to organise a solid defense, or we’ll lose all our precious planets in this parsec. We tried to isolate the forces into small groups. We want to make skirmishes to take advantage. They have huge armed cruisers for sure. We can’t afford to lose the area.",
-  "credit": 320,
+  "credit": 3000,
   "size": { "height": 1000, "width": 2000 },
   "start": { "x": 0, "y": 400 },
   "rewards": {

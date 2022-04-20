@@ -3,7 +3,7 @@
   "title": "The dolphin tactics",
   "subtitle": "Do you know dolphins, commander? They’re smart animals from the old planet Earth.\nThat time, the enemy built its strategy by taking inspiration from dolphins.\nThe beautiful moves you made last month with the crusaders probably won’t be enough.\n4 men are already lost, when fighting them.\nTry to win brilliantly once again. We’re counting on you.",
   "description": "A large fleet of cruisers are coming commander. It seems that they team up with scouts to increase their detection range. One is weak and don’t have weapon, but you won’t be able to destroy them first. Try to find an opportunity. Use as many ships as you want. We all know you’ll do it, that times like all the others times. Good luck!",
-  "credit": 320,
+  "credit": 4000,
   "size": { "height": 1000, "width": 2000 },
   "start": { "x": 0, "y": 400 },
   "rewards": {
