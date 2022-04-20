@@ -41,10 +41,6 @@ export const fleetConfigs = {
   },
 }
 
-export const fromSync = (data: any) => {
-  console.log(data)
-}
-
 export const parseFleetConfigs = (data: {
   [key: string]: string
 }): { [key: string]: Data } =>

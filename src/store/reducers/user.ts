@@ -30,8 +30,8 @@ export type State = {
 
 const init: State = {
   id: null,
-  unlockedShips: [],
-  unlockedMissions: [],
+  unlockedShips: ['fighter'],
+  unlockedMissions: ['0'],
   color: Color.GREEN,
   fleetConfigs: {},
   user: null,
