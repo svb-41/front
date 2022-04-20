@@ -91,6 +91,12 @@ export const Details = ({ ship, locked, color, infoCard }: DetailsProps) => {
               </Column>
             ))}
           </div>
+          <Column gap="s">
+            Price
+            <div className={styles.infoCard} style={{ background: infoCard }}>
+              <Labeled label="Price" content={stats.price} />
+            </div>
+          </Column>
         </Row>
       </Column>
       <img
