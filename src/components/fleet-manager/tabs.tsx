@@ -51,7 +51,7 @@ const RenderShips = ({
             className={styles.img}
             alt={ship}
           />
-          {prices[ship] ? prices[ship] : ''}
+          {unlocked ? (prices[ship] ? prices[ship] : '') : '???'}
         </div>
       )
     })}
