@@ -5,7 +5,7 @@ import { Title } from '@/components/title'
 import { ActivityIndicator } from '@/components/activity-indicator'
 import { Renderer } from '@/renderer'
 import * as svb from '@svb-41/engine'
-import { useEngine, State } from '@/lib/engine'
+import { useEngine, useMissionEnemy } from '@/lib/engine'
 import styles from './ai.module.css'
 import { AI } from '@/lib/ai'
 import { getSimulation } from '@/services/mission'
@@ -30,18 +30,19 @@ const RenderLoading = () => (
   </Column>
 )
 
-type SimulationState = State | 'loading'
 export type Props = { ai: AI; beforeLaunch: () => Promise<void> }
 export const Simulation = ({ ai, beforeLaunch }: Props) => {
   const simulation = getSimulation('0')!
   const [ship] = useState<SHIP_CLASS>(SHIP_CLASS.FIGHTER)
-  const [state, setState] = useState<SimulationState>('preparation')
-
+  const [state, setState] = useState('preparation')
+  const enemy = useMissionEnemy(simulation, 'red')
   const { engine, setFleet, start, reset } = useEngine({
-    team: 'blue',
-    enemy: 'red',
-    ais: [ai],
-    mission: simulation,
+    onStart: () => setState('engine'),
+    onEnd: () => setState('end'),
+    player: { team: 'blue', ais: [ai] },
+    size: simulation.size,
+    start: simulation.start,
+    enemy,
   })
 
   const defaultFleet = useCallback(() => {
@@ -60,7 +61,7 @@ export const Simulation = ({ ai, beforeLaunch }: Props) => {
     setState('loading')
     try {
       await beforeLaunch()
-      await start(setState)
+      await start()
     } catch (error) {
       setState('preparation')
     }

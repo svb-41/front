@@ -14,7 +14,7 @@ import { Details } from '@/components/ship'
 import { Movable } from '@/components/movable'
 import { Renderer } from '@/renderer'
 import * as color from '@/lib/color'
-import { useEngine, State } from '@/lib/engine'
+import { useEngine, useMissionEnemy } from '@/lib/engine'
 import * as services from '@/services/mission'
 import styles from './Missions.module.css'
 import s from '@/strings.json'
@@ -54,14 +54,17 @@ const usePreferences = () => {
   return { player, enemy, ais }
 }
 
-const useSetupEngine = () => {
+const useSetupEngine = (setState: (value: string) => void) => {
   const preferences = usePreferences()
   const details = useMission()
   const team = preferences.player.color
-  const enemy = preferences.enemy
   const ais = preferences.ais
-  const mission = details.mission
-  const engine = useEngine({ team, enemy, ais, mission })
+  const { size, start } = details.mission
+  const enemy = useMissionEnemy(details.mission, preferences.enemy)
+  const player = { team, ais }
+  const onStart = () => setState('engine')
+  const onEnd = () => setState('end')
+  const engine = useEngine({ onStart, onEnd, start, enemy, size, player })
   return { preferences, details, engine }
 }
 
@@ -120,8 +123,8 @@ const AIDetails = ({
 }
 
 export const Missions = () => {
-  const { engine, details, preferences } = useSetupEngine()
-  const [state, setState] = useState<State>('preparation')
+  const [state, setState] = useState('preparation')
+  const { engine, details, preferences } = useSetupEngine(setState)
   const navigate = useNavigate()
   const reset = () => navigate('/missions')
   const [selected, setSelected] = useState<string>()
@@ -147,7 +150,7 @@ export const Missions = () => {
               engine.reset()
               setState('preparation')
             }}
-            replay={() => engine.start(setState)}
+            replay={() => engine.start()}
             mission={details.mission}
             back={() => {
               navigate('/missions')
@@ -196,7 +199,7 @@ export const Missions = () => {
                     <Button
                       primary
                       disabled={!engine.fleet}
-                      onClick={() => engine.start(setState)}
+                      onClick={() => engine.start()}
                       text={s.pages.missions.launch}
                     />
                   </Column>

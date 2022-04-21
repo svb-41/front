@@ -16,12 +16,10 @@ import type { Fight } from '@/store/actions/skirmishes'
 import s from '@/strings.json'
 import styles from './skirmishes.module.css'
 import * as svb from '@svb-41/engine'
-import { findBuilder } from '@/missions/builders'
 import { Renderer as EngineRenderer } from '@/renderer'
 import { winnerTeam } from '@/lib/engine'
 import { CongratsOrCry, ShipsSummary } from '@/pages/missions/summary'
-
-type Teams = [string, string]
+import { useEngine } from '@/lib/engine'
 
 type SavedFleetProps = {
   fleet: string | null
@@ -134,163 +132,6 @@ const SavedFleetSelector = ({
   )
 }
 
-export type Dat = {
-  ships: svb.engine.ship.Ship[]
-  ais: { shipId: string; code: string }[]
-}
-
-const emptyData: Dat = { ships: [], ais: [] }
-export const prepareData = (ais: AI[], fleetData: Data, team: string) => {
-  const start = { x: 0, y: 0 }
-  return fleetData.ships.reduce(
-    async (acc_, { x, y, shipClass, rotation, id }) => {
-      const acc = await acc_
-      const value = shipClass.toUpperCase()
-      const builder = findBuilder(value)
-      const direction = rotation * (Math.PI / 180) - Math.PI / 2
-      const position = { pos: { x: x + start.x, y: y + start.y }, direction }
-      const aid = fleetData.ais.find(ai => ai.sid === id)?.aid
-      const code = ais.find(ai => ai.id === aid)?.compiledValue
-      if (builder && code) {
-        const ship = await builder.builder({ position, team })
-        const ai = { code, shipId: ship.id }
-        return { ...acc, ships: [...acc.ships, ship], ais: [...acc.ais, ai] }
-      }
-      return acc
-    },
-    Promise.resolve(emptyData)
-  )
-}
-
-const prepareEnemyData = async (fight?: Fight): Promise<Dat> => {
-  if (!fight) return emptyData
-  const { team } = fight
-  return fight.fleet.ships.reduce(async (acc_, ship) => {
-    const acc = await acc_
-    const builder = findBuilder(ship.shipClass)
-    const aid = fight.fleet.ais.find(ai => ai.sid === ship.id)?.aid
-    const code = fight.ais.find(ai => ai.id === aid)?.compiled
-    if (builder && code) {
-      const direction = ship.rotation * (Math.PI / 180) + Math.PI / 2
-      const position = {
-        pos: { x: ship.x + 2000, y: ship.y },
-        direction,
-      }
-      const ship_ = await builder.builder({ position, team })
-      const ai = { code, shipId: ship_.id }
-      const ships = [...acc.ships, ship_]
-      const ais = [...acc.ais, ai]
-      return { ...acc, ships, ais }
-    }
-    return acc
-  }, Promise.resolve(emptyData))
-}
-
-const outOfBound = (
-  ship: svb.engine.ship.Ship,
-  size: { height: number; width: number }
-): boolean =>
-  ship.position.pos.x < -size.width * 2 ||
-  ship.position.pos.y < -size.height * 2 ||
-  ship.position.pos.x > size.width * 3 ||
-  ship.position.pos.y > size.height * 3
-
-const outOfAmo = (ship: svb.engine.ship.Ship) =>
-  ship.weapons.map(w => w.amo <= 0).reduce((acc, val) => acc && val, true)
-
-const teamDestroyed = (
-  ships: svb.engine.ship.Ship[],
-  team: string,
-  size: { height: number; width: number }
-) => {
-  return ships
-    .filter(s => s.team === team)
-    .map(s => s.destroyed || outOfBound(s, size) || outOfAmo(s))
-    .reduce((acc, val) => acc && val, true)
-}
-
-const isEnded = (teams: Teams, size: { height: number; width: number }) => {
-  return (state: svb.engine.State): boolean => {
-    const { ships } = state
-    return teams
-      .map(t => teamDestroyed(ships, t, size))
-      .reduce((acc, val) => acc || val, false)
-  }
-}
-
-type SetupEngine = {
-  team: string
-  enemy: string
-  enemyData: Dat
-  data: Dat
-  setState: (value: string) => void
-}
-const setupEngine = ({
-  team,
-  enemy,
-  enemyData,
-  data,
-  setState,
-}: SetupEngine) => {
-  const teams: Teams = [team, enemy]
-  const comm = teams.map(id => {
-    const channel = new svb.engine.comm.Channel(id)
-    return { id, channel }
-  })
-  const state: svb.engine.State = {
-    ships: [...enemyData.ships, ...data.ships],
-    size: { width: 2000, height: 2000 },
-    teams,
-    bullets: [],
-    maxSpeed: 3,
-    comm,
-    timeElapsed: 0,
-  }
-  const ais = [...enemyData.ais, ...data.ais]
-  const engine = new svb.engine.Engine(
-    state,
-    ais,
-    isEnded(teams, { width: 2000, height: 2000 })
-  )
-  const toPostMission = () => {
-    setTimeout(() => {
-      engine.removeEventListener('state.end', toPostMission)
-      setState('end')
-    }, 1500)
-  }
-  engine.addEventListener('state.end', toPostMission)
-  return engine
-}
-
-const useEngine = (ais: AI[], team: string, fight?: Fight) => {
-  const [engine, setEngine] = useState<svb.engine.Engine>()
-  const [fleetData, setFleetData] = useState<Data>()
-
-  const start = async (setState: (value: string) => void) => {
-    if (!fleetData) return
-    const data = await prepareData(ais, fleetData, team)
-    const enemyData = await prepareEnemyData(fight)
-    const engine = setupEngine({
-      team,
-      enemy: fight?.team ?? 'blue',
-      enemyData,
-      data,
-      setState,
-    })
-    setEngine(engine)
-    setState('engine')
-  }
-
-  const reset = () => {
-    setEngine(undefined)
-    setFleetData(undefined)
-  }
-
-  const fleet = fleetData
-  const setFleet = setFleetData
-  return { engine, start, reset, fleet, setFleet }
-}
-
 const Manager = ({
   engine,
   ais,
@@ -392,10 +233,16 @@ const EndScreen = ({
   )
 }
 
+const prepareEnemy = (fight: Fight | null) => {
+  if (!fight) return undefined
+  const { team, ais, fleet } = fight
+  return { team, ais, fleet }
+}
+
 const opts = {}
 const PlaySkirmishes = () => {
   const dispatch = useDispatch()
-  const [fleet, setFleet] = useState<Data | null>(null)
+  const [fleet, setFleet] = useState<Data | undefined>()
   const user = useSelector(selectors.userData)
   const ais = useSelector(selectors.ais)
   const { stats, fleets } = useSelector(selectors.skirmishes)
@@ -404,7 +251,15 @@ const PlaySkirmishes = () => {
   const [page, setPage] = useState<'small' | 'huge'>('small')
   const [fight, setFight] = useState<Fight | null>(null)
   const [state, setState] = useState('search')
-  const engine = useEngine(ais.ais, user.color, fight ?? undefined)
+  const width = page === 'small' ? 2000 : 20000
+  const enemy = prepareEnemy(fight)
+  const engine = useEngine({
+    onStart: () => setState('engine'),
+    onEnd: () => setState('end'),
+    size: { width, height: width },
+    player: { team: user.color, ais: ais.ais },
+    enemy,
+  })
   return (
     <Main links={state !== 'engine'}>
       {state === 'engine' && (
@@ -415,7 +270,7 @@ const PlaySkirmishes = () => {
           engine={engine.engine!}
           team={user.color}
           setState={setState}
-          replay={() => engine.start(setState)}
+          replay={() => engine.start()}
           back={() => setState('search')}
         />
       )}
@@ -465,7 +320,7 @@ const PlaySkirmishes = () => {
               team={user.color}
               ships={user.unlockedShips}
               ais={ais.ais}
-              onValidConfiguration={c => setFleet(c)}
+              onValidConfiguration={c => setFleet(c ?? undefined)}
               initialConfig={fleet ?? undefined}
             >
               <Row gap="l">
@@ -483,7 +338,7 @@ const PlaySkirmishes = () => {
                     if (fleet) {
                       const save = actions.user.saveFleetConfig(fleet)
                       const cid = await dispatch(save)
-                      setFleet(null)
+                      setFleet(undefined)
                       setAddingFleet(false)
                       const select = actions.skirmishes.selectFleet(cid, page)
                       await dispatch(select)
