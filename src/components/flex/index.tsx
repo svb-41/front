@@ -44,8 +44,8 @@ export type Props = {
   onSubmit?: (event: FormDataEvent) => void
 }
 
-const Flex = (r: { row: boolean; col: boolean }): FC<Props> => {
-  return props => {
+const Flex = (r: { row: boolean; col: boolean; name: string }) => {
+  const fun: FC<Props> = props => {
     const { children, tag = 'div', onClick, onSubmit } = props
     const { gap, padding = 'none', align, justify, wrap } = props
     const { background, width, flex, maxWidth, color, height, minWidth } = props
@@ -72,7 +72,9 @@ const Flex = (r: { row: boolean; col: boolean }): FC<Props> => {
     }
     return createElement(tag, { className, style, onClick, onSubmit }, children)
   }
+  fun.displayName = r.name
+  return fun
 }
 
-export const Row = Flex({ row: true, col: false })
-export const Column = Flex({ row: false, col: true })
+export const Row = Flex({ row: true, col: false, name: 'Row' })
+export const Column = Flex({ row: false, col: true, name: 'Column' })
