@@ -55,6 +55,7 @@ export const fetchData = (accessToken: string, id: string): Effect<boolean> => {
     const response = await data.fetchData(accessToken)
     if (response) {
       const { preferences, fleetConfigs, fleetSkirmishes, ais } = response
+      dispatch({ type: 'ai/UPDATE_TAGS', tags: preferences.tags })
       await dispatch(ai.fetchAIs(ais, id, accessToken))
       const stats = await skirmishes.getStats(accessToken)
       dispatch({ type: 'skirmishes/UPDATE_STATS', stats })

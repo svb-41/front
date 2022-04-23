@@ -6,6 +6,9 @@ import {
   LOAD_FAVORITE_AIS,
   SET_FAVORITE,
   DEL_FAVORITE,
+  ADD_TAG,
+  UPDATE_TAGS,
+  DELETE_TAGS,
 } from '@/store/actions/ai'
 import * as local from '@/services/localStorage'
 import { AI } from '@/lib/ai'
@@ -13,11 +16,13 @@ import { AI } from '@/lib/ai'
 export type State = {
   ais: Array<AI>
   favorites: string[]
+  tags: { [key: string]: string }
 }
 
 const init: State = {
   ais: [],
   favorites: [],
+  tags: {},
 }
 
 export type Action =
@@ -26,12 +31,33 @@ export type Action =
   | { type: 'ai/DELETE_AI'; id: string }
   | { type: 'ai/LOAD_FAVORITE_AIS'; favorites: string[] }
   | { type: 'ai/SET_FAVORITE'; fav: string }
+  | { type: 'ai/ADD_TAG'; name: string; color: string }
+  | { type: 'ai/UPDATE_TAGS'; tags: { [key: string]: string } }
   | { type: 'ai/DEL_FAVORITE'; fav: string }
+  | { type: 'ai/DELETE_TAGS'; tags: string[] }
 
 const setAllAIs = (ais: Array<AI>) => ais.map(local.setAI)
 
 export const reducer: Reducer<State, Action> = (state = init, action) => {
   switch (action.type) {
+    case ADD_TAG: {
+      const tags = { ...state.tags, [action.name]: action.color }
+      return { ...state, tags }
+    }
+    case UPDATE_TAGS: {
+      const tags = { ...action.tags, ...(state.tags ?? {}) }
+      return { ...state, tags }
+    }
+    case DELETE_TAGS: {
+      const tags = { ...state.tags }
+      action.tags.forEach(tag => delete tags[tag])
+      const ais = state.ais.map(ai => {
+        const tags = ai.tags.filter(tag => !action.tags.includes(tag))
+        return { ...ai, tags }
+      })
+      setAllAIs(ais)
+      return { ...state, tags, ais }
+    }
     case LOAD_AI: {
       const oldAis = state.ais
       const newAis = action.ais.filter(ai => !oldAis.find(a => a.id === ai.id))

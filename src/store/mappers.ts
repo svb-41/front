@@ -10,6 +10,7 @@ export const preferences = {
     const { color, unlockedMissions, unlockedShips } = user
     return {
       color,
+      tags: state.ai.tags,
       ais: state.ai.ais.map(ai => ai.id),
       favoritesAI: state.ai.favorites,
       fleetConfigs: Object.keys(state.user.fleetConfigs),

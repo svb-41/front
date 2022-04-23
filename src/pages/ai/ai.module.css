@@ -14,17 +14,6 @@
   height: 20px;
 }
 
-.filesCard {
-  background: var(--eee);
-  padding: 12px;
-  /* border-radius: 10px; */
-  gap: 12px;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  max-width: 1500px;
-}
-
 .fileCard {
   border: 2px solid var(--ccc);
   overflow: hidden;
@@ -49,17 +38,26 @@
   font-size: 0.7rem;
 }
 
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-}
-
 .tag {
   padding: 3px 6px;
-  background: blue;
   color: white;
   font-weight: 700;
+  font-size: 1rem;
   /* border-radius: 6px; */
+}
+
+.cross {
+  visibility: hidden;
+  width: 0px;
+  cursor: pointer;
+}
+
+.inputTagsName:hover .tag {
+  gap: var(--s);
+}
+.inputTagsName:hover .tag .cross {
+  visibility: visible;
+  width: auto;
 }
 
 /* editor.tsx */
@@ -86,6 +84,17 @@
   display: flex;
   align-items: center;
 }
+.inputTagsName {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: var(--s);
+  border: 1px solid;
+  border-color: var(--ddd0);
+}
+.inputTagsName:hover {
+  border-color: var(--dddf);
+}
 
 /* prettier-ignore */
 .input {
@@ -99,6 +108,13 @@
   transition: all 0.2s;
   border: 1px solid;
   border-color: var(--ddd0);
+}
+
+.inputTags {
+  composes: input;
+  border: none;
+  flex: 1;
+  font-size: 1rem;
 }
 
 /* prettier-ignore */

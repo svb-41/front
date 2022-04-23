@@ -10,7 +10,7 @@ export const compile = async (params: Compile): Promise<string> => {
 
 export type AIparams = { uid: string; id: string; token?: string }
 export type FetchedAI = { ts?: string; id: string; compiled: string }
-export const getAI = async (params: AIparams): Promise<FetchedAI> => {
+export const getAI = async (params: AIparams): Promise<FetchedAI | null> => {
   const { uid, id, token } = params
   const queryStringParameters = [
     ['uid', uid],
@@ -23,5 +23,6 @@ export const getAI = async (params: AIparams): Promise<FetchedAI> => {
     method: 'GET',
     headers: { Authorization: `Bearer ${token}` },
   })
-  return await res.json()
+  if (res.ok) return await res.json()
+  return null
 }

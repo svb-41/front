@@ -13,6 +13,7 @@ export type StoredData = {
   ais: Array<string>
   favoriteAIS: Array<string>
   color: Color
+  tags: { [key: string]: string }
   fleetConfigs: any
   skirmishes: any
 }

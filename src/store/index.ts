@@ -29,6 +29,7 @@ const saveLocal = (store: any) => (next: any) => (action: any) => {
     color: state.user.color,
     ais: state.ai.ais.map(ai => ai.id),
     favoriteAIS: state.ai.favorites,
+    tags: state.ai.tags,
     fleetConfigs: state.user.fleetConfigs,
     skirmishes: state.skirmishes,
   })

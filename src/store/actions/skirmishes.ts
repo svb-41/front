@@ -47,7 +47,9 @@ export const fight = (
     const ais = await Promise.all(
       dedup.map(async id => services.ais.getAI({ uid: username, id }))
     )
-    return { fleet, ais, team }
+    const someErrors = ais.flatMap(a => (a ? [a] : []))
+    if (someErrors.length !== ais.length) return null
+    return { fleet, ais: someErrors, team }
   }
 }
 

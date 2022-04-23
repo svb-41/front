@@ -5,6 +5,8 @@ import { compile, Compile, getAI } from '@/services/ais'
 import templateAI from '@/default-controllers/assets.json'
 import { ResponseAIS } from '@/services/data'
 import * as mappers from '@/store/mappers'
+import * as colors from '@/lib/color'
+import * as actions from '@/store/actions/user'
 
 export const LOAD_AI = 'ai/LOAD_AI'
 export const UPDATE_AI = 'ai/UPDATE_AI'
@@ -12,6 +14,9 @@ export const DELETE_AI = 'ai/DELETE_AI'
 export const LOAD_FAVORITE_AIS = 'ai/LOAD_FAVORITE_AIS'
 export const SET_FAVORITE = 'ai/SET_FAVORITE'
 export const DEL_FAVORITE = 'ai/DEL_FAVORITE'
+export const ADD_TAG = 'ai/ADD_TAG'
+export const UPDATE_TAGS = 'ai/UPDATE_TAGS'
+export const DELETE_TAGS = 'ai/DELETE_TAGS'
 
 const defaultAI = (id: string): AI => {
   const createdAt = new Date()
@@ -66,7 +71,8 @@ export const fetchAIs: (
     const fetchedAis = await Promise.all(
       Object.entries(rais).map(([id]) => getAI({ uid, id, token }))
     )
-    const ais = fetchedAis.map(ai => mappers.fetchedAIToAI(ai, rais[ai.id]))
+    const finalFetched = fetchedAis.flatMap(f => (f ? [f] : []))
+    const ais = finalFetched.map(ai => mappers.fetchedAIToAI(ai, rais[ai.id]))
     dispatch({ type: LOAD_AI, ais })
   }
 }
@@ -77,4 +83,22 @@ export const setFavorite = (fav: string): Action => {
 
 export const delFavorite = (fav: string): Action => {
   return { type: DEL_FAVORITE, fav }
+}
+
+export const addTag = (name: string, update?: boolean): Effect<void> => {
+  return (dispatch, getState) => {
+    const state = getState()
+    if (!state.ai.tags[name] || update) {
+      const color = colors.generate()
+      dispatch({ type: ADD_TAG, name, color })
+    }
+    dispatch(actions.sync)
+  }
+}
+
+export const deleteTags = (tags: string[]): Effect<void> => {
+  return dispatch => {
+    dispatch({ type: DELETE_TAGS, tags })
+    dispatch(actions.sync)
+  }
 }

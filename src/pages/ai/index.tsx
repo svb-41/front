@@ -4,6 +4,8 @@ import { v4 } from 'uuid'
 import { Title } from '@/components/title'
 import { Row, Column } from '@/components/flex'
 import { Main } from '@/components/main'
+import { Checkbox } from '@/components/checkbox'
+import { Button } from '@/components/button'
 import * as actions from '@/store/actions/ai'
 import { useSelector, useDispatch } from '@/store/hooks'
 import * as selectors from '@/store/selectors'
@@ -31,7 +33,12 @@ const InputDescription = (props: any) => {
     inputRef.current && inputRef.current.blur()
   }
   return (
-    <form className={styles.inputName} onSubmit={onSubmit}>
+    <Row
+      tag="form"
+      align="center"
+      onSubmit={onSubmit}
+      className={styles.inputName}
+    >
       <textarea
         ref={inputRef}
         rows={8}
@@ -47,19 +54,22 @@ const InputDescription = (props: any) => {
         onBlur={() => props.onSubmit(value)}
         style={{ resize: 'none', fontSize: '1rem', width: '100%' }}
       />
-    </form>
+    </Row>
   )
 }
 
 type FileCardProps = {
+  textColors?: { [key: string]: string }
+  tags?: { [key: string]: string }
   ai?: AI
   favorite?: boolean
   onFavorite?: () => void
   onClick?: () => void
 }
-const FileCard = ({ ai, favorite, onFavorite, onClick }: FileCardProps) => {
+const FileCard = (props: FileCardProps) => {
+  const { ai, favorite, onFavorite, onClick, tags, textColors } = props
+  const [tagsValue, setTagsValue] = useState('')
   const dispatch = useDispatch()
-  const tags = ai?.tags ?? ['example']
   const createdAt = new Date(ai?.createdAt ?? Date.now())
   const updatedAt = new Date(ai?.updatedAt ?? Date.now())
   const description =
@@ -100,13 +110,55 @@ const FileCard = ({ ai, favorite, onFavorite, onClick }: FileCardProps) => {
             ai && dispatch(actions.updateAI({ ...ai, description }))
           }
         />
-        <div className={styles.tags} style={opacity}>
-          {tags.map(tag => (
-            <div key={tag} className={styles.tag}>
-              {tag}
-            </div>
-          ))}
-        </div>
+        <form
+          className={styles.inputTagsName}
+          style={{ gap: (ai?.tags ?? []).length > 0 ? 's' : undefined }}
+          onClick={event => event.stopPropagation()}
+          onSubmit={async event => {
+            event.preventDefault()
+            if (ai && tagsValue.length > 0) {
+              setTagsValue('')
+              if (!ai.tags.includes(tagsValue)) {
+                await dispatch(actions.addTag(tagsValue))
+                const tags = [...ai.tags, tagsValue]
+                const action = actions.updateAI({ ...ai, tags })
+                dispatch(action)
+              }
+            }
+          }}
+        >
+          <Row gap="s" style={opacity} wrap="wrap">
+            {(ai?.tags ?? []).map(tag => (
+              <Row
+                color={textColors ? textColors[tag] : undefined}
+                key={tag}
+                className={styles.tag}
+                background={tags ? tags[tag] : undefined}
+              >
+                <div>{tag}</div>
+                <div
+                  className={styles.cross}
+                  onClick={() => {
+                    if (ai && ai.tags.includes(tag)) {
+                      const tags = ai.tags.filter(t => t !== tag)
+                      const action = actions.updateAI({ ...ai, tags })
+                      dispatch(action)
+                    }
+                  }}
+                >
+                  x
+                </div>
+              </Row>
+            ))}
+          </Row>
+          <input
+            value={tagsValue}
+            onChange={event =>
+              setTagsValue(event.target.value.replace(/ /g, ''))
+            }
+            className={styles.inputTags}
+          />
+        </form>
         <Column align="flex-end" style={opacity}>
           <div className={styles.modifsTitle}>
             {s.pages.ais.createdAt} {toLocale(createdAt)}
@@ -142,17 +194,20 @@ const Add = () => {
 }
 
 type AICardsProps = {
+  textColors: { [key: string]: string }
+  tags: { [key: string]: string }
   title: string
   ais: AI[]
   favorites: string[]
   before?: false | JSX.Element
   after?: false | JSX.Element
 }
-const AICards = ({ title, ais, favorites, before, after }: AICardsProps) => {
+const AICards = (props: AICardsProps) => {
+  const { tags, title, ais, favorites, before, after, textColors } = props
   const navigate = useNavigate()
   const dispatch = useDispatch()
   return (
-    <div className={styles.filesCard}>
+    <Column padding="m" gap="m" width="100%" background="var(--eee)">
       <Title content={title} />
       <div className={styles.filesCardGrid}>
         {before ?? null}
@@ -163,6 +218,8 @@ const AICards = ({ title, ais, favorites, before, after }: AICardsProps) => {
             : () => dispatch(actions.setFavorite(ai.id))
           return (
             <FileCard
+              textColors={textColors}
+              tags={tags}
               onClick={() => navigate(`/ai/${ai.id}`)}
               key={ai.id}
               ai={ai}
@@ -173,29 +230,116 @@ const AICards = ({ title, ais, favorites, before, after }: AICardsProps) => {
         })}
         {after ?? null}
       </div>
-    </div>
+    </Column>
   )
 }
 
+const isOneTagMatched = (ai: AI, filters: string[]) => {
+  for (const tag of ai.tags) if (filters.includes(tag)) return true
+  return false
+}
+
 export const Ia = () => {
+  const dispatch = useDispatch()
+  const [filters, setFilters] = useState<string[]>([])
   const { ais, favorites } = useSelector(selectors.ais)
-  const onlyFavs = ais.filter(ai => favorites.includes(ai.id))
+  const { tags, textColors } = useSelector(selectors.tags)
+  const onlyFavs = ais.filter(ai => {
+    const isFav = favorites.includes(ai.id)
+    if (filters.length === 0) return isFav
+    return isFav && isOneTagMatched(ai, filters)
+  })
+  const filteredAI = ais.filter(ai => {
+    if (filters.length === 0) return true
+    return isOneTagMatched(ai, filters)
+  })
+  const allTags = Object.keys(tags)
   return (
     <Main>
-      <Column padding="xl" gap="xl" align="center">
-        <AICards
-          title="Favorites"
-          ais={onlyFavs}
-          favorites={favorites}
-          after={favorites.length === 0 && <FileCard favorite />}
-        />
-        <AICards
-          title="Controllers"
-          ais={ais}
-          favorites={favorites}
-          before={<Add />}
-        />
-      </Column>
+      <Row gap="xl" padding="xl" justify="center">
+        <Column background="var(--eee)" padding="m" width={250} gap="s">
+          <Title content="Filters" />
+          {allTags.length === 0 && (
+            <Column style={{ fontSize: '1.3rem' }} color="var(--444)">
+              No tags for now. Add one and it will appear here.
+            </Column>
+          )}
+          {allTags.length > 0 && (
+            <Column gap="m">
+              <div>
+                Check the tags you want to see. Leaving all of them unchecked
+                will disable filters.
+              </div>
+              <Row gap="s" justify="space-between">
+                <Button
+                  primary
+                  disabled={filters.length === 0}
+                  small
+                  text="Unselect all"
+                  onClick={() => setFilters([])}
+                />
+                <Button
+                  warning
+                  disabled={filters.length === 0}
+                  small
+                  text="Delete"
+                  onClick={() => {
+                    dispatch(actions.deleteTags(filters))
+                    setFilters([])
+                  }}
+                />
+              </Row>
+              <Column style={{ fontSize: '1.3rem' }} gap="xs">
+                {allTags.map(tag => {
+                  return (
+                    <Row
+                      align="center"
+                      gap="m"
+                      tag="label"
+                      style={{ cursor: 'pointer' }}
+                    >
+                      <Checkbox
+                        checked={filters.includes(tag)}
+                        onChange={value => {
+                          setFilters(f =>
+                            value ? [...f, tag] : f.filter(fi => fi !== tag)
+                          )
+                        }}
+                      />
+                      <Row
+                        background={tags[tag]}
+                        style={{ fontSize: '.9rem' }}
+                        padding="xs"
+                        color={textColors[tag]}
+                      >
+                        {tag}
+                      </Row>
+                    </Row>
+                  )
+                })}
+              </Column>
+            </Column>
+          )}
+        </Column>
+        <Column gap="xl" align="center" flex={1} maxWidth={1500}>
+          <AICards
+            textColors={textColors}
+            tags={tags}
+            title="Favorites"
+            ais={onlyFavs}
+            favorites={favorites}
+            after={onlyFavs.length === 0 && <FileCard favorite />}
+          />
+          <AICards
+            textColors={textColors}
+            tags={tags}
+            title="Controllers"
+            ais={filteredAI}
+            favorites={favorites}
+            before={<Add />}
+          />
+        </Column>
+      </Row>
     </Main>
   )
 }

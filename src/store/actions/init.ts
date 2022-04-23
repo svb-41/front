@@ -1,6 +1,6 @@
 import { UPDATE_USER_ID, UPDATE_USER } from '@/store/actions/user'
 import * as local from '@/services/localStorage'
-import { LOAD_AI, LOAD_FAVORITE_AIS } from '@/store/actions/ai'
+import { LOAD_AI, LOAD_FAVORITE_AIS, UPDATE_TAGS } from '@/store/actions/ai'
 import { REPLACE_SKIRMISHES } from '@/store/actions/skirmishes'
 import { AI } from '@/lib/ai'
 import { Effect } from '@/store/types'
@@ -13,6 +13,7 @@ const defaultUser: local.StoredData = {
   favoriteAIS: [],
   color: Color.BLUE,
   fleetConfigs: {},
+  tags: {},
   skirmishes: {
     fleets: {
       small: null,
@@ -36,6 +37,7 @@ export const initStore: Effect<void> = async dispatch => {
   dispatch({ type: LOAD_AI, ais })
   dispatch({ type: LOAD_FAVORITE_AIS, favorites })
   dispatch({ type: REPLACE_SKIRMISHES, skirmishes: data.skirmishes })
+  dispatch({ type: UPDATE_TAGS, tags: data.tags ?? {} })
   dispatch({
     type: UPDATE_USER,
     unlockedShips: data.ships,

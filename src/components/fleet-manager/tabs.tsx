@@ -1,4 +1,6 @@
 import { AI } from '@/lib/ai'
+import { useSelector } from '@/store/hooks'
+import * as selectors from '@/store/selectors'
 import { getImage } from '@/helpers/ships'
 import { Title } from '@/components/title'
 import { Row, Column } from '@/components/flex'
@@ -65,6 +67,7 @@ const RenderAIs = ({
   setAIDetails?: (value: string) => void
   onAIClick?: (value: string) => void
 }) => {
+  const { tags, textColors } = useSelector(selectors.tags)
   const [cols, remaining] = ais.reduce(
     (acc, val, index) => {
       const [prev, act] = acc
@@ -94,6 +97,19 @@ const RenderAIs = ({
                     alt="TypeScript Logo"
                   />
                   <div className={styles.pathName}>{ai.file.path}</div>
+                </Row>
+                <Row wrap="wrap" gap="s">
+                  {ai.tags.map(tag => {
+                    return (
+                      <Row
+                        background={tags[tag]}
+                        color={textColors[tag]}
+                        padding="xs"
+                      >
+                        {tag}
+                      </Row>
+                    )
+                  })}
                 </Row>
                 <Column align="flex-end">
                   <div className={styles.dates}>
