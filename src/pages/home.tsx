@@ -79,6 +79,21 @@ export const Home = () => (
           <Title content={s.pages.home.welcome} />
           <Jumbotron content={s.svb} />
         </Column>
+        <Column
+          background="var(--ts-blue)"
+          padding="m"
+          style={{ fontSize: '1.2rem' }}
+        >
+          <a
+            href="https://docs.google.com/forms/d/e/1FAIpQLSf6yOCXiwaOu6mOBqZO_Tk9ki4atUEUZhOwZ0pJkBD6V57fzA/viewform?usp=sf_link"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            Help us with the project! Tell us what you think, tell us if you
+            encountered a bug, or if you thought about what should be include in
+            the game! Be part of the early adopters!
+          </a>
+        </Column>
         <Column background="var(--eee)" padding="m" gap="s">
           <SubTitle blinking content={s.incomingMessage} />
           <p>{s.pages.home.message}</p>
