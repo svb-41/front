@@ -5,6 +5,7 @@ export const userData = (state: State) => state.user
 export const userColor = (state: State) => state.user.color
 export const missions = (state: State) => state.user.unlockedMissions
 export const fleetConfigs = (state: State) => state.user.fleetConfigs
+export const preferedFleet = (state: State) => state.user.preferedFleet
 export const ai = (id: string) => (state: State) =>
   state.ai.ais.find(ai => ai.id === id)
 

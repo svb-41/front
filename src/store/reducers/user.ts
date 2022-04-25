@@ -5,6 +5,7 @@ import {
   UPDATE_COLOR,
   UNLOCK_REWARDS,
   SAVE_FLEET_CONFIG,
+  UPDATE_PREFERED_FLEET,
   LOGIN,
   RESET,
   Rewards,
@@ -26,6 +27,7 @@ export type State = {
     idToken: IdToken | undefined
     accessToken: any
   }
+  preferedFleet?: string
 }
 
 const init: State = {
@@ -43,6 +45,7 @@ export type Action =
   | { type: 'user/UPDATE_COLOR'; color: Color }
   | { type: 'user/UNLOCK_REWARDS'; rewards: Rewards }
   | { type: 'user/SAVE_FLEET_CONFIG'; conf: { data: Data; id: string } }
+  | { type: 'user/UPDATE_PREFERED_FLEET'; fid: string }
   | {
       type: 'user/LOGIN'
       idToken: IdToken | undefined
@@ -70,6 +73,10 @@ export const reducer: Reducer<State, Action> = (state = init, action) => {
     case UPDATE_USER_ID: {
       const { id } = action
       return { ...state, id }
+    }
+    case UPDATE_PREFERED_FLEET: {
+      const preferedFleet = action.fid
+      return { ...state, preferedFleet }
     }
     case UPDATE_USER: {
       const { color } = action

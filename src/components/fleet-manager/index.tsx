@@ -317,6 +317,7 @@ const useConfig = ({ onValidConfiguration, initialConfig }: Props) => {
       const value = confs[id]
       if (value) {
         const { ships, ais } = value
+        dispatch(actions.setPreferedFleet(id))
         setUsedConf(id)
         setShips(ships)
         setAIs(ais)

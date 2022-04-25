@@ -14,8 +14,17 @@ export const UPDATE_USER = 'user/LOAD_USER'
 export const UPDATE_COLOR = 'user/UPDATE_COLOR'
 export const UNLOCK_REWARDS = 'user/UNLOCK_REWARDS'
 export const SAVE_FLEET_CONFIG = 'user/SAVE_FLEET_CONFIG'
+export const UPDATE_PREFERED_FLEET = 'user/UPDATE_PREFERED_FLEET'
 export const LOGIN = 'user/LOGIN'
 export const RESET = 'user/RESET'
+
+export const setPreferedFleet: (fid: string) => Effect<void> = (
+  fid: string
+) => {
+  return async dispatch => {
+    dispatch({ type: UPDATE_PREFERED_FLEET, fid })
+  }
+}
 
 export const changeColor: (color: Color) => Effect<void> = (color: Color) => {
   return async dispatch => {

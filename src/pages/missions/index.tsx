@@ -7,7 +7,7 @@ import * as summary from './summary'
 import * as selectors from '@/store/selectors'
 import { Main } from '@/components/main'
 import { Title } from '@/components/title'
-import { FleetManager } from '@/components/fleet-manager'
+import { FleetManager, Data } from '@/components/fleet-manager'
 import { Button } from '@/components/button'
 import { Row, Column } from '@/components/flex'
 import { Details } from '@/components/ship'
@@ -123,12 +123,20 @@ const AIDetails = ({
 }
 
 export const Missions = () => {
+  const preferedFleet = useSelector(selectors.preferedFleet)
+  const fleetConfigs = useSelector(selectors.fleetConfigs)
   const [state, setState] = useState('preparation')
   const { engine, details, preferences } = useSetupEngine(setState)
   const navigate = useNavigate()
   const reset = () => navigate('/missions')
   const [selected, setSelected] = useState<string>()
   const [selectedTeam, setSelectedTeam] = useState<string>()
+  let initialConfig: Data | undefined = engine.fleet
+  useEffect(() => {
+    if (preferedFleet) initialConfig = fleetConfigs[preferedFleet]
+    if (!initialConfig && engine.fleet) initialConfig = engine.fleet
+    console.log(initialConfig)
+  }, [])
   let pos
   if (details.mission.start) {
     pos = {
@@ -147,7 +155,7 @@ export const Missions = () => {
           <summary.Summary
             engine={engine.engine!}
             restart={() => {
-              engine.reset()
+              engine.setFleet(engine.fleet)
               setState('preparation')
             }}
             replay={() => engine.start()}
@@ -155,7 +163,7 @@ export const Missions = () => {
             back={() => {
               navigate('/missions')
               setState('preparation')
-              engine.reset()
+              engine.reset(engine.fleet)
             }}
           />
         )}
@@ -187,6 +195,7 @@ export const Missions = () => {
                     setSelected(id)
                     setSelectedTeam(preferences.player.color)
                   }}
+                  initialConfig={initialConfig}
                 >
                   <Column flex={1} gap="xl">
                     <preparation.EnemyShips

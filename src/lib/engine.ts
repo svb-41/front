@@ -182,9 +182,9 @@ export const useEngine = (params: UseEngine) => {
     setEngine(engine)
     params.onStart()
   }
-  const reset = () => {
+  const reset = (fleet?: UserFleet) => {
     setEngine(undefined)
-    setFleet(undefined)
+    setFleet(fleet)
   }
   return { engine, start, reset, fleet, setFleet }
 }
