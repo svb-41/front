@@ -119,6 +119,7 @@ const FileCard = (props: FileCardProps) => {
         <form
           className={styles.inputTagsName}
           style={{
+            flex: 1,
             gap: (ai?.tags ?? []).length > 0 ? 's' : undefined,
             borderColor: ai?.archived ? 'var(--ddd0)' : undefined,
           }}
@@ -247,7 +248,7 @@ const AICards = (props: AICardsProps) => {
         onClick={() => setFolded(f => !f)}
       >
         <Title content={title} />
-        {props.foldable && (
+        {props.foldable && ais.length > 0 && (
           <div
             style={{
               fontSize: '2rem',
@@ -260,7 +261,7 @@ const AICards = (props: AICardsProps) => {
           </div>
         )}
       </Row>
-      {!folded && (
+      {!folded && (ais.length > 0 || before || after) && (
         <div className={styles.filesCardGrid}>
           {before ?? null}
           {ais.map(ai => {

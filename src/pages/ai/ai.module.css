@@ -17,6 +17,8 @@
 .fileCard {
   border: 2px solid var(--ccc);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .addCard {
