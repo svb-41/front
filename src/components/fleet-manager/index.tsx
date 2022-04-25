@@ -439,6 +439,7 @@ export type Props = {
   ships: string[]
   team: string
   ais: AI[]
+  favoritesAI: string[]
   onValidConfiguration: (data: Data | null) => void
   onShipClick?: (id: string) => void
   onAIClick?: (id: string) => void
@@ -518,7 +519,8 @@ export const FleetManager: FC<Props> = props => {
           team={team}
           setShipDetails={props.onShipClick}
           setAIDetails={props.onAIClick}
-          ais={props.ais.filter(ai => !!ai.compiledValue)}
+          ais={props.ais.filter(ai => !!ai.compiledValue && !ai.archived)}
+          favoritesAI={props.favoritesAI}
           onAIClick={(aid: string) => {
             setAIs(ais => {
               if (!selectedShip) return ais

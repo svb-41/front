@@ -10,6 +10,8 @@ export type Props = {
   disabled?: boolean
   style?: CSSProperties
   small?: boolean
+  stopPropagation?: boolean
+  preventDefault?: boolean
 }
 export const Button = ({ onClick, text, ...props }: Props) => {
   const cl = style(props)
@@ -17,7 +19,11 @@ export const Button = ({ onClick, text, ...props }: Props) => {
     <button
       disabled={props.disabled}
       className={cl}
-      onClick={onClick}
+      onClick={event => {
+        if (props.stopPropagation) event.stopPropagation()
+        if (props.preventDefault) event.preventDefault()
+        if (onClick) onClick()
+      }}
       style={props.style}
     >
       {text}

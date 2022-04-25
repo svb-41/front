@@ -41,7 +41,7 @@ const NameInput = ({ data, methods }: any) => {
       <input
         ref={inputRef}
         size={val.length}
-        className={styles.input}
+        className={styles.unArchivedInput}
         value={val}
         onChange={onChange}
         onBlur={rename}

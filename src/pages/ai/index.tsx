@@ -40,9 +40,12 @@ const InputDescription = (props: any) => {
       className={styles.inputName}
     >
       <textarea
+        disabled={props.archived}
         ref={inputRef}
         rows={8}
-        className={styles.input}
+        className={
+          props.archived ? styles.archivedInput : styles.unArchivedInput
+        }
         value={value}
         onKeyDown={event => {
           const isCmd = event.ctrlKey || event.metaKey || event.altKey
@@ -93,18 +96,21 @@ const FileCard = (props: FileCardProps) => {
         <img src={tsLogo} className={styles.logo} alt="TypeScript Logo" />
         <div>{ai?.file?.path ?? 'example.ts'}</div>
         <div style={{ flex: 1 }} />
-        <div
-          style={{ width: 20, height: 20, cursor: 'pointer' }}
-          onClick={event => {
-            event.stopPropagation()
-            onFavorite?.()
-          }}
-        >
-          <Star color="var(--space-yellow)" filled={favorite} />
-        </div>
+        {ai && !ai.archived && (
+          <div
+            style={{ width: 20, height: 20, cursor: 'pointer' }}
+            onClick={event => {
+              event.stopPropagation()
+              onFavorite?.()
+            }}
+          >
+            <Star color="var(--space-yellow)" filled={favorite} />
+          </div>
+        )}
       </Row>
       <Column flex={1} background="var(--fff)" padding="m" gap="m">
         <InputDescription
+          archived={ai && ai.archived}
           value={description}
           onSubmit={(description: string) =>
             ai && dispatch(actions.updateAI({ ...ai, description }))
@@ -112,7 +118,10 @@ const FileCard = (props: FileCardProps) => {
         />
         <form
           className={styles.inputTagsName}
-          style={{ gap: (ai?.tags ?? []).length > 0 ? 's' : undefined }}
+          style={{
+            gap: (ai?.tags ?? []).length > 0 ? 's' : undefined,
+            borderColor: ai?.archived ? 'var(--ddd0)' : undefined,
+          }}
           onClick={event => event.stopPropagation()}
           onSubmit={async event => {
             event.preventDefault()
@@ -136,37 +145,59 @@ const FileCard = (props: FileCardProps) => {
                 background={tags ? tags[tag] : undefined}
               >
                 <div>{tag}</div>
-                <div
-                  className={styles.cross}
-                  onClick={() => {
-                    if (ai && ai.tags.includes(tag)) {
-                      const tags = ai.tags.filter(t => t !== tag)
-                      const action = actions.updateAI({ ...ai, tags })
-                      dispatch(action)
-                    }
-                  }}
-                >
-                  x
-                </div>
+                {ai && !ai.archived && (
+                  <div
+                    className={styles.cross}
+                    onClick={() => {
+                      if (ai && ai.tags.includes(tag)) {
+                        const tags = ai.tags.filter(t => t !== tag)
+                        const action = actions.updateAI({ ...ai, tags })
+                        dispatch(action)
+                      }
+                    }}
+                  >
+                    x
+                  </div>
+                )}
               </Row>
             ))}
           </Row>
-          <input
-            value={tagsValue}
-            onChange={event =>
-              setTagsValue(event.target.value.replace(/ /g, ''))
-            }
-            className={styles.inputTags}
-          />
+          {ai && !ai.archived && (
+            <input
+              value={tagsValue}
+              onChange={event =>
+                setTagsValue(event.target.value.replace(/ /g, ''))
+              }
+              className={styles.inputTags}
+            />
+          )}
         </form>
-        <Column align="flex-end" style={opacity}>
-          <div className={styles.modifsTitle}>
-            {s.pages.ais.createdAt} {toLocale(createdAt)}
-          </div>
-          <div className={styles.modifsTitle}>
-            {s.pages.ais.updatedAt} {toLocale(updatedAt)}
-          </div>
-        </Column>
+        <Row align="center" justify="space-between">
+          {ai && (
+            <Button
+              small
+              text={ai.archived ? 'Unarchive' : 'Archive'}
+              secondary={!ai.archived}
+              primary={ai.archived}
+              stopPropagation
+              onClick={() => {
+                if (ai) {
+                  const newAI = { ...ai, archived: !ai.archived }
+                  const action = actions.updateAI(newAI)
+                  dispatch(action)
+                }
+              }}
+            />
+          )}
+          <Column align="flex-end" style={opacity}>
+            <div className={styles.modifsTitle}>
+              {s.pages.ais.createdAt} {toLocale(createdAt)}
+            </div>
+            <div className={styles.modifsTitle}>
+              {s.pages.ais.updatedAt} {toLocale(updatedAt)}
+            </div>
+          </Column>
+        </Row>
       </Column>
     </div>
   )
@@ -201,35 +232,57 @@ type AICardsProps = {
   favorites: string[]
   before?: false | JSX.Element
   after?: false | JSX.Element
+  foldable?: boolean
 }
 const AICards = (props: AICardsProps) => {
   const { tags, title, ais, favorites, before, after, textColors } = props
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const [folded, setFolded] = useState(!!props.foldable)
   return (
     <Column padding="m" gap="m" width="100%" background="var(--eee)">
-      <Title content={title} />
-      <div className={styles.filesCardGrid}>
-        {before ?? null}
-        {ais.map(ai => {
-          const favorite = favorites.includes(ai.id)
-          const onFavorite = favorite
-            ? () => dispatch(actions.delFavorite(ai.id))
-            : () => dispatch(actions.setFavorite(ai.id))
-          return (
-            <FileCard
-              textColors={textColors}
-              tags={tags}
-              onClick={() => navigate(`/ai/${ai.id}`)}
-              key={ai.id}
-              ai={ai}
-              onFavorite={onFavorite}
-              favorite={favorite}
-            />
-          )
-        })}
-        {after ?? null}
-      </div>
+      <Row
+        align="center"
+        justify="space-between"
+        onClick={() => setFolded(f => !f)}
+      >
+        <Title content={title} />
+        {props.foldable && (
+          <div
+            style={{
+              fontSize: '2rem',
+              transition: 'all .2s',
+              transform: folded ? undefined : 'rotate(180deg)',
+              userSelect: 'none',
+            }}
+          >
+            v
+          </div>
+        )}
+      </Row>
+      {!folded && (
+        <div className={styles.filesCardGrid}>
+          {before ?? null}
+          {ais.map(ai => {
+            const favorite = favorites.includes(ai.id)
+            const onFavorite = favorite
+              ? () => dispatch(actions.delFavorite(ai.id))
+              : () => dispatch(actions.setFavorite(ai.id))
+            return (
+              <FileCard
+                textColors={textColors}
+                tags={tags}
+                onClick={() => !ai.archived && navigate(`/ai/${ai.id}`)}
+                key={ai.id}
+                ai={ai}
+                onFavorite={onFavorite}
+                favorite={favorite}
+              />
+            )
+          })}
+          {after ?? null}
+        </div>
+      )}
     </Column>
   )
 }
@@ -245,11 +298,18 @@ export const Ia = () => {
   const { ais, favorites } = useSelector(selectors.ais)
   const { tags, textColors } = useSelector(selectors.tags)
   const onlyFavs = ais.filter(ai => {
+    if (ai.archived) return false
     const isFav = favorites.includes(ai.id)
     if (filters.length === 0) return isFav
     return isFav && isOneTagMatched(ai, filters)
   })
   const filteredAI = ais.filter(ai => {
+    if (ai.archived) return false
+    if (filters.length === 0) return true
+    return isOneTagMatched(ai, filters)
+  })
+  const archivedAI = ais.filter(ai => {
+    if (!ai.archived) return false
     if (filters.length === 0) return true
     return isOneTagMatched(ai, filters)
   })
@@ -337,6 +397,14 @@ export const Ia = () => {
             ais={filteredAI}
             favorites={favorites}
             before={<Add />}
+          />
+          <AICards
+            foldable
+            textColors={textColors}
+            tags={tags}
+            title="Archives"
+            ais={archivedAI}
+            favorites={favorites}
           />
         </Column>
       </Row>

@@ -49,9 +49,9 @@ const useMission = () => {
 
 const usePreferences = () => {
   const player = useSelector(selectors.userData)
-  const { ais } = useSelector(selectors.ais)
+  const { ais, favorites } = useSelector(selectors.ais)
   const enemy = color.random.find(color => color !== player.color)!
-  return { player, enemy, ais }
+  return { player, enemy, ais, favoritesAI: favorites }
 }
 
 const useSetupEngine = (setState: (value: string) => void) => {
@@ -173,6 +173,7 @@ export const Missions = () => {
             {!details.opened && (
               <Row className={styles.prepareMission} gap="xl">
                 <FleetManager
+                  favoritesAI={preferences.favoritesAI}
                   maxCredits={details.mission.credit}
                   team={preferences.player.color}
                   ships={preferences.player.unlockedShips}

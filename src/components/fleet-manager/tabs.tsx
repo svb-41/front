@@ -2,7 +2,7 @@ import { AI } from '@/lib/ai'
 import { useSelector } from '@/store/hooks'
 import * as selectors from '@/store/selectors'
 import { getImage } from '@/helpers/ships'
-import { Title } from '@/components/title'
+import { Title, SubTitle } from '@/components/title'
 import { Row, Column } from '@/components/flex'
 import tsLogo from '@/components/monaco/ts.svg'
 import * as helpers from '@/helpers'
@@ -58,16 +58,7 @@ const RenderShips = ({
   </div>
 )
 
-const RenderAIs = ({
-  ais,
-  setAIDetails,
-  onAIClick,
-}: {
-  ais: AI[]
-  setAIDetails?: (value: string) => void
-  onAIClick?: (value: string) => void
-}) => {
-  const { tags, textColors } = useSelector(selectors.tags)
+const filterAsCols = (ais: AI[]) => {
   const [cols, remaining] = ais.reduce(
     (acc, val, index) => {
       const [prev, act] = acc
@@ -77,10 +68,28 @@ const RenderAIs = ({
     },
     [[], []] as [AI[][], AI[]]
   )
-  const final = [...cols, remaining]
+  return [...cols, remaining]
+}
+
+const RenderColumnAI = ({
+  columns,
+  setAIDetails,
+  onAIClick,
+  textColors,
+  tags,
+  title,
+}: {
+  columns: AI[][]
+  setAIDetails: any
+  onAIClick: any
+  textColors: any
+  tags: any
+  title: string
+}) => {
   return (
     <Column gap="s">
-      {final.map((ais, i) => (
+      <SubTitle color="var(--333)" content={title} />
+      {columns.map((ais, i) => (
         <Row gap="s" key={i}>
           {ais.map(ai => (
             <div
@@ -89,7 +98,7 @@ const RenderAIs = ({
               onDoubleClick={() => setAIDetails?.(ai.id)}
               onClick={() => onAIClick?.(ai.id)}
             >
-              <Column background="var(--ddd)" padding="s" gap="s">
+              <Column background="var(--ddd)" padding="s" gap="s" height="100%">
                 <Row align="center" gap="s">
                   <img
                     src={tsLogo}
@@ -98,7 +107,7 @@ const RenderAIs = ({
                   />
                   <div className={styles.pathName}>{ai.file.path}</div>
                 </Row>
-                <Row wrap="wrap" gap="s">
+                <Row wrap="wrap" gap="s" flex={1}>
                   {ai.tags.map(tag => {
                     return (
                       <Row
@@ -125,6 +134,48 @@ const RenderAIs = ({
           {ais.length < 2 && <div className={styles.cursor} />}
         </Row>
       ))}
+    </Column>
+  )
+}
+
+const RenderAIs = ({
+  ais,
+  favoritesAI,
+  setAIDetails,
+  onAIClick,
+}: {
+  ais: AI[]
+  favoritesAI: string[]
+  setAIDetails?: (value: string) => void
+  onAIClick?: (value: string) => void
+}) => {
+  const { tags, textColors } = useSelector(selectors.tags)
+  const favs = ais.filter(ai => favoritesAI.includes(ai.id))
+  const notFavs = ais.filter(ai => !favoritesAI.includes(ai.id))
+  const favorites = filterAsCols(favs)
+  const unfavorites = filterAsCols(notFavs)
+  return (
+    <Column gap="l">
+      {favs.length > 0 && (
+        <RenderColumnAI
+          title="Favorites"
+          columns={favorites}
+          setAIDetails={setAIDetails}
+          onAIClick={onAIClick}
+          textColors={textColors}
+          tags={tags}
+        />
+      )}
+      {notFavs.length > 0 && (
+        <RenderColumnAI
+          title="Unfavorites"
+          columns={unfavorites}
+          setAIDetails={setAIDetails}
+          onAIClick={onAIClick}
+          textColors={textColors}
+          tags={tags}
+        />
+      )}
     </Column>
   )
 }

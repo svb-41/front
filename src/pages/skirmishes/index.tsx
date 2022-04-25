@@ -137,16 +137,19 @@ const Manager = ({
   ais,
   team,
   setState,
+  favoritesAI,
 }: {
   engine: any
   ais: AI[]
   team: string
   setState: (value: string) => void
+  favoritesAI: string[]
 }) => {
   const user = useSelector(selectors.userData)
   return (
     <Row className={styles.prepareMission} gap="xl">
       <FleetManager
+        favoritesAI={favoritesAI}
         maxCredits={500}
         team={team}
         ships={user.unlockedShips}
@@ -315,6 +318,7 @@ const PlaySkirmishes = () => {
           )}
           {addingFleet && state === 'search' && (
             <FleetManager
+              favoritesAI={ais.favorites}
               maxCredits={500}
               title={false}
               team={user.color}
@@ -351,6 +355,7 @@ const PlaySkirmishes = () => {
           )}
           {state === 'preparation' && fight && (
             <Manager
+              favoritesAI={ais.favorites}
               engine={engine}
               team={user.color}
               ais={ais.ais}

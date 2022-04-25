@@ -110,6 +110,14 @@
   border-color: var(--ddd0);
 }
 
+.archivedInput {
+  composes: input;
+}
+
+.unArchivedInput {
+  composes: input;
+}
+
 .inputTags {
   composes: input;
   border: none;
@@ -118,8 +126,8 @@
 }
 
 /* prettier-ignore */
-.inputName:hover .input,
-.input:focus {
+.inputName:hover .unArchivedInput,
+.unArchivedInput:focus {
   background: var(--ffff);
   padding: 6px 6px;
   border-color: var(--dddf);

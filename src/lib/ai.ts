@@ -8,4 +8,5 @@ export type AI = {
   compiledValue?: string
   tags: Array<string>
   description?: string
+  archived?: boolean
 }
