@@ -8,14 +8,26 @@ type LabeledProps = {
   content: string | number
   className?: string
   style?: any
+  angle?: boolean
 }
-export const Labeled = ({ label, content, className, style }: LabeledProps) => {
-  const val = typeof content === 'number' ? content.toFixed(2) : content
-  return (
+export const Labeled = ({
+  label,
+  content,
+  className,
+  style,
+  angle,
+}: LabeledProps) => {
+  const val =
+    typeof content === 'number' && angle
+      ? (content / Math.PI).toFixed(2) + ' x pi'
+      : content
+  return content !== 0 ? (
     <div style={style}>
       <div className={styles.label}>{label}</div>
       <div className={className}>{val ?? 'None'}</div>
     </div>
+  ) : (
+    <></>
   )
 }
 
@@ -56,7 +68,7 @@ export const Details = ({ ship, locked, color, infoCard }: DetailsProps) => {
                 label="Acceleration"
                 content={stats.stats.acceleration}
               />
-              <Labeled label="Turn" content={stats.stats.turn} />
+              <Labeled label="Turn" content={stats.stats.turn} angle />
               <Labeled label="Detection" content={stats.stats.detection} />
               <Labeled label="Visibility" content={stats.stealth} />
             </div>
@@ -79,7 +91,11 @@ export const Details = ({ ship, locked, color, infoCard }: DetailsProps) => {
                     label="Acceleration"
                     content={weapon.bullet.stats.acceleration}
                   />
-                  <Labeled label="Turn" content={weapon.bullet.stats.turn} />
+                  <Labeled
+                    label="Turn"
+                    content={weapon.bullet.stats.turn}
+                    angle
+                  />
                   <Labeled
                     label="Detection"
                     content={weapon.bullet.stats.detection}
