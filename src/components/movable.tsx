@@ -1,4 +1,4 @@
-import { FC, useState, useEffect, useRef, useMemo } from 'react'
+import { FC, useState, useEffect, useRef } from 'react'
 import { Column, Row } from '@/components/flex'
 
 const usePosition = () => {
