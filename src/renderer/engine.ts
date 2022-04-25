@@ -140,8 +140,12 @@ export class Engine extends EventTarget {
     const shipId = event_.detail.id
     const ship = this.#engine.state.ships.find(s => shipId === s.id)
     if (ship) {
-      const x = ship.position.pos.x + this.#app.stage.width / 2
-      const y = ship.position.pos.y + this.#app.stage.height / 2
+      const { height, width } = {
+        height: window.innerHeight,
+        width: window.innerWidth,
+      }
+      const x = -ship.position.pos.x + width / (2 * this.#scale)
+      const y = -this.computeY(ship.position.pos.y) + height / (2 * this.#scale)
       this.#pos = { x, y }
     }
   }
