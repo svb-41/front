@@ -59,7 +59,13 @@ export const Movable: FC<Props> = ({ children, onClose }) => {
       ref={position.ref}
       style={{ position: 'fixed', ...position.position, zIndex: 1e10 }}
     >
-      <Column style={{ border: '2px solid var(--fff)' }}>
+      <Column
+        style={{
+          border: '2px solid var(--fff)',
+          overflow: 'hidden',
+          maxHeight: '90vh',
+        }}
+      >
         <div onMouseDown={position.onMouseDown} onMouseUp={position.onMouseUp}>
           <Row background="var(--fff)" justify="flex-end" padding="s">
             <button onClick={onClose} style={{ fontSize: 30 }}>
@@ -67,7 +73,9 @@ export const Movable: FC<Props> = ({ children, onClose }) => {
             </button>
           </Row>
         </div>
-        {children}
+        <Column flex={1} style={{ overflow: 'auto' }}>
+          {children}
+        </Column>
       </Column>
     </div>
   )
