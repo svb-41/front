@@ -32,6 +32,7 @@ const saveLocal = (store: any) => (next: any) => (action: any) => {
     tags: state.ai.tags,
     fleetConfigs: state.user.fleetConfigs,
     skirmishes: state.skirmishes,
+    preferedFleet: state.user.preferedFleet,
   })
   return value
 }

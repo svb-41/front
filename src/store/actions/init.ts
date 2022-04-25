@@ -1,4 +1,8 @@
-import { UPDATE_USER_ID, UPDATE_USER } from '@/store/actions/user'
+import {
+  UPDATE_USER_ID,
+  UPDATE_USER,
+  UPDATE_PREFERED_FLEET,
+} from '@/store/actions/user'
 import * as local from '@/services/localStorage'
 import { LOAD_AI, LOAD_FAVORITE_AIS, UPDATE_TAGS } from '@/store/actions/ai'
 import { REPLACE_SKIRMISHES } from '@/store/actions/skirmishes'
@@ -38,6 +42,8 @@ export const initStore: Effect<void> = async dispatch => {
   dispatch({ type: LOAD_FAVORITE_AIS, favorites })
   dispatch({ type: REPLACE_SKIRMISHES, skirmishes: data.skirmishes })
   dispatch({ type: UPDATE_TAGS, tags: data.tags ?? {} })
+  if (data.preferedFleet)
+    dispatch({ type: UPDATE_PREFERED_FLEET, fid: data.preferedFleet })
   dispatch({
     type: UPDATE_USER,
     unlockedShips: data.ships,

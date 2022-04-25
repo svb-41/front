@@ -16,6 +16,7 @@ export type StoredData = {
   tags: { [key: string]: string }
   fleetConfigs: any
   skirmishes: any
+  preferedFleet?: string
 }
 
 export const getUid = (): string => {

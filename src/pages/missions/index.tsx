@@ -54,14 +54,14 @@ const usePreferences = () => {
   return { player, enemy, ais, favoritesAI: favorites }
 }
 
-const useSetupEngine = (setState: (value: string) => void) => {
+const useSetupEngine = (setState: (value: string) => void, fleet?: Data) => {
   const preferences = usePreferences()
   const details = useMission()
   const team = preferences.player.color
   const ais = preferences.ais
   const { size, start } = details.mission
   const enemy = useMissionEnemy(details.mission, preferences.enemy)
-  const player = { team, ais }
+  const player = { team, ais, fleet }
   const onStart = () => setState('engine')
   const onEnd = () => setState('end')
   const engine = useEngine({ onStart, onEnd, start, enemy, size, player })
@@ -126,17 +126,12 @@ export const Missions = () => {
   const preferedFleet = useSelector(selectors.preferedFleet)
   const fleetConfigs = useSelector(selectors.fleetConfigs)
   const [state, setState] = useState('preparation')
-  const { engine, details, preferences } = useSetupEngine(setState)
+  const fleet = fleetConfigs[preferedFleet ?? '']
+  const { engine, details, preferences } = useSetupEngine(setState, fleet)
   const navigate = useNavigate()
   const reset = () => navigate('/missions')
   const [selected, setSelected] = useState<string>()
   const [selectedTeam, setSelectedTeam] = useState<string>()
-  let initialConfig: Data | undefined = engine.fleet
-  useEffect(() => {
-    if (preferedFleet) initialConfig = fleetConfigs[preferedFleet]
-    if (!initialConfig && engine.fleet) initialConfig = engine.fleet
-    console.log(initialConfig)
-  }, [])
   let pos
   if (details.mission.start) {
     pos = {
@@ -195,7 +190,7 @@ export const Missions = () => {
                     setSelected(id)
                     setSelectedTeam(preferences.player.color)
                   }}
-                  initialConfig={initialConfig}
+                  initialConfig={engine.fleet}
                 >
                   <Column flex={1} gap="xl">
                     <preparation.EnemyShips
