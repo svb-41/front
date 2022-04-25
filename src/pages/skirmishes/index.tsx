@@ -18,7 +18,7 @@ import styles from './skirmishes.module.css'
 import * as svb from '@svb-41/engine'
 import { Renderer as EngineRenderer } from '@/renderer'
 import { winnerTeam } from '@/lib/engine'
-import { CongratsOrCry, ShipsSummary } from '@/pages/missions/summary'
+import { CongratsOrCryOrCredit, ShipsSummary } from '@/pages/missions/summary'
 import { useEngine } from '@/lib/engine'
 
 type SavedFleetProps = {
@@ -198,7 +198,7 @@ const EndScreen = ({
   }, [dispatch])
   return (
     <Column align="center" justify="center" padding="xxl" gap="xxl">
-      <CongratsOrCry won={playerWin} />
+      <CongratsOrCryOrCredit won={playerWin} />
       <Row gap="xxl">
         <Column gap="m">
           <Title content={s.pages.summary.someStats} />

@@ -113,6 +113,7 @@
       "replay": "Watch replay",
       "goBack": "Go back to missions",
       "congratsOrCry": {
+        "tooMuchCredit": "Unfortunately you use too much credit for this mission",
         "congrats": "Congratulations",
         "tooBad": "Too bad for your defeat",
         "brilliantVictory": "For your brilliant victory!",

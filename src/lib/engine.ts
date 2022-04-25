@@ -107,6 +107,16 @@ const isEnded = (teams: Teams, size: { height: number; width: number }) => {
   }
 }
 
+export const outOfCredits = (
+  mission: Mission,
+  state: svb.engine.State,
+  team: String
+) =>
+  state.ships
+    .filter(s => s.team === team)
+    .map(s => s.price)
+    .reduce((acc, val) => acc + val, 0) > mission.credit
+
 const setupEngine = (
   playerTeam: string,
   enemyTeam: string,

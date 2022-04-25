@@ -10,7 +10,7 @@ import { Title, SubTitle, Jumbotron } from '@/components/title'
 import { Icon } from '@/components/ship'
 import { getImage } from '@/helpers/ships'
 import { Mission, getMission } from '@/services/mission'
-import { winnerTeam } from '@/lib/engine'
+import { winnerTeam, outOfCredits } from '@/lib/engine'
 import styles from './Missions.module.css'
 import trophy from '@/assets/icons/trophy.svg'
 import cry from '@/assets/icons/cry.svg'
@@ -47,9 +47,16 @@ export const ShipsSummary = ({ ships, team, name }: SSProps) => {
   )
 }
 
-export const CongratsOrCry = ({ won }: { won: boolean }) => {
+export const CongratsOrCryOrCredit = ({
+  won,
+  credit,
+}: {
+  won: boolean
+  credit?: boolean
+}) => {
   const { congratsOrCry } = s.pages.summary
-  const { congrats, tooBad, brilliantVictory, youLost } = congratsOrCry
+  const { congrats, tooBad, brilliantVictory, youLost, tooMuchCredit } =
+    congratsOrCry
   return (
     <Row align="center" gap="xl">
       <img
@@ -60,6 +67,7 @@ export const CongratsOrCry = ({ won }: { won: boolean }) => {
       <Column>
         <Jumbotron content={won ? congrats : tooBad} />
         <Title content={won ? brilliantVictory : youLost} />
+        {credit && won && <Title content={tooMuchCredit} />}
       </Column>
     </Row>
   )
@@ -146,6 +154,7 @@ export const Summary = ({ engine, restart, mission, replay, back }: Props) => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const state = engine.state
+  const credit = outOfCredits(mission, engine.state, playerData.color)
   const playerWin = winnerTeam(engine, mission.size) === playerData.color
   useEffect(() => {
     if (mission.rewards && playerWin) {
@@ -155,7 +164,7 @@ export const Summary = ({ engine, restart, mission, replay, back }: Props) => {
   }, [dispatch, mission, playerWin])
   return (
     <Column align="center" justify="center" padding="xxl" gap="xxl">
-      <CongratsOrCry won={playerWin} />
+      <CongratsOrCryOrCredit won={playerWin} credit={credit} />
       <Row gap="xxl">
         <Column gap="m">
           <Title content={s.pages.summary.someStats} />
@@ -180,7 +189,7 @@ export const Summary = ({ engine, restart, mission, replay, back }: Props) => {
           </Row>
           <Rewards
             mission={mission}
-            won={playerWin}
+            won={playerWin && !credit}
             team={playerData.color}
             onMissionClick={(m: Mission) => {
               restart()
