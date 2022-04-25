@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { engine, helpers } from '@svb-41/engine'
 import { Labeled } from '@/components/ship'
 import { Row, Column } from '@/components/flex'
+import { Checkbox } from '@/components/checkbox'
+import { Button } from '@/components/button'
 import { getImage } from '@/helpers/ships'
 import * as Logger from '@/renderer/logger'
 import { Engine } from '@/renderer/engine'
@@ -187,6 +189,51 @@ const RenderShip = ({ ship }: { ship: engine.ship.Ship }) => {
   )
 }
 
+const Options = ({ setRadarsVisible, setRadarsAreas, children }: any) => {
+  const [visible, setVisible] = useState(true)
+  const [area, setArea] = useState(true)
+  return (
+    <Column
+      padding="m"
+      gap="m"
+      style={{
+        position: 'absolute',
+        top: 'var(--m)',
+        left: 'var(--m)',
+        zIndex: 10000,
+      }}
+    >
+      <Column background="var(--eee)" padding="s" gap="s">
+        <Row align="center" gap="s">
+          <Checkbox checked={visible} />
+          <Button
+            primary
+            small
+            text="Toggle Radars"
+            onClick={() => {
+              setVisible(t => !t)
+              setRadarsVisible()
+            }}
+          />
+        </Row>
+        <Row align="center" gap="s">
+          <Checkbox checked={area} />
+          <Button
+            primary
+            small
+            text="Toggle Radars Areas"
+            onClick={() => {
+              setArea(t => !t)
+              setRadarsAreas()
+            }}
+          />
+        </Row>
+      </Column>
+      {children}
+    </Column>
+  )
+}
+
 export type Props = {
   engine: engine.Engine
   opts: { pos?: { x: number; y: number }; scale?: number }
@@ -244,6 +291,40 @@ export const Renderer = ({ engine, opts }: Props) => {
       <Logger.Render logs={logs} />
       {ship && <RenderShip ship={ship} />}
       {running && <Pause state={pausedState} onClick={updater} />}
+      <Options
+        setRadarsVisible={() =>
+          renderer.current?.dispatchEvent(new Event('radars.toggle'))
+        }
+        setRadarsAreas={() =>
+          renderer.current?.dispatchEvent(new Event('radars.areas'))
+        }
+      >
+        {running && (
+          <Column gap="s">
+            {engine.state.ships.map(ship => (
+              <Row
+                padding="s"
+                className={styles.centerShip}
+                align="center"
+                gap="m"
+                onClick={() => {
+                  const detail = { id: ship.id }
+                  const event = new CustomEvent('ship.focus', { detail })
+                  renderer.current?.dispatchEvent(event)
+                }}
+              >
+                <img src={getImage(ship.shipClass, ship.team)} />
+                <Column>
+                  <div>ID {ship.id.slice(0, 15)}…</div>
+                  <div style={{ fontSize: '.9rem', color: 'var(--888)' }}>
+                    Signature {ship.signature.slice(0, 15)}…
+                  </div>
+                </Column>
+              </Row>
+            ))}
+          </Column>
+        )}
+      </Options>
       <canvas
         ref={canvas}
         className={styles.canvas}

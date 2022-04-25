@@ -105,6 +105,7 @@ export class Engine extends EventTarget {
     this.#engine.addEventListener('log.add', this.onLog)
     this.#engine.addEventListener('log.clear', this.onClear)
     this.#engine.addEventListener('state.end', this.onEnd)
+    this.addEventListener('ship.focus', this.focusShip)
     this.addEventListener('radars.toggle', this.toggleRadars)
     this.addEventListener('radars.areas', this.toggleRadarsArea)
     this.addEventListener('state.pause', this.onStatePause)
@@ -123,6 +124,7 @@ export class Engine extends EventTarget {
     this.#engine.removeEventListener('log.clear', this.onClear)
     this.#engine.removeEventListener('state.end', this.onEnd)
     this.#engine.removeEventListener('radars.toggle', this.toggleRadars)
+    this.removeEventListener('ship.focus', this.focusShip)
     this.removeEventListener('radars.areas', this.toggleRadarsArea)
     this.removeEventListener('state.pause', this.onStatePause)
     const resources = Object.values(this.#app.loader?.resources ?? {})
@@ -131,6 +133,17 @@ export class Engine extends EventTarget {
       Object.values(resource.textures ?? {}).forEach(t => t.destroy(true))
     })
     this.#app.destroy(false, true)
+  }
+
+  private focusShip(event: Event) {
+    const event_ = event as CustomEvent
+    const shipId = event_.detail.id
+    const ship = this.#engine.state.ships.find(s => shipId === s.id)
+    if (ship) {
+      const x = ship.position.pos.x + this.#app.stage.width / 2
+      const y = ship.position.pos.y + this.#app.stage.height / 2
+      this.#pos = { x, y }
+    }
   }
 
   private toggleRadars() {

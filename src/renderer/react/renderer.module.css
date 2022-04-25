@@ -38,3 +38,11 @@
   composes: tab;
   background: var(--ddd);
 }
+
+.centerShip {
+  background: var(--eee);
+}
+
+.centerShip:hover {
+  background: var(--ddd);
+}
