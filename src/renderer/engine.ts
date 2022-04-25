@@ -52,6 +52,8 @@ export class Engine extends EventTarget {
   #drag: boolean
   #downTS: number
   #shipsDestroyed: Map<string, boolean>
+  #radarsVisible: boolean
+  #radarsArea: boolean
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -67,6 +69,8 @@ export class Engine extends EventTarget {
     helpers.console.log('=> [RendererEngine] Start Engine')
     const view = canvas
     const antialias = true
+    this.#radarsVisible = true
+    this.#radarsArea = true
     this.#scale = opts.scale ? opts.scale : 1
     this.#pos = opts.pos ? opts.pos : { x: 0, y: 0 }
     this.#dragStart = { x: 0, y: 0 }
@@ -101,6 +105,8 @@ export class Engine extends EventTarget {
     this.#engine.addEventListener('log.add', this.onLog)
     this.#engine.addEventListener('log.clear', this.onClear)
     this.#engine.addEventListener('state.end', this.onEnd)
+    this.addEventListener('radars.toggle', this.toggleRadars)
+    this.addEventListener('radars.areas', this.toggleRadarsArea)
     this.addEventListener('state.pause', this.onStatePause)
     this.preload().then(async () => {
       this.#app.ticker.add(this.run)
@@ -116,6 +122,8 @@ export class Engine extends EventTarget {
     this.#engine.removeEventListener('log.add', this.onLog)
     this.#engine.removeEventListener('log.clear', this.onClear)
     this.#engine.removeEventListener('state.end', this.onEnd)
+    this.#engine.removeEventListener('radars.toggle', this.toggleRadars)
+    this.removeEventListener('radars.areas', this.toggleRadarsArea)
     this.removeEventListener('state.pause', this.onStatePause)
     const resources = Object.values(this.#app.loader?.resources ?? {})
     resources.forEach(resource => {
@@ -123,6 +131,43 @@ export class Engine extends EventTarget {
       Object.values(resource.textures ?? {}).forEach(t => t.destroy(true))
     })
     this.#app.destroy(false, true)
+  }
+
+  private toggleRadars() {
+    this.#radarsVisible = !this.#radarsVisible
+    if (!this.#radarsVisible) {
+      this.#radars.forEach(radar => {
+        this.#app.stage.removeChild(radar)
+        radar.destroy()
+      })
+      this.#radars.clear()
+    } else {
+      this.#engine.state.ships.forEach(ship => {
+        const { id, team, stats } = ship
+        const size = stats.detection!
+        const sprite = this.#sprites.get(id)
+        if (sprite) {
+          this.createRadar(id, sprite.position.x, sprite.position.y, size, team)
+        }
+      })
+    }
+  }
+
+  private toggleRadarsArea() {
+    this.#radarsArea = !this.#radarsArea
+    this.#radars.forEach(radar => {
+      this.#app.stage.removeChild(radar)
+      radar.destroy()
+    })
+    this.#radars.clear()
+    this.#engine.state.ships.forEach(ship => {
+      const { id, team, stats } = ship
+      const size = stats.detection!
+      const sprite = this.#sprites.get(id)
+      if (sprite) {
+        this.createRadar(id, sprite.position.x, sprite.position.y, size, team)
+      }
+    })
   }
 
   private brightness(value: number, boolean = false) {
@@ -249,12 +294,12 @@ export class Engine extends EventTarget {
     radar.x = x
     radar.y = y
     radar.lineStyle(2, radarColor)
-    radar.beginFill(radarColor, 0.2)
+    if (this.#radarsArea) radar.beginFill(radarColor, 0.2)
     const filter = new PIXI.filters.ColorMatrixFilter()
     radar.filters = [filter]
     radar.drawCircle(0, 0, size)
     radar.zIndex = 0
-    radar.endFill()
+    if (this.#radarsArea) radar.endFill()
     this.#app.stage.addChild(radar)
     this.#radars.set(id, radar)
   }
@@ -276,7 +321,7 @@ export class Engine extends EventTarget {
     } else {
       const x = position.pos.x + this.#pos.x
       const y = this.computeY(position.pos.y) + this.#pos.y
-      if (type === Type.SHIP)
+      if (type === Type.SHIP && this.#radarsVisible)
         this.createRadar(id, x, y, sprite.detection!, sprite.team!)
       const texture = selectTexture(this.#app, type, sprite)
       const sprite_ = new PIXI.Sprite(texture)
