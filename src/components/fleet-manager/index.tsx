@@ -25,6 +25,7 @@ type FleetTitleProps = {
   onLoad?: () => void
   onErase: () => void
   onSave: () => void
+  onClear?: () => void
   usedConf?: string
   isValid: boolean
 }
@@ -34,6 +35,7 @@ const FleetTitle = ({
   onLoad,
   onErase,
   onSave,
+  onClear,
   isValid,
 }: FleetTitleProps) => {
   const background = `var(--team-${team})`
@@ -53,6 +55,9 @@ const FleetTitle = ({
           />
         </Column>
         <Row gap="s" align="flex-start">
+          <Column gap="s" style={{ paddingRight: 'var(--l)' }}>
+            <Button small text="Clear" onClick={() => onClear?.()} primary />
+          </Column>
           <Column gap="s">
             <div
               style={{
@@ -298,7 +303,12 @@ const useConfig = ({ onValidConfiguration, initialConfig }: Props) => {
       setUsedConf(id)
     }
   }
+  const clear = () => {
+    setShips([])
+    setAIs([])
+  }
   return {
+    clear,
     isValid,
     usedConf,
     ships,
@@ -501,6 +511,7 @@ export const FleetManager: FC<Props> = props => {
           team={team}
           isValid={config.isValid}
           usedConf={config.usedConf}
+          onClear={config.clear}
           onSave={config.saveFleetConfig}
           onErase={config.erase}
           onLoad={
