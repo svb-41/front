@@ -300,7 +300,13 @@ export const Renderer = ({ engine, opts }: Props) => {
         }
       >
         {running && (
-          <Column gap="s">
+          <Column
+            gap="s"
+            maxHeight="50vh"
+            overflow="auto"
+            background="var(--eee)"
+            padding="s"
+          >
             {engine.state.ships.map(ship => (
               <Row
                 padding="s"

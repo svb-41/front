@@ -33,22 +33,26 @@ export type Props = {
   width?: number | string
   flex?: number
   wrap?: Wrap
-  maxWidth?: number
-  minWidth?: number
+  maxWidth?: number | string
+  minWidth?: number | string
   tag?: string
   className?: string
   color?: string
   onClick?: () => void
   style?: CSSProperties
   height?: number | string
+  maxHeight?: number | string
+  minHeight?: number | string
+  overflow?: 'auto' | 'hidden'
   onSubmit?: (event: FormDataEvent) => void
 }
 
 const Flex = (r: { row: boolean; col: boolean; name: string }) => {
   const fun: FC<Props> = props => {
     const { children, tag = 'div', onClick, onSubmit } = props
-    const { gap, padding = 'none', align, justify, wrap } = props
+    const { gap, padding = 'none', align, justify, wrap, overflow } = props
     const { background, width, flex, maxWidth, color, height, minWidth } = props
+    const { maxHeight, minHeight } = props
     const cursor = onClick ? 'pointer' : undefined
     const cl = classesNames({
       ...r,
@@ -58,6 +62,7 @@ const Flex = (r: { row: boolean; col: boolean; name: string }) => {
       justify,
       wrap,
       cursor,
+      overflow,
     })
     const className = props.className ? `${cl} ${props.className}` : cl
     const style = {
@@ -69,6 +74,8 @@ const Flex = (r: { row: boolean; col: boolean; name: string }) => {
       color,
       height,
       minWidth,
+      maxHeight,
+      minHeight,
     }
     return createElement(tag, { className, style, onClick, onSubmit }, children)
   }

@@ -31,3 +31,5 @@
 .wrap-no-wrap { flex-wrap: nowrap; }
 .wrap-wrap-reverse { flex-wrap: wrap-reverse; }
 .cursor-pointer { cursor: pointer; }
+.overflow-auto { overflow: auto; }
+.overflow-hidden { overflow: hidden; }
