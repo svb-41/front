@@ -1,11 +1,13 @@
 # Headers section
 [[headers]]
   for = "/static/*"
-  cache-control = "max-age=31536000"
+  [headers.values]
+    Cache-Control = "max-age=31536000"
 
 [[headers]]
   for = "/assets/*"
-  cache-control = "max-age=31536000"
+  [headers.values]
+    Cache-Control = "max-age=31536000"
 
 # Redirects section
 [[redirects]]
