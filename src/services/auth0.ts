@@ -24,7 +24,8 @@ export const useAuth = () => {
         await dispatch(action)
       }
     } catch (error) {
-      Sentry.captureException(error)
+      console.warn(error)
+      // Sentry.captureException(error)
     }
     return null
   }, [dispatch, auth0])
