@@ -9,10 +9,7 @@ export const UPDATE_WON = 'skirmishes/UPDATE_WON'
 export const UPDATE_STATS = 'skirmishes/UPDATE_STATS'
 export const UPDATE_FLEETS = 'skirmishes/UPDATE_FLEETS'
 
-export const selectFleet = (
-  cid: string,
-  size: 'small' | 'huge'
-): Effect<void> => {
+export const selectFleet = (cid: string, size: string): Effect<void> => {
   return async (dispatch, getState) => {
     const state = getState()
     if (!!state.user.fleetConfigs[cid]) {
@@ -31,10 +28,7 @@ export type Fight = {
   ais: services.ais.FetchedAI[]
   team: string
 }
-export const fight = (
-  username: string,
-  size: 'small' | 'huge'
-): Effect<Fight | null> => {
+export const fight = (username: string, size: string): Effect<Fight | null> => {
   return async (_dispatch, getState) => {
     const accessToken = getState().user.user?.accessToken
     if (!accessToken) return null

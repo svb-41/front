@@ -9,8 +9,7 @@ import {
 
 export type State = {
   fleets: {
-    small: string | null
-    huge: string | null
+    [id: string]: string | null
   }
   stats: {
     victories: number
@@ -31,7 +30,7 @@ const init: State = {
 
 export type Action =
   | { type: 'skirmishes/REPLACE_SKIRMISHES'; skirmishes: State }
-  | { type: 'skirmishes/SELECT_FLEET'; cid: string; size: 'small' | 'huge' }
+  | { type: 'skirmishes/SELECT_FLEET'; cid: string; size: string }
   | {
       type: 'skirmishes/UPDATE_FLEETS'
       fleets: { small: string | null; huge: string | null }

@@ -9,11 +9,18 @@ export const simulations: Mission[] = new Array(missionConf.numberOfsimutalions)
   .fill(0)
   .map((_, index) => require(`@/pages/ai/simulations/simulation-${index}.json`))
 
+export const arenas: Arena[] = new Array(missionConf.arenas)
+  .fill(0)
+  .map((_, index) => require(`@/pages/skirmishes/arenas/arena-${index}.json`))
+
 export const getMission = (id: string): Mission | undefined =>
   missions.find(m => m.id === id)
 
 export const getSimulation = (id: string): Mission | undefined =>
   simulations.find(m => m.id === id)
+
+export const getArena = (id: string): Arena | undefined =>
+  arenas.find(m => m.id === id)
 
 export type SerializedShip = {
   classShip: engine.ship.SHIP_CLASS
@@ -32,4 +39,12 @@ export type Mission = {
   ships: Array<SerializedShip>
   credit: number
   constraints?: string
+}
+
+export type Arena = {
+  id: string
+  title: string
+  start?: { x: number; y: number }
+  size: { height: number; width: number }
+  credit: number
 }

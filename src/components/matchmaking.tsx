@@ -9,6 +9,7 @@ import type { Fight } from '@/store/actions/skirmishes'
 import { ActivityIndicator } from '@/components/activity-indicator'
 import { renderShip } from '@/pages/missions/preparation'
 import s from '@/strings.json'
+import { arenas, getArena, Arena } from '@/services/mission'
 import * as colors from '@/lib/color'
 
 const FleetDescription = ({
@@ -44,7 +45,7 @@ export const Matchmaking = ({
   const dispatch = useDispatch()
   const [username, setUsername] = useState('')
   const [loading, setLoading] = useState(false)
-  const [selectedSize, setSelectedSize] = useState<'small' | 'huge'>('small')
+  const [selectedArena, setSelectedArena] = useState<Arena>(arenas[0])
   const [searched, setSearched] = useState(false)
   const [fetchedFleet, setFetchedFleet] = useState<Fight | null>(null)
   const usernameRef = useRef('')
@@ -62,7 +63,10 @@ export const Matchmaking = ({
             event.preventDefault()
             setLoading(true)
             try {
-              const action = actions.skirmishes.fight(username, 'small')
+              const action = actions.skirmishes.fight(
+                username,
+                selectedArena.id
+              )
               const value = await dispatch(action)
               const val = value
                 ? {
@@ -85,18 +89,15 @@ export const Matchmaking = ({
           <Column gap="s">
             <div>{s.components.matchmaking.selectSize}</div>
             <Row gap="s">
-              <Button
-                primary={selectedSize === 'small'}
-                small
-                text="small"
-                onClick={() => setSelectedSize('small')}
-              />
-              <Button
-                primary={selectedSize === 'huge'}
-                small
-                text="huge"
-                onClick={() => setSelectedSize('huge')}
-              />
+              {arenas.map(a => (
+                <Button
+                  key={a.id}
+                  primary={selectedArena === a}
+                  small
+                  text={a.title}
+                  onClick={() => setSelectedArena(a)}
+                />
+              ))}
             </Row>
           </Column>
           <Column tag="label" gap="s">

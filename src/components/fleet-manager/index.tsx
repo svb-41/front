@@ -457,6 +457,7 @@ export type Props = {
   maxCredits: number
   title?: boolean
   initialConfig?: Data
+  forbidOutOfCredit?: boolean //TODO disabled start button if ou of credit
 }
 export const FleetManager: FC<Props> = props => {
   const { team } = props

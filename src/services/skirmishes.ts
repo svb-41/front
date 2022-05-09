@@ -1,7 +1,7 @@
 import { URL } from '@/envs'
 
 export const save = async (
-  fleets: { small: string | null; huge: string | null },
+  fleets: { [id: string]: string | null },
   accessToken: string
 ) => {
   const body = JSON.stringify({ fleets })

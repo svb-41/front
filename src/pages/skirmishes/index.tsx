@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from '@/store/hooks'
 import * as selectors from '@/store/selectors'
 import * as actions from '@/store/actions'
 import { Main } from '@/components/main'
+import { arenas, getArena, Arena } from '@/services/mission'
 import { Row, Column } from '@/components/flex'
 import { Title, SubTitle, Caption } from '@/components/title'
 import { Button } from '@/components/button'
@@ -23,7 +24,7 @@ import { useEngine } from '@/lib/engine'
 
 type SavedFleetProps = {
   fleet: string | null
-  size: 'small' | 'huge'
+  size: string
   fleetConfigs: { [id: string]: Data }
   team: string
   ais: AI[]
@@ -85,31 +86,30 @@ const SavedFleet = (props: SavedFleetProps) => {
 }
 
 const SavedFleetSelector = ({
-  page,
-  setPage,
+  arena,
+  setArena,
   fleets,
   user,
   setAddingFleet,
   ais,
 }: any) => {
-  const selected = fleets[page] ? user.fleetConfigs[fleets[page]!] : null
+  const selected = fleets[arena.id]
+    ? user.fleetConfigs[fleets[arena.id]!]
+    : null
   return (
     <Column gap="l">
       <Column gap="s" padding="l" background="var(--eee)">
         <Title content="Your saved fleets" />
         <Row gap="s" justify="flex-end">
-          <Button
-            small
-            primary={page === 'small'}
-            text="small"
-            onClick={() => setPage('small')}
-          />
-          <Button
-            small
-            primary={page === 'huge'}
-            text="huge"
-            onClick={() => setPage('huge')}
-          />
+          {arenas.map(a => (
+            <Button
+              key={a.id}
+              small
+              primary={arena === a}
+              text={a.title}
+              onClick={() => setArena(a)}
+            />
+          ))}
         </Row>
         <SavedFleet
           selected={selected}
@@ -117,8 +117,8 @@ const SavedFleetSelector = ({
           ais={ais.ais}
           team={user.color}
           fleetConfigs={user.fleetConfigs}
-          fleet={fleets[page]}
-          size={page}
+          fleet={fleets[arena.id]}
+          size={arena.id}
         />
       </Column>
       <Grid
@@ -137,11 +137,13 @@ const Manager = ({
   ais,
   team,
   setState,
+  arena,
   favoritesAI,
 }: {
   engine: any
   ais: AI[]
   team: string
+  arena: Arena
   setState: (value: string) => void
   favoritesAI: string[]
 }) => {
@@ -150,11 +152,12 @@ const Manager = ({
     <Row className={styles.prepareMission} gap="xl">
       <FleetManager
         favoritesAI={favoritesAI}
-        maxCredits={500}
+        maxCredits={arena.credit}
         team={team}
         ships={user.unlockedShips}
         ais={ais}
         onValidConfiguration={c => c && engine.setFleet(c)}
+        forbidOutOfCredit
       >
         <Row gap="xl">
           <Button
@@ -251,15 +254,14 @@ const PlaySkirmishes = () => {
   const { stats, fleets } = useSelector(selectors.skirmishes)
   const { victories, defeats } = stats
   const [addingFleet, setAddingFleet] = useState(false)
-  const [page, setPage] = useState<'small' | 'huge'>('small')
+  const [arena, setArena] = useState<Arena>(arenas[0])
   const [fight, setFight] = useState<Fight | null>(null)
   const [state, setState] = useState('search')
-  const width = page === 'small' ? 2000 : 20000
   const enemy = prepareEnemy(fight)
   const engine = useEngine({
     onStart: () => setState('engine'),
     onEnd: () => setState('end'),
-    size: { width, height: width },
+    size: arena.size,
     player: { team: user.color, ais: ais.ais },
     enemy,
   })
@@ -303,8 +305,8 @@ const PlaySkirmishes = () => {
                 user={user}
                 setAddingFleet={setAddingFleet}
                 ais={ais}
-                page={page}
-                setPage={setPage}
+                arena={arena}
+                setArena={setArena}
               />
               <Matchmaking
                 team={user.color}
@@ -319,13 +321,14 @@ const PlaySkirmishes = () => {
           {addingFleet && state === 'search' && (
             <FleetManager
               favoritesAI={ais.favorites}
-              maxCredits={500}
+              maxCredits={arena.credit}
               title={false}
               team={user.color}
               ships={user.unlockedShips}
               ais={ais.ais}
               onValidConfiguration={c => setFleet(c ?? undefined)}
               initialConfig={fleet ?? undefined}
+              forbidOutOfCredit
             >
               <Row gap="l">
                 <Button
@@ -344,7 +347,10 @@ const PlaySkirmishes = () => {
                       const cid = await dispatch(save)
                       setFleet(undefined)
                       setAddingFleet(false)
-                      const select = actions.skirmishes.selectFleet(cid, page)
+                      const select = actions.skirmishes.selectFleet(
+                        cid,
+                        arena.id
+                      )
                       await dispatch(select)
                     }
                   }}
@@ -360,6 +366,7 @@ const PlaySkirmishes = () => {
               team={user.color}
               ais={ais.ais}
               setState={setState}
+              arena={arena}
             />
           )}
         </Column>
