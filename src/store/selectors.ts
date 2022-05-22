@@ -1,6 +1,7 @@
 import { State } from './types'
 import * as colors from '@/lib/color'
 
+export const connected = (state: State) => Boolean(state.user.id)
 export const userData = (state: State) => state.user
 export const userColor = (state: State) => state.user.color
 export const missions = (state: State) => state.user.unlockedMissions

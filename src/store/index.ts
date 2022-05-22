@@ -23,17 +23,20 @@ const crossReducer: Reducer<Types.State, Types.Action> = (state, action) => {
 const saveLocal = (store: any) => (next: any) => (action: any) => {
   const value = next(action)
   const state: Types.State = store.getState()
-  local.setUser(state.user.id!, {
-    missions: state.user.unlockedMissions,
-    ships: state.user.unlockedShips,
-    color: state.user.color,
-    ais: state.ai.ais.map(ai => ai.id),
-    favoriteAIS: state.ai.favorites,
-    tags: state.ai.tags,
-    fleetConfigs: state.user.fleetConfigs,
-    skirmishes: state.skirmishes,
-    preferedFleet: state.user.preferedFleet,
-  })
+  const id = state.user.id
+  if (id) {
+    local.setUser(state.user.id!, {
+      missions: state.user.unlockedMissions,
+      ships: state.user.unlockedShips,
+      color: state.user.color,
+      ais: state.ai.ais.map(ai => ai.id),
+      favoriteAIS: state.ai.favorites,
+      tags: state.ai.tags,
+      fleetConfigs: state.user.fleetConfigs,
+      skirmishes: state.skirmishes,
+      preferedFleet: state.user.preferedFleet,
+    })
+  }
   return value
 }
 

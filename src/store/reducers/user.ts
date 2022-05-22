@@ -14,10 +14,8 @@ import { Color } from '@/lib/color'
 import { Data } from '@/components/fleet-manager'
 import { IdToken } from '@auth0/auth0-react'
 
-export type User = string | null
-
 export type State = {
-  id: User | null
+  id: string | null
   unlockedShips: Array<string>
   unlockedMissions: Array<string>
   color: Color

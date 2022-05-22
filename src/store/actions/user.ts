@@ -5,6 +5,7 @@ import { v4 as uuid } from 'uuid'
 import { IdToken } from '@auth0/auth0-react'
 import * as mappers from '@/store/mappers'
 import * as data from '@/services/data'
+import { replaceUser } from '@/services/accounts'
 import * as ai from '@/store/actions/ai'
 import * as local from '@/services/localStorage'
 import * as skirmishes from '@/services/skirmishes'
@@ -91,8 +92,10 @@ export const login = (
   shouldSync?: boolean
 ): Effect<void> => {
   return async dispatch => {
-    const id = idToken?.sub
+    const id: string | null = idToken?.sub
     if (id) {
+      const oldId = local.getUid()
+      replaceUser(username, oldId ?? id, id, true)
       local.setUserId(id)
       const result = dispatch(fetchData(accessToken, id))
       if (shouldSync) await result

@@ -5,7 +5,7 @@ import { Button } from '@/components/button'
 import styles from './components.module.css'
 import s from '@/strings.json'
 
-const key = 'svb-cookie-consent'
+const key = 'svb41.cookie-consent'
 
 const readData = (): boolean | undefined => {
   const data = localStorage.getItem(key)

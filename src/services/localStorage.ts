@@ -2,10 +2,10 @@ import { v4 } from 'uuid'
 import { AI } from '@/lib/ai'
 import { Color } from '@/lib/color'
 
-const AI_KEY = 'ai'
-const UID_KEY = 'uid'
-const USER_KEY = 'user'
-const FAVORITE_AIS_KEY = 'favorite-ais'
+const AI_KEY = 'svb41.ai'
+const UID_KEY = 'svb41.uid'
+const USER_KEY = 'svb41.user'
+const FAVORITE_AIS_KEY = 'svb41.favorite-ais'
 
 export type StoredData = {
   missions: Array<string>
@@ -19,14 +19,16 @@ export type StoredData = {
   preferedFleet?: string
 }
 
-export const getUid = (): string => {
+export const getUid = (): string | null => {
   const uid = localStorage.getItem(UID_KEY)
   if (uid) return uid
-  else {
-    const newUid = v4()
-    localStorage.setItem(UID_KEY, newUid)
-    return newUid
-  }
+  return null
+}
+
+export const generateUid = () => {
+  const newUid = v4()
+  localStorage.setItem(UID_KEY, newUid)
+  return newUid
 }
 
 export const getUser = (uid: string): StoredData | undefined => {
@@ -64,8 +66,5 @@ export const setFavoriteAIS = (favoriteAIS: string[]) => {
 }
 
 export const reset = () => {
-  const key = 'svb-cookie-consent'
-  const value = localStorage.getItem(key)
-  localStorage.clear()
-  if (value) localStorage.setItem(key, value)
+  localStorage.removeItem(UID_KEY)
 }

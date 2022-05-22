@@ -31,14 +31,14 @@ export const useAuth = () => {
   }, [dispatch, auth0])
 
   const login = useCallback(
-    async (connection: Connection) => {
+    async (connection: Connection, username?: string) => {
       try {
         setLoading(true)
-        await auth0.loginWithPopup({ connection })
+        await auth0.loginWithPopup({ connection, login_hint: username })
         const idToken = await auth0.getIdTokenClaims()
         const accessToken = await auth0.getAccessTokenSilently()
-        const username = idToken?.['https://app.svb41.com/username'] ?? ''
-        const action = actions.login(idToken, accessToken, username, true)
+        const username_ = idToken?.['https://app.svb41.com/username'] ?? ''
+        const action = actions.login(idToken, accessToken, username_, true)
         await dispatch(action)
       } catch {
       } finally {

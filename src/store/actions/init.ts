@@ -32,23 +32,24 @@ const defaultUser: local.StoredData = {
 
 export const initStore: Effect<void> = async dispatch => {
   const id = local.getUid()
-  const data = local.getUser(id) ?? defaultUser
-
-  dispatch({ type: UPDATE_USER_ID, id })
-  //@ts-ignore
-  const ais: Array<AI> = data.ais.map(local.getAI).filter(ai => ai)
-  const favorites = data.favoriteAIS ?? local.favoriteAIS()
-  dispatch({ type: LOAD_AI, ais })
-  dispatch({ type: LOAD_FAVORITE_AIS, favorites })
-  dispatch({ type: REPLACE_SKIRMISHES, skirmishes: data.skirmishes })
-  dispatch({ type: UPDATE_TAGS, tags: data.tags ?? {} })
-  if (data.preferedFleet)
-    dispatch({ type: UPDATE_PREFERED_FLEET, fid: data.preferedFleet })
-  dispatch({
-    type: UPDATE_USER,
-    unlockedShips: data.ships,
-    unlockedMissions: data.missions,
-    color: data.color,
-    fleetConfigs: data.fleetConfigs,
-  })
+  if (id) {
+    const data = local.getUser(id) ?? defaultUser
+    dispatch({ type: UPDATE_USER_ID, id })
+    //@ts-ignore
+    const ais: Array<AI> = data.ais.map(local.getAI).filter(ai => ai)
+    const favorites = data.favoriteAIS ?? local.favoriteAIS()
+    dispatch({ type: LOAD_AI, ais })
+    dispatch({ type: LOAD_FAVORITE_AIS, favorites })
+    dispatch({ type: REPLACE_SKIRMISHES, skirmishes: data.skirmishes })
+    dispatch({ type: UPDATE_TAGS, tags: data.tags ?? {} })
+    if (data.preferedFleet)
+      dispatch({ type: UPDATE_PREFERED_FLEET, fid: data.preferedFleet })
+    dispatch({
+      type: UPDATE_USER,
+      unlockedShips: data.ships,
+      unlockedMissions: data.missions,
+      color: data.color,
+      fleetConfigs: data.fleetConfigs,
+    })
+  }
 }
