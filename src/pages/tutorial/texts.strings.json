@@ -1,0 +1,13 @@
+{
+  "contents": {
+    "welcome": "Welcome cadet",
+    "watching": "We were watching for your progress since years, and we were eager to know you among us.",
+    "exploration": "You’re probably aware that the galaxy is open to exploration. Since a couple of centuries, humans started to colonize space. The moon is already at war between Earth forces, and we don’t wan’t to be part of that. Our mission at Centauri is simple: we fly through the infinities, and find more resources, lands and maybe outer life.",
+    "notBoring": "Far be it from me the idea to be boring or pedantic, but let me remember you some important things. Centauri is one of the few companies which got the authorization to launch space colonization. With help from Earth we’re on track to become the most powerful company in 2552. God bless America right?",
+    "before": "By way of consequence, we’re not the type of people you already know. We’re building fleets, and we’re AI-first. Oh… Didn’t a company from old world said something like that…? What was their name again…? Something starting with a “G” I think. Anyway, forget about that. We’re building AI able to run ships. Ships like starships. We’re not _doing_ rocket science. We’re _launching_ rockets.",
+    "process": "The road is long, and full of embush for juniors like you. I hope you’re ready, because once you join us, there’s no turning back. Or maybe there is?",
+    "shall": "Anyway, shall we begin?"
+  },
+  "start": "Click to start",
+  "continue": "Click to continue…"
+}

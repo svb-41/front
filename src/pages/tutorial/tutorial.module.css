@@ -1,0 +1,11 @@
+.introductionWrapper {
+  font-size: 2.3rem;
+  overflow: hidden;
+}
+
+.introductionTexts {
+  font-family: 'Unifont';
+  font-size: 1.2rem;
+  line-height: 1.4;
+  white-space: pre-line;
+}
