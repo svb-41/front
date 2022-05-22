@@ -78,6 +78,7 @@ export const fetchData = (accessToken: string, id: string): Effect<boolean> => {
         color: mappers.stringToColor(preferences.color),
         fleetConfigs: parsedFleetConfigs,
         fleetSkirmishes,
+        onboarded: preferences.onboarded,
       })
       return true
     }

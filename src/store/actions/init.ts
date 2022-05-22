@@ -11,6 +11,7 @@ import { Effect } from '@/store/types'
 import { Color } from '@/lib/color'
 
 const defaultUser: local.StoredData = {
+  onboarded: false,
   missions: ['0'],
   ships: ['fighter'],
   ais: [],
@@ -50,6 +51,7 @@ export const initStore: Effect<void> = async dispatch => {
       unlockedMissions: data.missions,
       color: data.color,
       fleetConfigs: data.fleetConfigs,
+      onboarded: data.onboarded,
     })
   }
 }

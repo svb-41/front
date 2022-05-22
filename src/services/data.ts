@@ -29,6 +29,7 @@ export type ResponseFetchData = {
     fleetConfigs: Array<string>
     unlockedShips: Array<string>
     tags: { [key: string]: string }
+    onboarded: boolean
   }
   fleetSkirmishes: { small: string | null; huge: string | null }
   ais: ResponseAIS

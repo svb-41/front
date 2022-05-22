@@ -17,6 +17,7 @@ export type StoredData = {
   fleetConfigs: any
   skirmishes: any
   preferedFleet?: string
+  onboarded: boolean
 }
 
 export const getUid = (): string | null => {
@@ -33,7 +34,10 @@ export const generateUid = () => {
 
 export const getUser = (uid: string): StoredData | undefined => {
   const userData = localStorage.getItem(`${USER_KEY}-${uid}`)
-  if (userData) return JSON.parse(userData)
+  if (userData) {
+    const data = JSON.parse(userData)
+    return { ...data, onboarded: data.onboarded ?? false }
+  }
 }
 
 export const setUser = (uid: string, data: StoredData) =>

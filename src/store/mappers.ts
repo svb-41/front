@@ -7,7 +7,7 @@ import { FetchedAI } from '@/services/ais'
 export const preferences = {
   fromState(state: State) {
     const { user } = state
-    const { color, unlockedMissions, unlockedShips } = user
+    const { color, unlockedMissions, unlockedShips, onboarded } = user
     return {
       color,
       tags: state.ai.tags,
@@ -16,6 +16,7 @@ export const preferences = {
       fleetConfigs: Object.keys(state.user.fleetConfigs),
       unlockedMissions,
       unlockedShips,
+      onboarded,
     }
   },
 }

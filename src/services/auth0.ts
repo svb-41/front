@@ -1,10 +1,7 @@
-import decode from 'jwt-decode'
 import { useState, useCallback, useMemo } from 'react'
 import { useAuth0 } from '@auth0/auth0-react'
 import { useDispatch } from '@/store/hooks'
 import * as actions from '@/store/actions/user'
-import * as Sentry from '@sentry/react'
-import envs from '@/envs'
 
 export type Provider = 'username' | 'google'
 export type Connection = 'google-oauth2' | 'Username-Password-Authentication'

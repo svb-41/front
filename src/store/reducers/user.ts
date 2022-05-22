@@ -25,6 +25,7 @@ export type State = {
     idToken: IdToken | undefined
     accessToken: any
   }
+  onboarded: boolean
   preferedFleet?: string
 }
 
@@ -34,6 +35,7 @@ const init: State = {
   unlockedMissions: ['0'],
   color: Color.GREEN,
   fleetConfigs: {},
+  onboarded: false,
   user: null,
 }
 
@@ -56,6 +58,7 @@ export type Action =
       unlockedMissions: Array<string>
       color: Color
       fleetConfigs: { [id: string]: Data }
+      onboarded: boolean
     }
 
 const unique = <T>(arr: T[]): T[] => [...new Set(arr)]
@@ -77,7 +80,7 @@ export const reducer: Reducer<State, Action> = (state = init, action) => {
       return { ...state, preferedFleet }
     }
     case UPDATE_USER: {
-      const { color } = action
+      const { color, onboarded } = action
       const fleetConfigs = { ...state.fleetConfigs, ...action.fleetConfigs }
       const unlockedShips = [
         ...state.unlockedShips,
@@ -89,7 +92,14 @@ export const reducer: Reducer<State, Action> = (state = init, action) => {
           u => !state.unlockedMissions.includes(u)
         ),
       ]
-      return { ...state, unlockedShips, unlockedMissions, color, fleetConfigs }
+      return {
+        ...state,
+        unlockedShips,
+        unlockedMissions,
+        color,
+        fleetConfigs,
+        onboarded,
+      }
     }
     case UPDATE_COLOR: {
       const { color } = action

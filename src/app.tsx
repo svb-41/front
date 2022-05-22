@@ -17,13 +17,14 @@ import { Overlay } from '@/pages/overlay'
 import { Database } from '@/pages/database'
 import { Account } from '@/pages/account'
 import { Skirmishes } from '@/pages/skirmishes'
+import { Tutorial } from '@/pages/tutorial'
 import { AccountsConnection } from '@/pages/accounts-connection'
 import * as documentation from '@/doc'
 import silom from '@/assets/fonts/silom.ttf'
 import unifont from '@/assets/fonts/unifont.ttf'
 
 const App = () => {
-  const connected = useSelector(selectors.connected)
+  const { connected, onboarded } = useSelector(selectors.connected)
   const [visible, setVisible] = useState(true)
   const dispatch = useDispatch()
   const auth = useAuth()
@@ -55,6 +56,7 @@ const App = () => {
   }, [dispatch])
   if (visible) return <Overlay />
   if (!connected) return <AccountsConnection />
+  if (!onboarded) return <Tutorial />
   return (
     <Routes>
       <Route path="/" element={<Home />} />

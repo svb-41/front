@@ -26,10 +26,16 @@ const LoginButton = ({ provider, login }: LoginButtonProps) => {
 }
 
 export const Login = () => {
-  const { loading, login } = useAuth()
+  const { loading, login, logout } = useAuth()
   return (
     <Main>
-      <Column maxWidth={700} style={{ margin: 'var(--xl) auto' }} width="100%">
+      <Column
+        maxWidth={700}
+        style={{ margin: 'var(--xl) auto' }}
+        width="100%"
+        gap="m"
+        align="flex-end"
+      >
         <Column padding="xl" background="var(--ddd)" gap="l">
           <Column>
             <Title content={s.pages.login.title} />
@@ -46,6 +52,7 @@ export const Login = () => {
             </Row>
           )}
         </Column>
+        <Button warning text="Disconnect" onClick={logout} />
       </Column>
     </Main>
   )
