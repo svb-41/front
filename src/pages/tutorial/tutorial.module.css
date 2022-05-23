@@ -9,3 +9,61 @@
   line-height: 1.4;
   white-space: pre-line;
 }
+
+.app {
+  flex: 1;
+  font-family: 'Unifont';
+  font-size: 1rem;
+  padding: var(--s) var(--m);
+  border-right: 1px solid var(--eee);
+  max-width: 200px;
+  min-width: 100px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.app:first-child {
+  border-left: 1px solid var(--eee);
+}
+
+.active {
+  composes: app;
+  background: var(--eee);
+}
+
+.menuItem {
+  composes: app;
+  max-width: none;
+  min-width: 0px;
+  flex-shrink: 0;
+  flex: unset;
+  border-right: none;
+}
+
+.menuOverflow::-webkit-scrollbar {
+  display: none;
+}
+
+.unrolledMenuItem {
+  padding: var(--s) var(--m);
+}
+
+.unrolledMenuItem:hover {
+  background: var(--eee);
+}
+
+.unrolledMenu {
+  position: absolute;
+  left: var(--s);
+  font-family: 'Unifont';
+  z-index: 100000;
+}
+
+.wallpaper {
+  z-index: 100;
+  position: absolute;
+  inset: 0;
+  opacity: 0.2;
+  background: url(../../../public/img/wallpaper.jpg);
+}
