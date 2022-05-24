@@ -45,11 +45,20 @@ export type Props = {
   minHeight?: number | string
   overflow?: 'auto' | 'hidden'
   onSubmit?: (event: FormDataEvent) => void
+  onMouseDown?: (event: any) => void
+  onDoubleClick?: () => void
 }
 
 const Flex = (r: { row: boolean; col: boolean; name: string }) => {
   const fun: FC<Props> = props => {
-    const { children, tag = 'div', onClick, onSubmit } = props
+    const {
+      children,
+      tag = 'div',
+      onClick,
+      onSubmit,
+      onMouseDown,
+      onDoubleClick,
+    } = props
     const { gap, padding = 'none', align, justify, wrap, overflow } = props
     const { background, width, flex, maxWidth, color, height, minWidth } = props
     const { maxHeight, minHeight } = props
@@ -77,7 +86,11 @@ const Flex = (r: { row: boolean; col: boolean; name: string }) => {
       maxHeight,
       minHeight,
     }
-    return createElement(tag, { className, style, onClick, onSubmit }, children)
+    return createElement(
+      tag,
+      { className, style, onClick, onSubmit, onMouseDown, onDoubleClick },
+      children
+    )
   }
   fun.displayName = r.name
   return fun

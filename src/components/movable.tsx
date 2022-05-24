@@ -8,6 +8,7 @@ const highTop = 40
 type Position = { top: number; left: number }
 type Size = { width: number; height: number }
 type Origin = { x: number; y: number; originX: number; originY: number }
+type OriginResize = { x: number; y: number; originH: number; originW: number }
 type OldSize = { position: Position; size: Size }
 
 const newPosition = (values: Size) => {
@@ -27,15 +28,20 @@ const useSize = () => {
   const width_ = useRef<number>()
   const height_ = useRef<number>()
   const [dimensions, setDimensions] = useState<Size>()
-  const set = (size: Size) => {
-    setDimensions(size)
-    width_.current = size.width
-    height_.current = size.height
+  const set = (fun: (size?: Size) => Size | undefined) => {
+    setDimensions(s => {
+      const size = fun(s)
+      if (size) {
+        width_.current = size.width
+        height_.current = size.height
+        return size
+      }
+    })
   }
   react.useLayoutEffect(() => {
     if (!ref.current) return
     const { width, height } = ref.current.getBoundingClientRect()
-    set({ width, height })
+    set(() => ({ width, height }))
   }, [])
   const base = { ref, dimensions, set }
   // prettier-ignore
@@ -46,25 +52,33 @@ const useSize = () => {
   }
 }
 
-const useWindow = () => {
+const useWindow = (props: Props) => {
   /// Control absolute position and size of window.
   const [position, setPosition] = useState({ top: highTop + 24, left: 24 })
+  const pos = useRef({ top: highTop + 24, left: 24 })
+  useEffect(() => {
+    pos.current = { ...position }
+  }, [position.top, position.left])
   const size = useSize()
   /// Saved initial popup position on drag and drop.
   const origin = useRef<Origin | null>(null)
+  const resize = useRef<OriginResize | null>(null)
   /// Save position and size before maximizing.
   const oldSize = useRef<OldSize | null>(null)
   const isMaximized = Boolean(oldSize.current)
   /// Save style for transitionning.
   const [additionalStyle, setAdditionalStyle] = useState({})
 
-  /// End of the movable flow.
-  const mouseup = react.useCallback(() => (origin.current = null), [])
+  /// End of the movable or resizable flow.
+  const mouseup = react.useCallback(() => {
+    origin.current = null
+    resize.current = null
+  }, [])
 
   /// Setup the resize event listener, and handles the movable flow.
   useEffect(() => {
     /// Callback to resize event listener.
-    const resize = () => {
+    const onResize = () => {
       if (oldSize.current) {
         const { size, position } = oldSize.current
         const newPos = newPosition(size)(position)
@@ -87,15 +101,34 @@ const useWindow = () => {
         const left = Math.min(Math.max(0, left_), minLeft)
         setPosition({ top, left })
       }
+      if (resize.current) {
+        size.set(size => {
+          if (!size) return size
+          if (resize.current) {
+            const deltaW = event.clientX - resize.current.x
+            const width_ = deltaW + resize.current.originW
+            const deltaH = event.clientY - resize.current.y
+            const height_ = deltaH + resize.current.originH
+            const minWidth = (props.minWidth ?? 0) + 4
+            const minHeight = (props.minHeight ?? 0) + 4
+            const maxWidth = window.innerWidth - pos.current.left - 2
+            const maxHeight = window.innerHeight - pos.current.top - 2
+            const width = Math.min(Math.max(width_, minWidth), maxWidth)
+            const height = Math.min(Math.max(height_, minHeight), maxHeight)
+            return { width, height }
+          }
+          return size
+        })
+      }
     }
 
     /// Register event listeners.
-    window.addEventListener('resize', resize)
+    window.addEventListener('resize', onResize)
     document.addEventListener('mousemove', mousemove)
     document.addEventListener('mouseup', mouseup)
     /// Clean event listeners.
     return () => {
-      window.removeEventListener('resize', resize)
+      window.removeEventListener('resize', onResize)
       document.removeEventListener('mousemove', mousemove)
       document.removeEventListener('mouseup', mouseup)
     }
@@ -109,6 +142,17 @@ const useWindow = () => {
       y: event.clientY,
       originX: event.clientX - position.left,
       originY: event.clientY - position.top,
+    }
+  }
+
+  /// Starts the resizable flow. Don't do anything if maximized.
+  const onResize = (event: any) => {
+    if (isMaximized) return
+    resize.current = {
+      x: event.clientX,
+      y: event.clientY,
+      originW: size.width!,
+      originH: size.height!,
     }
   }
 
@@ -140,7 +184,7 @@ const useWindow = () => {
   const base = { display: 'flex', flexDirection: 'column' }
   const style = { ...base, ...position, ...size.dimensions, ...additionalStyle }
 
-  return { style, onMouseDown, maximize, ref: size.ref, isMaximized }
+  return { style, onMouseDown, onResize, maximize, ref: size.ref, isMaximized }
 }
 
 type Win = ReturnType<typeof useWindow>
@@ -149,7 +193,7 @@ const Buttons = ({ win, onClose }: ButtonsProps) => {
   const visibility = onClose ? 'visible' : 'hidden'
   return (
     <Flex.Row align="center">
-      {true && (
+      {false && (
         <button onClick={win.maximize} style={{ fontSize: 25 }}>
           □
         </button>
@@ -165,25 +209,37 @@ export type Props = {
   title?: string
   zIndex?: number
   onClose?: () => void
-  minWidth?: number | string
-  minHeight?: number | string
+  minWidth?: number
+  minHeight?: number
   padding?: Flex.Size
   onMouseDown?: () => void
   children?: React.ReactNode
 }
 export const Movable = (props: Props) => {
-  const win = useWindow()
+  const win = useWindow(props)
   const zIndex = props.zIndex ?? 1e10
   const style: any = { position: 'fixed', zIndex, ...win.style }
-  const maxHeight = win.isMaximized ? 'unset' : '90vh'
+  const maxHeight = win.isMaximized ? 'unset' : undefined
   return (
-    <div ref={win.ref} style={style} onMouseDown={props.onMouseDown}>
+    <div
+      ref={win.ref}
+      style={style}
+      className={styles.movableWrapper}
+      onMouseDown={event => {
+        if (props.onMouseDown) props.onMouseDown()
+        win.onResize(event)
+      }}
+    >
       <Flex.Column
+        flex={1}
         className={styles.movable}
         minWidth={props.minWidth}
         minHeight={props.minHeight}
         maxHeight={maxHeight}
-        flex={1}
+        onMouseDown={event => {
+          if (props.onMouseDown) props.onMouseDown()
+          event.stopPropagation()
+        }}
       >
         <div onMouseDown={win.onMouseDown} style={{ userSelect: 'none' }}>
           <Flex.Row
@@ -192,6 +248,7 @@ export const Movable = (props: Props) => {
             justify={props.title ? 'space-between' : 'flex-end'}
             padding="s"
             height={40}
+            onDoubleClick={win.maximize}
           >
             <div className={styles.movableTitle}>{props.title}</div>
             <Buttons win={win} onClose={props.onClose} />
