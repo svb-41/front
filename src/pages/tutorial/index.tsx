@@ -7,7 +7,7 @@ import styles from './tutorial.module.css'
 export type Page = 'introduction' | 'start'
 
 const RenderMenu = (props: AppBarProps) => {
-  const top = `calc(${props.appHeight ?? 40}px + var(--s))`
+  const top = `calc(40px + var(--s))`
   return (
     <Column
       background="var(--fff)"
@@ -36,13 +36,14 @@ type AppBarProps = {
   setActiveApp: (value: string) => void
   apps: App[]
   onClick: () => void
-  appHeight?: number
 }
 const AppBar = (props: AppBarProps) => {
   const { activeApp, setActiveApp, apps, onClick } = props
   const [openMenu, setOpenMenu] = useState(false)
   return (
     <Row
+      height={40}
+      align="center"
       background="var(--fff)"
       padding="s"
       style={{ position: 'relative' }}
@@ -97,12 +98,7 @@ export type App = {
 export const Desktop = () => {
   const [activeApp, setActiveApp] = useState<string>()
   const [apps, setApps] = useState<App[]>([])
-  const [appHeight, setAppHeight] = useState<number | undefined>()
   const appBarRef = useRef<HTMLDivElement>(null)
-  useLayoutEffect(() => {
-    if (appBarRef.current)
-      setAppHeight(appBarRef.current.getBoundingClientRect().height)
-  }, [])
   const focusApp = (id: string) => {
     setActiveApp(id)
     setApps(a => {
@@ -138,7 +134,6 @@ export const Desktop = () => {
     <Column flex={1} overflow="hidden" background="var(--eee)">
       <div ref={appBarRef} style={{ userSelect: 'none' }}>
         <AppBar
-          appHeight={appHeight}
           activeApp={activeApp}
           setActiveApp={focusApp}
           apps={apps}
@@ -156,7 +151,6 @@ export const Desktop = () => {
             onClose={() => setApps(a => a.filter(({ id }) => app.id !== id))}
             minWidth={300}
             minHeight={300}
-            maxTop={appHeight}
             padding="l"
           >
             {app.content}

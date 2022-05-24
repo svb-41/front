@@ -72,3 +72,17 @@
 .link {
   text-decoration: underline;
 }
+
+.movable {
+  border: 2px solid var(--fff);
+  overflow: hidden;
+  max-height: calc(100vh - 40px);
+}
+
+.movableTitle {
+  max-width: 200;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-left: var(--s);
+}
