@@ -78,7 +78,11 @@ const AppBar = (props: AppBarProps) => {
         {apps.map(app => {
           const cl = app.id === activeApp ? styles.active : styles.app
           return (
-            <div onClick={() => setActiveApp(app.id)} className={cl}>
+            <div
+              onClick={() => setActiveApp(app.id)}
+              className={cl}
+              key={app.id}
+            >
               {app.name}
             </div>
           )

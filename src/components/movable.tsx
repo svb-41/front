@@ -1,11 +1,17 @@
-import { FC, useState, useEffect, useLayoutEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import * as react from 'react'
 import * as Flex from '@/components/flex'
 import styles from './components.module.css'
 
 const highTop = 40
 
-const newPosition = (values: { width: number; height: number }) => {
-  return (position: { top: number; left: number }) => {
+type Position = { top: number; left: number }
+type Size = { width: number; height: number }
+type Origin = { x: number; y: number; originX: number; originY: number }
+type OldSize = { position: Position; size: Size }
+
+const newPosition = (values: Size) => {
+  return (position: Position) => {
     const minLeft = window.innerWidth - values.width
     const left = Math.min(position.left, minLeft)
     const minTop = window.innerHeight - values.height
@@ -14,55 +20,69 @@ const newPosition = (values: { width: number; height: number }) => {
   }
 }
 
+/// Init with the initial size of the window. Can be updated afterwards.
+const useSize = () => {
+  const ref = useRef<HTMLDivElement>(null)
+  // The two refs are present to avoid adding and removing eventListeners.
+  const width_ = useRef<number>()
+  const height_ = useRef<number>()
+  const [dimensions, setDimensions] = useState<Size>()
+  const set = (size: Size) => {
+    setDimensions(size)
+    width_.current = size.width
+    height_.current = size.height
+  }
+  react.useLayoutEffect(() => {
+    if (!ref.current) return
+    const { width, height } = ref.current.getBoundingClientRect()
+    set({ width, height })
+  }, [])
+  const base = { ref, dimensions, set }
+  // prettier-ignore
+  return {
+    ...base,
+    get height() { return height_.current },
+    get width() { return width_.current },
+  }
+}
+
 const useWindow = () => {
   /// Control absolute position and size of window.
   const [position, setPosition] = useState({ top: highTop + 24, left: 24 })
-  const [size, setSize] = useState<{ width: number; height: number }>()
+  const size = useSize()
   /// Saved initial popup position on drag and drop.
-  const popupRef = useRef<any>(null)
-  const divRef = useRef<any>(null)
-  const values = useRef<any>(null)
+  const origin = useRef<Origin | null>(null)
   /// Save position and size before maximizing.
-  const oldSize = useRef<any>(null)
+  const oldSize = useRef<OldSize | null>(null)
   const isMaximized = Boolean(oldSize.current)
   /// Save style for transitionning.
   const [additionalStyle, setAdditionalStyle] = useState({})
 
   /// End of the movable flow.
-  const mouseup = () => (popupRef.current = null)
-
-  /// Computes the initial size of the window. Mandatory for resize.
-  useLayoutEffect(() => {
-    if (divRef.current) {
-      const { width, height } = divRef.current.getBoundingClientRect()
-      setSize({ width, height })
-    }
-  }, [])
+  const mouseup = react.useCallback(() => (origin.current = null), [])
 
   /// Setup the resize event listener, and handles the movable flow.
   useEffect(() => {
     /// Callback to resize event listener.
     const resize = () => {
-      if (isMaximized) {
-        const newPos = newPosition(oldSize.current)(oldSize.current.position)
+      if (oldSize.current) {
+        const { size, position } = oldSize.current
+        const newPos = newPosition(size)(position)
         oldSize.current.position = newPos
-      } else {
-        values.current = divRef.current?.getBoundingClientRect?.() ?? null
-        setPosition(newPosition(values.current))
+      } else if (size.height && size.width) {
+        const { width, height } = size
+        setPosition(newPosition({ width, height }))
       }
     }
 
     /// Callback to mousemove event listener.
     const mousemove = (event: MouseEvent) => {
-      if (isMaximized) return
-      if (!values.current)
-        if (!divRef.current) return
-        else values.current = divRef.current.getBoundingClientRect()
-      if (popupRef.current) {
-        const left_ = event.clientX - popupRef.current.originX
-        const bottom_ = event.clientY - popupRef.current.originY
-        const minTop = window.innerHeight - values.current!.height
-        const minLeft = window.innerWidth - values.current!.width
+      if (isMaximized || !size.width || !size.height) return
+      if (origin.current) {
+        const left_ = event.clientX - origin.current.originX
+        const bottom_ = event.clientY - origin.current.originY
+        const minTop = window.innerHeight - size.height
+        const minLeft = window.innerWidth - size.width
         const top = Math.min(Math.max(highTop, bottom_), minTop)
         const left = Math.min(Math.max(0, left_), minLeft)
         setPosition({ top, left })
@@ -84,7 +104,7 @@ const useWindow = () => {
   /// Starts the movable flow. Don't do anything if maximized.
   const onMouseDown = (event: any) => {
     if (isMaximized) return
-    popupRef.current = {
+    origin.current = {
       x: event.clientX,
       y: event.clientY,
       originX: event.clientX - position.left,
@@ -94,16 +114,17 @@ const useWindow = () => {
 
   /// Switch between maximize and windowed mode.
   const maximize = () => {
-    if (isMaximized) {
-      const { height, width, position } = oldSize.current
+    if (oldSize.current) {
+      const { size, position } = oldSize.current
+      const { height, width } = size
       setAdditionalStyle({ transition: 'all 300ms', width, height })
       setPosition(position)
       oldSize.current = null
       setTimeout(() => setAdditionalStyle({}), 300)
     } else {
-      if (divRef.current && size) {
+      if (size.width && size.height) {
         const { width, height } = size
-        oldSize.current = { position, width, height }
+        oldSize.current = { position, size: { width, height } }
         setAdditionalStyle({ transition: 'all 300ms', width, height })
         setTimeout(() => {
           const pos = { width: '100vw', height: '100vh' }
@@ -117,9 +138,9 @@ const useWindow = () => {
 
   /// Styles to apply to movable wrapper.
   const base = { display: 'flex', flexDirection: 'column' }
-  const style = { ...base, ...position, ...size, ...additionalStyle }
+  const style = { ...base, ...position, ...size.dimensions, ...additionalStyle }
 
-  return { style, onMouseDown, maximize, ref: divRef, isMaximized }
+  return { style, onMouseDown, maximize, ref: size.ref, isMaximized }
 }
 
 type Win = ReturnType<typeof useWindow>
@@ -148,8 +169,9 @@ export type Props = {
   minHeight?: number | string
   padding?: Flex.Size
   onMouseDown?: () => void
+  children?: React.ReactNode
 }
-export const Movable: FC<Props> = props => {
+export const Movable = (props: Props) => {
   const win = useWindow()
   const zIndex = props.zIndex ?? 1e10
   const style: any = { position: 'fixed', zIndex, ...win.style }
