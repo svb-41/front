@@ -3,10 +3,10 @@ import * as react from 'react'
 import * as Flex from '@/components/flex'
 import styles from './components.module.css'
 
-const highTop = 40
+export const TOP_SPACE = 40
 
-type Position = { top: number; left: number }
-type Size = { width: number; height: number }
+export type Position = { top: number; left: number }
+export type Size = { width: number; height: number }
 type Origin = { x: number; y: number; originX: number; originY: number }
 type OriginResize = { x: number; y: number; originH: number; originW: number }
 type OldSize = { position: Position; size: Size }
@@ -22,7 +22,7 @@ const newPosition = (values: Size) => {
 }
 
 /// Init with the initial size of the window. Can be updated afterwards.
-const useSize = () => {
+const useSize = (fullscreen?: boolean | { size: Size; position: Position }) => {
   const ref = useRef<HTMLDivElement>(null)
   // The two refs are present to avoid adding and removing eventListeners.
   const width_ = useRef<number>()
@@ -40,7 +40,9 @@ const useSize = () => {
   }
   react.useLayoutEffect(() => {
     if (!ref.current) return
-    const { width, height } = ref.current.getBoundingClientRect()
+    const { width, height } = fullscreen
+      ? { width: window.innerWidth, height: window.innerHeight }
+      : ref.current.getBoundingClientRect()
     set(() => ({ width, height }))
   }, [])
   const base = { ref, dimensions, set }
@@ -52,14 +54,17 @@ const useSize = () => {
   }
 }
 
+const initPositionFull = { top: 0, left: 0 }
+const initPosition = { top: TOP_SPACE + 16, left: 16 }
 const useWindow = (props: Props) => {
+  const init = props.fullscreen ? initPositionFull : initPosition
   /// Control absolute position and size of window.
-  const [position, setPosition] = useState({ top: highTop + 24, left: 24 })
-  const pos = useRef({ top: highTop + 24, left: 24 })
+  const [position, setPosition] = useState(init)
+  const pos = useRef(init)
   useEffect(() => {
     pos.current = { ...position }
   }, [position.top, position.left])
-  const size = useSize()
+  const size = useSize(props.fullscreen)
   /// Saved initial popup position on drag and drop.
   const origin = useRef<Origin | null>(null)
   const resize = useRef<OriginResize | null>(null)
@@ -97,7 +102,7 @@ const useWindow = (props: Props) => {
         const bottom_ = event.clientY - origin.current.originY
         const minTop = window.innerHeight - size.height
         const minLeft = window.innerWidth - size.width
-        const top = Math.min(Math.max(highTop, bottom_), minTop)
+        const top = Math.min(Math.max(TOP_SPACE, bottom_), minTop)
         const left = Math.min(Math.max(0, left_), minLeft)
         setPosition({ top, left })
       }
@@ -156,6 +161,17 @@ const useWindow = (props: Props) => {
     }
   }
 
+  const move = (position: Position, size_?: Size) => {
+    // const { width, height } = size
+    // oldSize.current = { position, size: { width, height } }
+    setAdditionalStyle({ transition: 'all 300ms' })
+    setTimeout(() => {
+      if (size_) size.set(() => size_)
+      setPosition(position)
+      setTimeout(() => setAdditionalStyle(pos), 300)
+    }, 100)
+  }
+
   /// Switch between maximize and windowed mode.
   const maximize = () => {
     if (oldSize.current) {
@@ -169,7 +185,7 @@ const useWindow = (props: Props) => {
       if (size.width && size.height) {
         const { width, height } = size
         oldSize.current = { position, size: { width, height } }
-        setAdditionalStyle({ transition: 'all 300ms', width, height })
+        setAdditionalStyle({ transition: 'all 300ms' })
         setTimeout(() => {
           const pos = { width: '100vw', height: '100vh' }
           setPosition({ top: 0, left: 0 })
@@ -179,6 +195,13 @@ const useWindow = (props: Props) => {
       }
     }
   }
+
+  react.useEffect(() => {
+    const fs = props.fullscreen
+    if (typeof fs === 'object') {
+      move(fs.position, fs.size)
+    }
+  }, [props.fullscreen])
 
   /// Styles to apply to movable wrapper.
   const base = { display: 'flex', flexDirection: 'column' }
@@ -213,13 +236,14 @@ export type Props = {
   minHeight?: number
   padding?: Flex.Size
   onMouseDown?: () => void
+  fullscreen?: boolean | { size: Size; position: Position }
   children?: React.ReactNode
 }
 export const Movable = (props: Props) => {
   const win = useWindow(props)
   const zIndex = props.zIndex ?? 1e10
   const style: any = { position: 'fixed', zIndex, ...win.style }
-  const maxHeight = win.isMaximized ? 'unset' : undefined
+  const maxHeight = win.isMaximized || props.fullscreen ? 'unset' : undefined
   return (
     <div
       ref={win.ref}
@@ -242,17 +266,19 @@ export const Movable = (props: Props) => {
         }}
       >
         <div onMouseDown={win.onMouseDown} style={{ userSelect: 'none' }}>
-          <Flex.Row
-            align="center"
-            background="var(--fff)"
-            justify={props.title ? 'space-between' : 'flex-end'}
-            padding="s"
-            height={40}
-            onDoubleClick={win.maximize}
-          >
-            <div className={styles.movableTitle}>{props.title}</div>
-            <Buttons win={win} onClose={props.onClose} />
-          </Flex.Row>
+          {!props.fullscreen && (
+            <Flex.Row
+              align="center"
+              background="var(--fff)"
+              justify={props.title ? 'space-between' : 'flex-end'}
+              padding="s"
+              height={40}
+              onDoubleClick={win.maximize}
+            >
+              <div className={styles.movableTitle}>{props.title}</div>
+              <Buttons win={win} onClose={props.onClose} />
+            </Flex.Row>
+          )}
         </div>
         <Flex.Column
           overflow="auto"
