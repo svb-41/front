@@ -26,6 +26,7 @@ const Identicon = ({ username }: { username: string }) => {
     <a onClick={onClick} href="/account" className={styles.identicon}>
       <div style={{ padding: 'var(--s) var(--m)' }}>{username}</div>
       <img
+        alt="user icon"
         src={`${URL}/user/${username}.svg`}
         className={styles.identiconImg}
       />

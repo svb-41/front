@@ -1,14 +1,12 @@
 import {
   useState,
   useImperativeHandle,
-  useCallback,
   useRef,
   useMemo,
   useContext,
   createContext,
   forwardRef,
 } from 'react'
-import * as win from '@/lib/window'
 import { Column, Row } from '@/components/flex'
 import { App } from './app'
 import * as Movable from '../movable'
@@ -98,7 +96,7 @@ export const Desktop = forwardRef((props: Props, ref: React.Ref<Handler>) => {
     const apps_ = { get, add, replace }
     return { apps: apps_ }
   }, [apps])
-  useImperativeHandle(ref, () => handler, [apps])
+  useImperativeHandle(ref, () => handler, [handler])
   const focusApp = (id: string) => {
     setActiveApp(id)
     setApps(a => {

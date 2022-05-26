@@ -23,16 +23,16 @@ const onResize = (force: boolean) => {
     return apps.map(app => {
       if (typeof app.fullscreen !== 'object' && !force) return app
       if (app.id === 'Tutorial') {
-        const height = dims.height - 4 - Movable.TOP_SPACE - 24
+        const height = dims.height - Movable.TOP_SPACE - 24
         const size = { width: 400, height }
         const position = { top: 12, left: 12 }
         return { ...app, fullscreen: { size, position } }
       }
       if (app.name === 'Fight') {
         const width = dims.width - 400 - 12 - 12 - 12
-        const height = dims.height - 4 - Movable.TOP_SPACE - 24
+        const height = dims.height - Movable.TOP_SPACE - 24
         const size = { height, width }
-        const position = { top: 12, left: dims.width - 12 - width }
+        const position = { top: 12, left: dims.width - width - 12 }
         return { ...app, fullscreen: { position, size } }
       }
       return app
@@ -43,8 +43,8 @@ const onResize = (force: boolean) => {
 const onStartFight = (ais_: AI[], desktop: Desktop.Handler) => {
   const ai = ais_[0]
   const width = window.innerWidth - 400 - 12 - 12 - 12
-  const height = window.innerHeight - 4 - Movable.TOP_SPACE - 24
-  const left = window.innerWidth - 12 - width
+  const height = window.innerHeight - Movable.TOP_SPACE - 24
+  const left = window.innerWidth - width - 12
   const position = { top: 12, left }
   const size = { height, width }
   const mission = getSimulation('0')!

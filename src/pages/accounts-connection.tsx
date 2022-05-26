@@ -27,7 +27,11 @@ const Card = ({ username, plus, identicon, onClick, text }: CardProps) => (
     onClick={onClick}
   >
     {identicon && username && (
-      <img style={{ width: 40 }} src={`${URL}/user/${username}.svg`} />
+      <img
+        alt="Identicon"
+        style={{ width: 40 }}
+        src={`${URL}/user/${username}.svg`}
+      />
     )}
     {username && !identicon && <QuestionMark />}
     {!username && plus && <Plus />}

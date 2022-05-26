@@ -320,7 +320,7 @@ export const Renderer = ({ engine, opts }: Props) => {
                   renderer.current?.dispatchEvent(event)
                 }}
               >
-                <img src={getImage(ship.shipClass, ship.team)} />
+                <img alt="Ship" src={getImage(ship.shipClass, ship.team)} />
                 <Column>
                   <div>ID {ship.id.slice(0, 15)}…</div>
                   <div style={{ fontSize: '.9rem', color: 'var(--888)' }}>

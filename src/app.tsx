@@ -53,7 +53,7 @@ const App = () => {
       }
     }
     run()
-  }, [dispatch])
+  }, [])
   if (visible) return <Overlay />
   if (!connected) return <AccountsConnection />
   if (!onboarded) return <Tutorial />

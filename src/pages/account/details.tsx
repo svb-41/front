@@ -27,7 +27,7 @@ const SyncButton = () => {
   }
   return (
     <Row background="var(--eee)" padding="l" gap="l" onClick={onSync}>
-      <img className={cl} style={{ width: 20 }} src={refresh} />
+      <img alt="refresh" className={cl} style={{ width: 20 }} src={refresh} />
       <Title content={s.pages.account.sync} />
     </Row>
   )
@@ -48,6 +48,7 @@ export const Details = () => {
           width="100%"
         >
           <img
+            alt="User icon"
             className={styles.profilePictureDetails}
             src={`${URL}/user/${user.user.username}.svg`}
           />
