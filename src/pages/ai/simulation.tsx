@@ -5,7 +5,7 @@ import { Title } from '@/components/title'
 import { ActivityIndicator } from '@/components/activity-indicator'
 import { Renderer } from '@/renderer'
 import * as svb from '@svb-41/engine'
-import { useEngine, useMissionEnemy } from '@/lib/engine'
+import { useEngine, getMissionEnemy } from '@/lib/engine'
 import styles from './ai.module.css'
 import { AI } from '@/lib/ai'
 import { getSimulation } from '@/services/mission'
@@ -39,7 +39,7 @@ export const Simulation = ({ ai, beforeLaunch, hide }: Props) => {
   const simulation = getSimulation('0')!
   const [ship] = useState<SHIP_CLASS>(SHIP_CLASS.FIGHTER)
   const [state, setState] = useState('preparation')
-  const enemy = useMissionEnemy(simulation, 'red')
+  const enemy = getMissionEnemy(simulation, 'red')
   const { engine, setFleet, start, reset } = useEngine({
     onStart: () => setState('engine'),
     onEnd: () => setState('end'),

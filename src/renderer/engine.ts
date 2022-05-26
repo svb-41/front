@@ -87,7 +87,7 @@ export class Engine extends EventTarget {
       view,
       antialias,
       resizeTo: div,
-      transparent: true,
+      backgroundAlpha: 0,
     })
     const { scroll, onClick, onDragMove, onDragEnd, onDragStart } =
       this.moveFunctions()
@@ -352,6 +352,7 @@ export class Engine extends EventTarget {
   }
 
   private updateDisplay() {
+    this.#app.resize()
     this.#engine.state.ships.forEach(ship => {
       const { id, position, team, stats, shipClass } = ship
       const { size, detection } = stats

@@ -6,7 +6,7 @@
 }
 
 .pause {
-  position: fixed;
+  position: absolute;
   bottom: 0;
   color: white;
   right: 0;

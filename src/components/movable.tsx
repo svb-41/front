@@ -23,6 +23,10 @@ const newPosition = (values: Size) => {
 
 /// Init with the initial size of the window. Can be updated afterwards.
 const useSize = (fullscreen?: boolean | { size: Size; position: Position }) => {
+  const isFullscreen = useRef(fullscreen)
+  useEffect(() => {
+    isFullscreen.current = fullscreen
+  }, [fullscreen])
   const ref = useRef<HTMLDivElement>(null)
   // The two refs are present to avoid adding and removing eventListeners.
   const width_ = useRef<number>()
@@ -41,11 +45,13 @@ const useSize = (fullscreen?: boolean | { size: Size; position: Position }) => {
   react.useLayoutEffect(() => {
     if (!ref.current) return
     const { width, height } = fullscreen
-      ? { width: window.innerWidth, height: window.innerHeight }
+      ? typeof fullscreen === 'object'
+        ? { width: fullscreen.size.width, height: fullscreen.size.height }
+        : { width: window.innerWidth, height: window.innerHeight }
       : ref.current.getBoundingClientRect()
     set(() => ({ width, height }))
   }, [])
-  const base = { ref, dimensions, set }
+  const base = { ref, dimensions, set, isFullscreen }
   // prettier-ignore
   return {
     ...base,
@@ -54,9 +60,15 @@ const useSize = (fullscreen?: boolean | { size: Size; position: Position }) => {
   }
 }
 
-const initPositionFull = { top: 0, left: 0 }
-const initPosition = { top: TOP_SPACE + 16, left: 16 }
 const useWindow = (props: Props) => {
+  const initPositionFull =
+    typeof props.fullscreen === 'object'
+      ? {
+          top: props.fullscreen.position.top + TOP_SPACE,
+          left: props.fullscreen.position.left,
+        }
+      : { top: 0, left: 0 }
+  const initPosition = { top: TOP_SPACE + 16, left: 16 }
   const init = props.fullscreen ? initPositionFull : initPosition
   /// Control absolute position and size of window.
   const [position, setPosition] = useState(init)
@@ -84,7 +96,12 @@ const useWindow = (props: Props) => {
   useEffect(() => {
     /// Callback to resize event listener.
     const onResize = () => {
-      if (oldSize.current) {
+      const fs = size.isFullscreen.current
+      if (fs && typeof fs === 'boolean') {
+        const width = window.innerWidth
+        const height = window.innerHeight
+        size.set(() => ({ width, height }))
+      } else if (oldSize.current) {
         const { size, position } = oldSize.current
         const newPos = newPosition(size)(position)
         oldSize.current.position = newPos

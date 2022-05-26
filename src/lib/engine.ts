@@ -196,7 +196,7 @@ export const winnerTeam = (engine: svb.engine.Engine, size: Size) => {
   }
 }
 
-export const useMissionEnemy = (mission: Mission, team: string): EnemyData => {
+export const getMissionEnemy = (mission: Mission, team: string): EnemyData => {
   const ships_ = mission.ships.map(s => ({ ...s, id: uuid() }))
   const aiIDs = [...new Set(ships_.map(s => s.ai))]
   const ships = ships_.map(ship => {

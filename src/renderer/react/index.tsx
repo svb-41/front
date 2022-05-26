@@ -309,6 +309,7 @@ export const Renderer = ({ engine, opts }: Props) => {
           >
             {engine.state.ships.map(ship => (
               <Row
+                key={ship.id}
                 padding="s"
                 className={styles.centerShip}
                 align="center"

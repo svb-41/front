@@ -14,7 +14,7 @@ import { Details } from '@/components/ship'
 import { Movable } from '@/components/movable'
 import { Renderer } from '@/renderer'
 import * as color from '@/lib/color'
-import { useEngine, useMissionEnemy } from '@/lib/engine'
+import { useEngine, getMissionEnemy } from '@/lib/engine'
 import * as services from '@/services/mission'
 import styles from './Missions.module.css'
 import s from '@/strings.json'
@@ -60,7 +60,7 @@ const useSetupEngine = (setState: (value: string) => void, fleet?: Data) => {
   const team = preferences.player.color
   const ais = preferences.ais
   const { size, start } = details.mission
-  const enemy = useMissionEnemy(details.mission, preferences.enemy)
+  const enemy = getMissionEnemy(details.mission, preferences.enemy)
   const player = { team, ais, fleet }
   const onStart = () => setState('engine')
   const onEnd = () => setState('end')
