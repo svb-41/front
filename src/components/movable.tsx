@@ -199,7 +199,9 @@ const useWindow = (props: Props) => {
   react.useEffect(() => {
     const fs = props.fullscreen
     if (typeof fs === 'object') {
-      move(fs.position, fs.size)
+      const { left } = fs.position
+      const top = fs.position.top + TOP_SPACE
+      move({ left, top }, fs.size)
     }
   }, [props.fullscreen])
 
@@ -242,7 +244,8 @@ export type Props = {
 export const Movable = (props: Props) => {
   const win = useWindow(props)
   const zIndex = props.zIndex ?? 1e10
-  const style: any = { position: 'fixed', zIndex, ...win.style }
+  const cursor = props.fullscreen ? 'auto' : undefined
+  const style: any = { position: 'fixed', zIndex, ...win.style, cursor }
   const maxHeight = win.isMaximized || props.fullscreen ? 'unset' : undefined
   return (
     <div
@@ -251,7 +254,7 @@ export const Movable = (props: Props) => {
       className={styles.movableWrapper}
       onMouseDown={event => {
         if (props.onMouseDown) props.onMouseDown()
-        win.onResize(event)
+        if (!props.fullscreen) win.onResize(event)
       }}
     >
       <Flex.Column

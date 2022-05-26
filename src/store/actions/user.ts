@@ -92,13 +92,18 @@ export const login = (
   username: string,
   shouldSync?: boolean
 ): Effect<void> => {
-  return async dispatch => {
+  return async (dispatch, getState) => {
     const id: string | null = idToken?.sub
     if (id) {
       const oldId = local.getUid()
       replaceUser(username, oldId ?? id, id, true)
       local.setUserId(id)
       const result = dispatch(fetchData(accessToken, id))
+      const state = getState()
+      if (state.ai.ais.length === 0) {
+        const ai_ = await dispatch(ai.createAI(uuid()))
+        await dispatch(ai.compileAI(ai_))
+      }
       if (shouldSync) await result
       dispatch({ type: LOGIN, idToken, accessToken, username })
       await dispatch(sync)

@@ -20,7 +20,7 @@ export const DELETE_TAGS = 'ai/DELETE_TAGS'
 
 const defaultAI = (id: string): AI => {
   const createdAt = new Date()
-  const code = templateAI.hold
+  const code = templateAI.assault
   const file: File = { language: 'typescript', code, path: 'new.ts' }
   return { id, file, updatedAt: createdAt, createdAt, tags: [] }
 }

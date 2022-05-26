@@ -1,9 +1,15 @@
-import { useState, useRef, useLayoutEffect } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Column, Row } from '@/components/flex'
+import * as Flex from '@/components/flex'
 import * as Movable from '@/components/movable'
 import { Introduction } from './introduction'
 import * as uuid from 'uuid'
 import styles from './tutorial.module.css'
+import { Simulation } from '@/pages/ai/simulation'
+import { useSelector, useDispatch } from '@/store/hooks'
+import * as selectors from '@/store/selectors'
+import * as actions from '@/store/actions'
+
 export type Page = 'introduction' | 'start'
 
 const RenderMenu = (props: AppBarProps) => {
@@ -97,6 +103,7 @@ export type App = {
   name: string
   content: React.ReactNode
   zIndex: number
+  padding?: Flex.Size
   fullscreen?:
     | boolean
     | {
@@ -106,29 +113,68 @@ export type App = {
 }
 
 export const Desktop = () => {
+  const dispatch = useDispatch()
   const [activeApp, setActiveApp] = useState<string>()
+  const introId = useRef('')
+  const onResize = (force: boolean) => {
+    setApps(apps => {
+      return apps.map(app => {
+        if (app.id !== introId.current) return app
+        if (typeof app.fullscreen !== 'object' && !force) return app
+        const height = window.innerHeight - 4 - Movable.TOP_SPACE - 24
+        const size = { width: 400, height }
+        const position = { top: 12, left: 12 }
+        return { ...app, fullscreen: { size, position } }
+      })
+    })
+  }
+  useEffect(() => {
+    const resizer = () => onResize(false)
+    window.addEventListener('resize', resizer)
+    return () => window.removeEventListener('resize', resizer)
+  }, [])
+  const ais = useSelector(selectors.ais)
   const [apps, setApps] = useState<App[]>(() => {
-    const id = uuid.v4()
+    introId.current = uuid.v4()
     return [
       {
         name: 'Tutorial',
-        id,
+        id: introId.current,
+        padding: 'l',
         content: (
           <Introduction
-            onNext={() =>
+            onNext={() => onResize(true)}
+            onStartFight={() => {
               setApps(apps => {
-                return apps.map(app => {
-                  if (app.id !== id) return app
-                  return {
-                    ...app,
+                const ai = ais.ais[0]
+                const width = window.innerWidth - 400 - 12 - 12 - 12
+                const height = window.innerHeight - 4 - Movable.TOP_SPACE - 24
+                return [
+                  ...apps,
+                  {
+                    name: 'Fight',
+                    id: uuid.v4(),
+                    zIndex: 1,
                     fullscreen: {
-                      size: { width: 320, height: 320 },
-                      position: { top: Movable.TOP_SPACE + 12, left: 12 },
+                      position: {
+                        top: 12,
+                        left: window.innerWidth - 12 - width,
+                      },
+                      size: { height, width },
                     },
-                  }
-                })
+                    content: (
+                      <Simulation
+                        ai={ai}
+                        hide
+                        beforeLaunch={async () => {
+                          await dispatch(actions.ai.compileAI(ai))
+                        }}
+                      />
+                    ),
+                  },
+                ]
               })
-            }
+            }}
           />
         ),
         zIndex: 1,
@@ -190,7 +236,7 @@ export const Desktop = () => {
             onClose={() => setApps(a => a.filter(({ id }) => app.id !== id))}
             minWidth={300}
             minHeight={300}
-            padding="l"
+            padding={app.padding}
           >
             {app.content}
           </Movable.Movable>

@@ -9,6 +9,8 @@ import { REPLACE_SKIRMISHES } from '@/store/actions/skirmishes'
 import { AI } from '@/lib/ai'
 import { Effect } from '@/store/types'
 import { Color } from '@/lib/color'
+import * as ai from './ai'
+import { v4 as uuid } from 'uuid'
 
 const defaultUser: local.StoredData = {
   onboarded: false,
@@ -31,7 +33,7 @@ const defaultUser: local.StoredData = {
   },
 }
 
-export const initStore: Effect<void> = async dispatch => {
+export const initStore: Effect<void> = async (dispatch, getState) => {
   const id = local.getUid()
   if (id) {
     const data = local.getUser(id) ?? defaultUser
@@ -53,5 +55,10 @@ export const initStore: Effect<void> = async dispatch => {
       fleetConfigs: data.fleetConfigs,
       onboarded: data.onboarded,
     })
+    const state = getState()
+    if (state.ai.ais.length === 0) {
+      const ai_ = await dispatch(ai.createAI(uuid()))
+      await dispatch(ai.compileAI(ai_))
+    }
   }
 }

@@ -30,8 +30,12 @@ const RenderLoading = () => (
   </Column>
 )
 
-export type Props = { ai: AI; beforeLaunch: () => Promise<void> }
-export const Simulation = ({ ai, beforeLaunch }: Props) => {
+export type Props = {
+  ai: AI
+  beforeLaunch: () => Promise<void>
+  hide?: boolean
+}
+export const Simulation = ({ ai, beforeLaunch, hide }: Props) => {
   const simulation = getSimulation('0')!
   const [ship] = useState<SHIP_CLASS>(SHIP_CLASS.FIGHTER)
   const [state, setState] = useState('preparation')
@@ -61,45 +65,50 @@ export const Simulation = ({ ai, beforeLaunch }: Props) => {
     setState('loading')
     try {
       await beforeLaunch()
+      console.log('there ?')
       await start()
     } catch (error) {
+      console.log(error)
       setState('preparation')
     }
   }
+
   const opts = useMemo(() => ({ scale: 0.8, pos: { x: 0, y: -200 } }), [])
   return (
     <div className={styles.testRenderer}>
-      <Row
-        justify="space-between"
-        padding="s"
-        background="var(--eee)"
-        height={50}
-      >
-        <div style={{ flex: 1 }} />
-        <Row align="center" gap="xxl">
-          {state === 'engine' && false && (
+      {!hide && (
+        <Row
+          justify="space-between"
+          padding="s"
+          background="var(--eee)"
+          height={50}
+        >
+          <div style={{ flex: 1 }} />
+          <Row align="center" gap="xxl">
+            {state === 'engine' && false && (
+              <Button
+                primary
+                small
+                text="Stop engine"
+                onClick={() => {
+                  reset()
+                  defaultFleet()
+                }}
+              />
+            )}
             <Button
-              primary
+              secondary
               small
-              text="Stop engine"
-              onClick={() => {
-                reset()
-                defaultFleet()
-              }}
+              text={
+                state === 'preparation'
+                  ? s.pages.ais.launchSimulation
+                  : s.pages.ais.relaunchEngine
+              }
+              onClick={onLaunch}
             />
-          )}
-          <Button
-            secondary
-            small
-            text={
-              state === 'preparation'
-                ? s.pages.ais.launchSimulation
-                : s.pages.ais.relaunchEngine
-            }
-            onClick={onLaunch}
-          />
+          </Row>
         </Row>
-      </Row>
+      )}
       {state === 'engine' && <Renderer engine={engine!} opts={opts} />}
       {state === 'preparation' && <Preparation onClick={onLaunch} />}
       {state === 'loading' && <RenderLoading />}
