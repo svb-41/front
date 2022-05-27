@@ -1,6 +1,6 @@
 import * as svb from '@svb-41/engine'
 import { Column, Row } from '@/components/flex'
-import { getImage } from '@/helpers/ships'
+import { getImage } from '@/lib/ships'
 import styles from './ship.module.css'
 
 type LabeledProps = {

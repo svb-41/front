@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { getImage } from '@/helpers/ships'
+import { getImage } from '@/lib/ships'
 import { Title } from '@/components/title'
 import { Row, Column } from '@/components/flex'
 import styles from './fleet-manager.module.css'

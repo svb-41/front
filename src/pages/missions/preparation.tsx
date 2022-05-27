@@ -2,7 +2,7 @@ import { Title, Caption } from '@/components/title'
 import { Column, Row } from '@/components/flex'
 import { Icon } from '@/components/ship'
 import { Mission } from '@/services/mission'
-import { countShips } from '@/lib/ship'
+import { countShips } from '@/lib/ships'
 import s from '@/strings.json'
 
 export const renderShip = (team: string, onClick?: (id: string) => void) => {

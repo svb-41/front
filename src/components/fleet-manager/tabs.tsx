@@ -1,11 +1,11 @@
 import { AI } from '@/lib/ai'
 import { useSelector } from '@/store/hooks'
 import * as selectors from '@/store/selectors'
-import { getImage } from '@/helpers/ships'
+import { getImage } from '@/lib/ships'
 import { Title, SubTitle } from '@/components/title'
 import { Row, Column } from '@/components/flex'
 import tsLogo from '@/components/monaco/ts.svg'
-import * as helpers from '@/helpers'
+import * as helpers from '@/lib'
 import styles from './fleet-manager.module.css'
 
 const Tab = ({ onClick, text, className }: any) => (

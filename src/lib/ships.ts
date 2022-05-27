@@ -1,3 +1,4 @@
+import { Mission } from '@/services/mission'
 import { Color } from '@/lib/color'
 
 export const ships = [
@@ -28,4 +29,11 @@ preload()
 export const getImage = (ship: string, color: string) => {
   const shipName = `${ship.toLowerCase()}-${color}`
   return shipsLoad[shipName]
+}
+
+export const countShips = (mission: Mission) => {
+  return mission.ships.reduce((acc, val) => {
+    const n = val.classShip
+    return { ...acc, [n]: (acc[n] ?? 0) + 1 }
+  }, {} as { [key: string]: number })
 }

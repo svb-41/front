@@ -18,7 +18,7 @@ import { useEngine, getMissionEnemy } from '@/lib/engine'
 import * as services from '@/services/mission'
 import styles from './Missions.module.css'
 import s from '@/strings.json'
-import * as helpers from '@/helpers/dates'
+import * as helpers from '@/lib/dates'
 import tsLogo from '@/components/monaco/ts.svg'
 import { AI } from '@/lib/ai'
 
