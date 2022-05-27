@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@auth0/auth0-react": "^1.10.1",
-    "@monaco-editor/react": "^4.2.2",
+    "@monaco-editor/react": "^4.4.5",
     "@sentry/react": "^6.19.7",
     "@sentry/tracing": "^6.19.7",
     "@svb-41/core": "^0.14.0",

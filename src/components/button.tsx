@@ -10,6 +10,7 @@ export type Props = {
   disabled?: boolean
   style?: CSSProperties
   small?: boolean
+  tiny?: boolean
   stopPropagation?: boolean
   preventDefault?: boolean
 }
@@ -36,12 +37,14 @@ export type Style = {
   secondary?: boolean
   primary?: boolean
   small?: boolean
+  tiny?: boolean
 }
 export const style = ({
   warning,
   secondary,
   primary,
   small = false,
+  tiny = false,
 }: Style) => {
   const state = (() => {
     if (warning) {
@@ -55,5 +58,6 @@ export const style = ({
     }
   })()
   if (small) return `${state} ${styles.smallButton}`
+  if (tiny) return `${state} ${styles.tinyButton}`
   return state
 }

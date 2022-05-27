@@ -1,7 +1,8 @@
 import * as Movable from '../movable'
 import * as Flex from '../flex'
+import { Dimensions } from '@/lib/window'
 
-export type Fullscreen = { size: Movable.Size; position: Movable.Position }
+export type Fullscreen = { size: Dimensions; position: Movable.Position }
 export type App = {
   id: string
   name: string
@@ -9,4 +10,5 @@ export type App = {
   zIndex: number
   padding?: Flex.Size
   fullscreen?: boolean | Fullscreen
+  initialSize?: { size?: Dimensions; position?: Movable.Position }
 }

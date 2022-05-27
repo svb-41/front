@@ -1,6 +1,7 @@
 export * as ai from './ai'
 export * as color from './color'
 export * as dates from './dates'
+export * as editor from './editor'
 export * as engine from './engine'
 export * as ships from './ships'
 export * as time from './time'

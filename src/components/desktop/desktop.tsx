@@ -91,7 +91,11 @@ export const Desktop = forwardRef((props: Props, ref: React.Ref<Handler>) => {
   const appBarRef = useRef<HTMLDivElement>(null)
   const handler = useMemo(() => {
     const get = () => apps
-    const add = (app: App) => setApps(apps => [...apps, app])
+    const add = (app: App) =>
+      setApps(apps => {
+        const newA = { ...app, zIndex: app.zIndex + apps.length + 2 }
+        return [...apps, newA]
+      })
     const replace = (apps: App[]) => setApps(apps)
     const apps_ = { get, add, replace }
     return { apps: apps_ }
@@ -122,6 +126,7 @@ export const Desktop = forwardRef((props: Props, ref: React.Ref<Handler>) => {
           <div className={styles.wallpaper} />
           {apps.map(app => (
             <Movable.Movable
+              initialSize={app.initialSize}
               fullscreen={app.fullscreen}
               onMouseDown={() => focusApp(app.id)}
               title={app.name}

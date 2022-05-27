@@ -56,7 +56,8 @@ export const compileAI: (ai: AI) => Effect<void> = (ai: AI) => {
       const params: Compile = { code, uid, name, id: ai.id }
       const compiledValue = await compile(params)
       const updatedAt = new Date()
-      const newAI = { ...ai, compiledValue, updatedAt }
+      const { file } = getState().ai.ais.find(a => a.id === ai.id)!
+      const newAI = { ...ai, compiledValue, updatedAt, file }
       dispatch({ type: UPDATE_AI, id: ai.id, ai: newAI })
     }
   }

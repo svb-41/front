@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
 import prettier from 'prettier'
-import parserTypescript from 'prettier/parser-babel'
 import { Main } from '@/components/main'
 import { Button } from '@/components/button'
 import { Row, Column } from '@/components/flex'
@@ -19,6 +18,7 @@ import loader from '@/assets/icons/loader.gif'
 import valid from '@/assets/icons/valid.svg'
 import error from '@/assets/icons/error.svg'
 import { AI } from '@/lib/ai'
+import * as lib from '@/lib'
 import styles from './ai.module.css'
 import s from '@/strings.json'
 
@@ -101,15 +101,7 @@ const getLogo = (
 
 const useAI = (id: string) => {
   const dispatch = useDispatch()
-  const [formatOnSave, setFormatOnSave] = useState<boolean>(() => {
-    const value = localStorage.getItem('svb41.config.formatOnSave')
-    if (value) return JSON.parse(value)
-    return true
-  })
-  useEffect(() => {
-    const value = JSON.stringify(formatOnSave)
-    localStorage.setItem('svb41.config.formatOnSave', value)
-  }, [formatOnSave])
+  const { formatOnSave, setFormatOnSave } = lib.editor.useFormatOnSave()
   const [file, setFile] = useState<Monaco.File>()
   const [path, setPath] = useState<string>()
   const ai = useSelector(selectors.ai(id))
@@ -120,49 +112,12 @@ const useAI = (id: string) => {
       setPath(ai.file.path)
     }
   }, [ai])
-  const format = async (
-    offset?: number,
-    shouldFormat?: boolean
-  ): Promise<{
-    result?: prettier.CursorResult
-    newAI?: AI
-  }> => {
-    if (ai && (formatOnSave || shouldFormat)) {
-      const result = prettier.formatWithCursor(ai.file.code, {
-        cursorOffset: offset ?? 0,
-        parser: 'babel',
-        plugins: [parserTypescript],
-        semi: false,
-        singleQuote: true,
-        trailingComma: 'all',
-        tabWidth: 2,
-      })
-      const code = result.formatted
-      const file = { ...ai.file, code }
-      const action = updateAI({ ...ai, file })
-      const newAI = await dispatch(action)
-      setFile(file)
-      return { result, newAI }
-    }
-    return {
-      newAI: ai,
-      result: { cursorOffset: offset ?? 0, formatted: ai?.file?.code ?? '' },
-    }
-  }
   const save = async (file: Monaco.File) => {
     const action = ai ? updateAI({ ...ai, file }) : createAI(id)
     await dispatch(action)
     setFile(file)
   }
-  const compile = async (offset?: number) => {
-    const ai = await format(offset)
-    if (ai.newAI) {
-      const action = compileAI(ai.newAI)
-      const wait = Promise.resolve(dispatch(action))
-      return { ai, wait }
-    }
-    return { ai, wait: Promise.resolve() }
-  }
+  const compile = async (offset?: number) => {}
   const rename = () => {
     if (ai && path) {
       const file = { ...ai.file, path, language: alt }
@@ -177,7 +132,7 @@ const useAI = (id: string) => {
     toLocale(new Date(ai.updatedAt))
   const updatePath = setPath
   const data = { file, path, logo, alt, updatedAt, formatOnSave }
-  const methods = { save, compile, rename, updatePath, format, toggleFormat }
+  const methods = { save, compile, rename, updatePath, toggleFormat }
   return { data, methods }
 }
 
@@ -188,15 +143,11 @@ export const AIEditor = () => {
   const ai = useAI(id)
   const selectedAI = useSelector(selectors.ai(id))
   const [loading, setLoading] = useState(false)
-  const onClick = async (offset?: number) => {
+  const onClick = async () => {
     setLoading(true)
     return ai.methods
-      .compile(offset)
-      .then(result => {
-        if (!result) return
-        result.wait.then(() => setLoading(false))
-        return result.ai
-      })
+      .compile()
+      .then(result => {})
       .catch(console.error)
   }
   return (
@@ -214,7 +165,7 @@ export const AIEditor = () => {
               <FormatStatus
                 formatOnSave={ai.data.formatOnSave}
                 onChange={ai.methods.toggleFormat}
-                onClick={ai.methods.format}
+                onClick={() => {}}
               />
               <CompileStatus
                 updatedAt={ai.data.updatedAt}

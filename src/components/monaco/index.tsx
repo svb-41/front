@@ -1,29 +1,31 @@
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useImperativeHandle, forwardRef } from 'react'
+import prettier from 'prettier'
 import Editor, { OnChange } from '@monaco-editor/react'
 import core from '@svb-41/core/types'
 import types from '@svb-41/engine/types'
-import styles from './monaco.module.css'
-import loader from '@/assets/icons/loader.gif'
-import { AI } from '@/lib/ai'
-import prettier from 'prettier'
-import tomorrow from 'monaco-themes/themes/Tomorrow-Night-Eighties.json'
+import { Files, File } from '@/lib/editor'
+import * as lib from '@/lib'
 
-export type Files = { [id: string]: File }
-export type File = {
-  language: 'typescript' | 'javascript' | '?'
-  path: string
-  code: string
-}
+// Assets
+import tomorrow from 'monaco-themes/themes/Tomorrow-Night-Eighties.json'
+import loader from '@/assets/icons/loader.gif'
+import styles from './monaco.module.css'
+
+export type { Files, File } from '@/lib/editor'
 
 export type Props = {
   file?: File
+  formatOnSave?: boolean
   onChange: (file: File) => void
-  onSave: (offset?: number) => Promise<{
-    result?: prettier.CursorResult
-    newAI?: AI
-  } | void>
+  onSave: (file: File) => void
 }
-export const Monaco = (props: Props) => {
+
+export type Handler = {
+  format: () => Promise<void>
+  editor: { current?: any }
+}
+
+export const Monaco = forwardRef((props: Props, ref: React.Ref<Handler>) => {
   const codeRef = useRef<any>()
   const onChange: OnChange = code => {
     const { file, onChange } = props
@@ -53,27 +55,45 @@ export const Monaco = (props: Props) => {
     monaco.languages.typescript.typescriptDefaults.addExtraLib(core, coreDecl)
   }
   const { onSave } = props
+  const format = async (file: File) => {
+    const model = codeRef.current.getModel()
+    const position = codeRef.current.getPosition()
+    const offset = model.getOffsetAt(position)
+    const result = await lib.editor.format(file, offset)
+    codeRef.current.setValue(result.file.code)
+    const afterPos = model.getPositionAt(result.offset)
+    codeRef.current.setPosition(afterPos)
+    return result
+  }
   useEffect(() => {
     const handler = async (event: KeyboardEvent) => {
       const isCmdCtrl = event.ctrlKey || event.metaKey
-      if (event.key === 's' && isCmdCtrl) {
-        const model = codeRef.current.getModel()
-        const position = codeRef.current.getPosition()
-        const offset = model.getOffsetAt(position)
+      if (event.key === 's' && isCmdCtrl && props.file) {
         event.preventDefault()
-        const res = await onSave(offset)
-        if (res?.newAI?.file?.code) {
-          codeRef.current.setValue(res.newAI.file.code)
-        }
-        if (res?.result?.cursorOffset) {
-          const afterPos = model.getPositionAt(res.result.cursorOffset)
-          codeRef.current.setPosition(afterPos)
+        if (props.formatOnSave) {
+          const result = await format(props.file)
+          onSave(result.file)
+        } else {
+          onSave(props.file)
         }
       }
     }
     document.addEventListener('keydown', handler)
     return () => document.removeEventListener('keydown', handler)
   }, [onSave])
+  useImperativeHandle(
+    ref,
+    () => ({
+      format: async () => {
+        if (props.file) {
+          const result = await format(props.file)
+          props.onChange(result.file)
+        }
+      },
+      editor: codeRef,
+    }),
+    [props.file]
+  )
   return (
     <Editor
       value={props.file?.code}
@@ -92,4 +112,4 @@ export const Monaco = (props: Props) => {
       loading={<img className={styles.loader} src={loader} alt="Loader" />}
     />
   )
-}
+})

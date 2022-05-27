@@ -9,3 +9,20 @@
   line-height: 1.4;
   white-space: pre-line;
 }
+
+.updatedAt {
+  font-size: 12px;
+  font-family: 'Unifont';
+  background: var(--ccc);
+  padding: 2px 3px;
+}
+
+.loader {
+  width: 15px;
+}
+
+.wc {
+  font-family: 'Unifont';
+  font-size: 12px;
+  padding-left: var(--s);
+}

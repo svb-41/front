@@ -1,38 +1,71 @@
 import { useState, useEffect, useRef } from 'react'
 import * as react from 'react'
 import * as Flex from '@/components/flex'
+import * as lib from '@/lib'
+import { Dimensions } from '@/lib/window'
 import styles from './components.module.css'
 
 export const TOP_SPACE = 40
 
 export type Position = { top: number; left: number }
-export type Size = { width: number; height: number }
 type Origin = { x: number; y: number; originX: number; originY: number }
 type OriginResize = { x: number; y: number; originH: number; originW: number }
-type OldSize = { position: Position; size: Size }
+type OldSize = { position: Position; size: Dimensions }
 
-const newPosition = (values: Size) => {
+const newPosition = (values: Dimensions) => {
   return (position: Position) => {
     const minLeft = window.innerWidth - values.width
-    const left = Math.min(position.left, minLeft)
-    const minTop = window.innerHeight - values.height
-    const top = Math.min(position.top, minTop)
+    const left = Math.max(Math.min(position.left, minLeft), 0)
+    const minTop = window.innerHeight - 40
+    const top = Math.max(Math.min(position.top, minTop), 0)
     return { left, top }
   }
 }
 
+const computeInitialSize = (props: Props, ref: any) => {
+  if (props.fullscreen) {
+    if (typeof props.fullscreen === 'object') {
+      return props.fullscreen.size
+    } else {
+      return lib.window.dimensions()
+    }
+  } else if (props.initialSize?.size) {
+    return props.initialSize.size
+  } else {
+    const { width, height } = ref.current.getBoundingClientRect()
+    return { width, height }
+  }
+}
+
+const computeInitialPosition = (props: Props) => {
+  if (props.fullscreen) {
+    if (typeof props.fullscreen === 'object') {
+      const top = props.fullscreen.position.top + TOP_SPACE
+      const left = props.fullscreen.position.left
+      return { top, left }
+    } else {
+      return { top: 0, left: 0 }
+    }
+  } else if (props.initialSize) {
+    const top = (props.initialSize.position?.top ?? 16) + TOP_SPACE
+    const left = props.initialSize.position?.left ?? 16
+    return { top, left }
+  } else {
+    return { top: TOP_SPACE + 16, left: 16 }
+  }
+}
+
 /// Init with the initial size of the window. Can be updated afterwards.
-const useSize = (fullscreen?: boolean | { size: Size; position: Position }) => {
-  const isFullscreen = useRef(fullscreen)
+const useSize = (props: Props) => {
+  const isFullscreen = useRef(props.fullscreen)
   useEffect(() => {
-    isFullscreen.current = fullscreen
-  }, [fullscreen])
+    isFullscreen.current = props.fullscreen
+  }, [props.fullscreen])
   const ref = useRef<HTMLDivElement>(null)
   // The two refs are present to avoid adding and removing eventListeners.
   const width_ = useRef<number>()
   const height_ = useRef<number>()
-  const [dimensions, setDimensions] = useState<Size>()
-  const set = (fun: (size?: Size) => Size | undefined) => {
+  const set = (fun: (size?: Dimensions) => Dimensions | undefined) => {
     setDimensions(s => {
       const size = fun(s)
       if (size) {
@@ -42,14 +75,11 @@ const useSize = (fullscreen?: boolean | { size: Size; position: Position }) => {
       }
     })
   }
+  const [dimensions, setDimensions] = useState<Dimensions>()
   react.useLayoutEffect(() => {
     if (!ref.current) return
-    const { width, height } = fullscreen
-      ? typeof fullscreen === 'object'
-        ? { width: fullscreen.size.width, height: fullscreen.size.height }
-        : { width: window.innerWidth, height: window.innerHeight }
-      : ref.current.getBoundingClientRect()
-    set(() => ({ width, height }))
+    const dims = computeInitialSize(props, ref)
+    set(() => dims)
   }, [])
   const base = { ref, dimensions, set, isFullscreen }
   // prettier-ignore
@@ -61,22 +91,14 @@ const useSize = (fullscreen?: boolean | { size: Size; position: Position }) => {
 }
 
 const useWindow = (props: Props) => {
-  const initPositionFull =
-    typeof props.fullscreen === 'object'
-      ? {
-          top: props.fullscreen.position.top + TOP_SPACE,
-          left: props.fullscreen.position.left,
-        }
-      : { top: 0, left: 0 }
-  const initPosition = { top: TOP_SPACE + 16, left: 16 }
-  const init = props.fullscreen ? initPositionFull : initPosition
+  const init = computeInitialPosition(props)
   /// Control absolute position and size of window.
   const [position, setPosition] = useState(init)
   const pos = useRef(init)
   useEffect(() => {
     pos.current = { ...position }
   }, [position.top, position.left])
-  const size = useSize(props.fullscreen)
+  const size = useSize(props)
   /// Saved initial popup position on drag and drop.
   const origin = useRef<Origin | null>(null)
   const resize = useRef<OriginResize | null>(null)
@@ -108,6 +130,14 @@ const useWindow = (props: Props) => {
       } else if (size.height && size.width) {
         const { width, height } = size
         setPosition(newPosition({ width, height }))
+        const dims = lib.window.dimensions()
+        if (dims.height <= height || dims.width <= width) {
+          size.set(() => {
+            const h = Math.min(dims.height, height)
+            const w = Math.min(dims.width, width)
+            return { height: h, width: w }
+          })
+        }
       }
     }
 
@@ -117,7 +147,7 @@ const useWindow = (props: Props) => {
       if (origin.current) {
         const left_ = event.clientX - origin.current.originX
         const bottom_ = event.clientY - origin.current.originY
-        const minTop = window.innerHeight - size.height
+        const minTop = window.innerHeight - 40
         const minLeft = window.innerWidth - size.width
         const top = Math.min(Math.max(TOP_SPACE, bottom_), minTop)
         const left = Math.min(Math.max(0, left_), minLeft)
@@ -178,12 +208,12 @@ const useWindow = (props: Props) => {
     }
   }
 
-  const move = (position: Position, size_?: Size) => {
+  const move = (position: Position, dims?: Dimensions) => {
     // const { width, height } = size
     // oldSize.current = { position, size: { width, height } }
     setAdditionalStyle({ transition: 'all 300ms' })
     setTimeout(() => {
-      if (size_) size.set(() => size_)
+      if (dims) size.set(() => dims)
       setPosition(position)
       setTimeout(() => setAdditionalStyle(pos), 300)
     }, 100)
@@ -255,7 +285,8 @@ export type Props = {
   minHeight?: number
   padding?: Flex.Size
   onMouseDown?: () => void
-  fullscreen?: boolean | { size: Size; position: Position }
+  fullscreen?: boolean | { size: Dimensions; position: Position }
+  initialSize?: { size?: Dimensions; position?: Position }
   children?: React.ReactNode
 }
 export const Movable = (props: Props) => {
@@ -275,7 +306,8 @@ export const Movable = (props: Props) => {
       }}
     >
       <Flex.Column
-        flex={1}
+        width="100%"
+        height="100%"
         className={styles.movable}
         minWidth={props.minWidth}
         minHeight={props.minHeight}
@@ -302,7 +334,7 @@ export const Movable = (props: Props) => {
         </div>
         <Flex.Column
           overflow="auto"
-          flex={1}
+          height={props.fullscreen ? '100%' : 'calc(100% - 40px)'}
           padding={props.padding}
           background="var(--eee)"
         >
