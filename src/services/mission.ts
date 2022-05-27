@@ -1,17 +1,31 @@
 import { engine } from '@svb-41/engine'
-import missionConf from '@/missions/mission.json'
 
-export const missions: Mission[] = new Array(missionConf.numberOfmissions)
-  .fill(0)
-  .map((_, index) => require(`@/missions/confs/mission-${index}.json`))
+export const missions: Mission[] = []
+export const simulations: Mission[] = []
+export const arenas: Arena[] = []
 
-export const simulations: Mission[] = new Array(missionConf.numberOfsimutalions)
-  .fill(0)
-  .map((_, index) => require(`@/pages/ai/simulations/simulation-${index}.json`))
+const byId = (array: any[], inputs: { [key: string]: any }) => {
+  Object.entries(inputs).forEach(([name, content]) => {
+    const idx = name.match(/[0-9]+/)
+    if (idx) array[parseInt(idx[0])] = content as any
+  })
+}
 
-export const arenas: Arena[] = new Array(missionConf.arenas)
-  .fill(0)
-  .map((_, index) => require(`@/pages/skirmishes/arenas/arena-${index}.json`))
+const missions_ = import.meta.globEager('../missions/confs/*.json')
+const simulations_ = import.meta.globEager('../pages/ai/simulations/*.json')
+const arenas_ = import.meta.globEager('../pages/skirmishes/arenas/*.json')
+const ais_ = import.meta.globEager('../missions/ais/*.json')
+byId(missions, missions_)
+byId(simulations, simulations_)
+byId(arenas, arenas_)
+
+const ais: { [key: string]: string } = {}
+export const getAI = (id: string) => ais[id] ?? null
+for (const [name, content] of Object.entries(ais_)) {
+  const filename = name.split('/').reverse()[0]
+  const withoutExt = filename.split('.')[0]
+  ais[withoutExt] = (content as any).default
+}
 
 export const getMission = (id: string): Mission | undefined =>
   missions.find(m => m.id === id)

@@ -36,7 +36,7 @@ const useSimulatedScroll = (updateAfter: number) => {
   useLayoutEffect(() => {
     if (ref.current) {
       const size = ref.current.getBoundingClientRect()
-      mini.current = Math.min(200, mini.current + 100)
+      mini.current = Math.min(100, mini.current + 100)
       if (!init.current) init.current = size.height
       setSize(size.height - mini.current)
     }

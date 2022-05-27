@@ -10,21 +10,27 @@ export const ships = [
   'destroyer',
 ]
 
-let shipsLoad: any = {}
-
-const preload = () => {
-  const colors = Object.values(Color)
-  ships.forEach(ship => {
-    colors.forEach(color => {
-      const shipName = `${ship.toLowerCase()}-${color}`
-      const path = require(`../../public/assets/Tiles/${shipName}.png`)
-      const file = path.default
-      shipsLoad[shipName] = file
-    })
+const shipsLoad: any = {}
+const colors = Object.values(Color)
+await Promise.all(
+  ships.map(ship => {
+    return Promise.all(
+      colors.map(async color => {
+        const shipName = `${ship.toLowerCase()}-${color}`
+        const path = await import(
+          /* @vite-ignore */
+          `../../public/assets/Tiles/${shipName}.png`
+        )
+        const file = path.default
+        const img = new Image()
+        const prom = new Promise(resolve => (img.onload = resolve))
+        img.src = file
+        await prom
+        shipsLoad[shipName] = file
+      })
+    )
   })
-}
-
-preload()
+)
 
 export const getImage = (ship: string, color: string) => {
   const shipName = `${ship.toLowerCase()}-${color}`

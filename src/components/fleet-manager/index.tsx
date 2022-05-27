@@ -1,4 +1,4 @@
-import { FC, useState, useRef, useEffect, useMemo } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import { AI } from '@/lib/ai'
 import { Button } from '@/components/button'
 import * as selectors from '@/store/selectors'
@@ -458,8 +458,9 @@ export type Props = {
   title?: boolean
   initialConfig?: Data
   forbidOutOfCredit?: boolean //TODO disabled start button if ou of credit
+  children?: React.ReactNode
 }
-export const FleetManager: FC<Props> = props => {
+export const FleetManager = (props: Props) => {
   const { team } = props
   const [selectedShip, setSelectedShip] = useState<string>()
   const dragVal = useRef<string | undefined>()

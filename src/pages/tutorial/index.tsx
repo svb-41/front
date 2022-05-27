@@ -3,7 +3,6 @@ import { Column, Row } from '@/components/flex'
 import * as Flex from '@/components/flex'
 import * as Movable from '@/components/movable'
 import { Introduction } from './introduction'
-import styles from './tutorial.module.css'
 import { Fight } from '@/components/fight'
 import { useSelector } from '@/store/hooks'
 import * as selectors from '@/store/selectors'
@@ -15,6 +14,7 @@ import { AI } from '@/lib/ai'
 import { getSimulation } from '@/services/mission'
 import * as svb from '@svb-41/engine'
 import { getMissionEnemy } from '@/lib/engine'
+import styles from './tutorial.module.css'
 
 export type Page = 'introduction' | 'start'
 
@@ -52,6 +52,7 @@ const onStartFight = (ais_: AI[], desktop: Desktop.Handler) => {
   const ships = [{ shipClass, id: 'meh', x: 50, y: 300, rotation: 90 }]
   const ais = [{ aid: ai.id, sid: 'meh' }]
   const enemy = getMissionEnemy(mission, 'red')
+  console.log(enemy)
   desktop.apps.add({
     name: 'Fight',
     id: 'Fight',

@@ -4,7 +4,7 @@ import { AI } from '@/lib/ai'
 import * as fleetManager from '@/components/fleet-manager'
 import { findBuilder } from '@/missions/builders'
 import { v4 as uuid } from 'uuid'
-import { Mission } from '@/services/mission'
+import { Mission, getAI } from '@/services/mission'
 type Ship = svb.engine.ship.Ship
 
 export type Size = { width: number; height: number }
@@ -216,7 +216,8 @@ export const getMissionEnemy = (mission: Mission, team: string): EnemyData => {
     team,
     fleet: { ships, ais },
     ais: aiIDs.map(id => {
-      const compiled = require(`@/missions/ais/${id}.json`)
+      console.log(id)
+      const compiled = getAI(id)
       return { id, compiled }
     }),
   }

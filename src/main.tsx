@@ -1,5 +1,5 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
+import ReactDOM from 'react-dom/client'
 import * as Redux from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
 import { Auth0Provider } from '@auth0/auth0-react'
@@ -15,7 +15,8 @@ import './remark.scss'
 import './atom-one-dark-theme.css'
 
 Sentry.init({
-  dsn: process.env.REACT_APP_SENTRY,
+  // @ts-ignore
+  dsn: import.meta.env.VITE_APP_SENTRY,
   integrations: [new BrowserTracing()],
   // Set tracesSampleRate to 1.0 to capture 100%
   // of transactions for performance monitoring.
@@ -23,7 +24,9 @@ Sentry.init({
   tracesSampleRate: 1.0,
 })
 
-ReactDOM.render(
+const container = document.getElementById('root')
+const root = ReactDOM.createRoot(container!)
+root.render(
   <React.StrictMode>
     <Auth0Provider
       domain={env.domain}
@@ -41,8 +44,7 @@ ReactDOM.render(
         <CookieConsent />
       </Redux.Provider>
     </Auth0Provider>
-  </React.StrictMode>,
-  document.getElementById('root')
+  </React.StrictMode>
 )
 
 // If you want to start measuring performance in your app, pass a function

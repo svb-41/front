@@ -1,4 +1,4 @@
-import { FC, CSSProperties, createElement } from 'react'
+import { CSSProperties, createElement } from 'react'
 import styles from './flex.module.css'
 
 export type Size = 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl'
@@ -47,10 +47,11 @@ export type Props = {
   onSubmit?: (event: FormDataEvent) => void
   onMouseDown?: (event: any) => void
   onDoubleClick?: () => void
+  children?: React.ReactNode
 }
 
 const Flex = (r: { row: boolean; col: boolean; name: string }) => {
-  const fun: FC<Props> = props => {
+  const fun = (props: Props) => {
     const {
       children,
       tag = 'div',
