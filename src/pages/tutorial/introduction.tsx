@@ -74,8 +74,11 @@ export const Introduction = (props: Props) => {
   const [fightStarted, setFightStarted] = useState(false)
   const onClick = () => {
     if (displayed >= contentsLen) {
-      setPages('explanations')
-      props.onNext()
+      setPages('empty')
+      setTimeout(() => {
+        props.onNext()
+        setPages('explanations')
+      }, 300)
     }
     scroll.quickTransition()
     setDisplayed(v => Math.min(contentsLen, v + 1))
@@ -83,14 +86,15 @@ export const Introduction = (props: Props) => {
   }
   const ended = displayed === contentsLen
   const transitions = useTransition(pages, {
-    from: { opacity: 1 },
+    from: { opacity: 0 },
     enter: { opacity: 1 },
     leave: { opacity: 0 },
-    delay: 25,
+    delay: 50,
     config: config.default,
     exitBeforeEnter: true,
   })
   return transitions(({ opacity }, item) => {
+    if (item === 'empty') return null
     if (item === 'explanations')
       return (
         <Animated style={{ opacity }} className={styles.introductionWrapper}>
@@ -105,11 +109,11 @@ export const Introduction = (props: Props) => {
                   small
                   primary
                   disabled={!ended}
+                  text={s.explanations.startFight}
                   onClick={() => {
                     setFightStarted(true)
                     props.onStartFight()
                   }}
-                  text={s.explanations.startFight}
                 />
               </Row>
             )}
