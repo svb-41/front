@@ -225,14 +225,12 @@ const useWindow = (props: Props) => {
   }
 
   const move = (position: Position, dims?: Dimensions) => {
-    // const { width, height } = size
-    // oldSize.current = { position, size: { width, height } }
     setAdditionalStyle({ transition: 'all 300ms' })
     setTimeout(() => {
       if (dims) size.set(() => dims)
       setPosition(() => position)
       setTimeout(() => setAdditionalStyle(pos), 300)
-    }, 100)
+    }, 1)
   }
 
   /// Switch between maximize and windowed mode.
@@ -251,20 +249,30 @@ const useWindow = (props: Props) => {
           position: { ...pos.current },
           size: { width, height },
         }
-        setAdditionalStyle({ transition: 'all 300ms' })
-        setTimeout(() => {
-          const pos = { width: '100vw', height: '100vh' }
-          setPosition(() => ({ top: 0, left: 0 }))
-          setAdditionalStyle({ transition: 'all 300ms', ...pos })
-          setTimeout(() => setAdditionalStyle(pos), 300)
-        }, 100)
+        const pos_ = { width: '100vw', height: '100vh', zIndex: 100000 }
+        setPosition(() => ({ top: 0, left: 0 }))
+        setAdditionalStyle({ transition: 'all 300ms', ...pos_ })
+        setTimeout(() => setAdditionalStyle(pos_), 300)
       }
     }
   }
 
   react.useEffect(() => {
     const fs = props.fullscreen
+    if (fs === false && oldSize.current) {
+      move(oldSize.current.position, oldSize.current.size)
+      oldSize.current = null
+    }
     if (typeof fs === 'object') {
+      const { width, height } = size
+      const l = position.left.get()
+      const t = position.top.get()
+      if (width && height && l && t) {
+        oldSize.current = {
+          size: { width, height },
+          position: { left: l, top: t },
+        }
+      }
       const { left } = fs.position
       const top = fs.position.top + TOP_SPACE
       move({ left, top }, fs.size)
@@ -282,16 +290,18 @@ const useWindow = (props: Props) => {
 }
 
 type Win = ReturnType<typeof useWindow>
-type ButtonsProps = { win: Win; onClose?: () => void }
-const Buttons = ({ win, onClose }: ButtonsProps) => {
+type ButtonsProps = { win: Win; onClose?: () => void; minimize?: () => void }
+const Buttons = ({ win, onClose, minimize }: ButtonsProps) => {
   const visibility = onClose ? 'visible' : 'hidden'
+  const st = { fontSize: 25 }
   return (
     <Flex.Row align="center">
-      {false && (
-        <button onClick={win.maximize} style={{ fontSize: 25 }}>
-          □
-        </button>
-      )}
+      <button onClick={win.maximize} style={st}>
+        ⤢
+      </button>
+      <button onClick={minimize} style={{ fontSize: 30, visibility }}>
+        _
+      </button>
       <button onClick={onClose} style={{ fontSize: 30, visibility }}>
         x
       </button>
@@ -304,6 +314,7 @@ export type Props = {
   title?: string
   zIndex?: number
   onClose?: () => void
+  minimize?: () => void
   minWidth?: number
   minHeight?: number
   padding?: Flex.Size
@@ -314,7 +325,10 @@ export type Props = {
 }
 export const Movable = (props: Props) => {
   const win = useWindow(props)
-  const zIndex = props.zIndex ?? 1e10
+  const zIndex =
+    typeof props.fullscreen === 'boolean' && props.fullscreen
+      ? 1e10
+      : props.zIndex ?? 1e10
   const cursor = props.fullscreen ? 'auto' : undefined
   const maxHeight = win.isMaximized || props.fullscreen ? 'unset' : undefined
   return (
@@ -356,7 +370,11 @@ export const Movable = (props: Props) => {
               onDoubleClick={win.maximize}
             >
               <div className={styles.movableTitle}>{props.title}</div>
-              <Buttons win={win} onClose={props.onClose} />
+              <Buttons
+                win={win}
+                onClose={props.onClose}
+                minimize={props.minimize}
+              />
             </Flex.Row>
           )}
         </div>

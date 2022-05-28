@@ -4,6 +4,7 @@ import {
   useRef,
   useMemo,
   useContext,
+  useEffect,
   createContext,
   forwardRef,
 } from 'react'
@@ -12,6 +13,7 @@ import { Column, Row } from '@/components/flex'
 import { App } from './app'
 import * as Movable from '../movable'
 import styles from './desktop.module.css'
+import { v4 as uuid } from 'uuid'
 
 // @ts-ignore
 const Context: React.Context<Handler> = createContext(null)
@@ -54,7 +56,7 @@ const AppBar = (props: AppBarProps) => {
       align="center"
       background="var(--fff)"
       padding="s"
-      style={{ position: 'relative' }}
+      style={{ position: 'relative', zIndex: 10000 }}
       gap="s"
     >
       <div className={menuItemCl} onClick={toggle}>
@@ -67,7 +69,8 @@ const AppBar = (props: AppBarProps) => {
           const className = app.id === activeApp ? styles.active : styles.app
           const onClick = () => setActiveApp(app.id)
           const key = app.id
-          return <div {...{ onClick, className, key }}>{app.name}</div>
+          const id = app.id
+          return <div {...{ onClick, className, key, id }}>{app.name}</div>
         })}
       </Row>
     </Row>
@@ -86,14 +89,54 @@ export type Handler = {
 }
 export type Props = { apps: App | App[] | (() => App) | (() => App[]) }
 export const Desktop = forwardRef((props: Props, ref: React.Ref<Handler>) => {
+  const appBarRef = useRef<HTMLDivElement>(null)
   const [activeApp, setActiveApp] = useState<string>()
   const [apps, setApps] = useState<App[]>(() => {
     const a = typeof props.apps === 'function' ? props.apps() : props.apps
     const ret = [a].flat()
     return ret
   })
-  const appBarRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    setApps(apps =>
+      apps.map(app => {
+        if (app.id === activeApp)
+          if (typeof app.fullscreen === 'object')
+            if (app.fullscreen.size.width === 10)
+              return { ...app, fullscreen: false }
+        return app
+      })
+    )
+  }, [activeApp])
   const handler = useMemo(() => {
+    const minimize = (id: string) => {
+      const div = appBarRef.current
+      if (!div) return
+      const row = div.children[0]?.children[1]
+      if (!row) return
+      for (const item of row.children) {
+        if (item.id === id) {
+          const sizes = item.getBoundingClientRect()
+          setApps(apps =>
+            apps.map(a => {
+              if (a.id === id) {
+                return {
+                  ...a,
+                  fullscreen: {
+                    size: { width: 10, height: 10 },
+                    position: {
+                      top: sizes.top - Movable.TOP_SPACE,
+                      left: sizes.left,
+                    },
+                  },
+                }
+              }
+              return a
+            })
+          )
+          setActiveApp(undefined)
+        }
+      }
+    }
     const close = (id: string) => setApps(a => a.filter(app => app.id !== id))
     const get = () => apps
     const add = (app: App) =>
@@ -102,7 +145,7 @@ export const Desktop = forwardRef((props: Props, ref: React.Ref<Handler>) => {
         return [...apps, newA]
       })
     const replace = (apps: App[]) => setApps(apps)
-    const apps_ = { get, add, replace, close }
+    const apps_ = { get, add, replace, close, minimize }
     return { apps: apps_ }
   }, [apps])
   useImperativeHandle(ref, () => handler, [handler])
@@ -131,13 +174,21 @@ export const Desktop = forwardRef((props: Props, ref: React.Ref<Handler>) => {
             activeApp={activeApp}
             setActiveApp={focusApp}
             apps={apps}
-            onClick={() => {}}
+            onClick={() =>
+              handler.apps.add({
+                name: 'Test',
+                id: uuid(),
+                zIndex: 1,
+                render: <div>Test</div>,
+              })
+            }
           />
         </div>
         <div style={{ position: 'relative', flex: 1 }}>
           <div className={styles.wallpaper} />
           {transitions(({ opacity }, app) => (
             <Window
+              minimize={() => handler.apps.minimize(app.id)}
               opacity={opacity}
               initialSize={app.initialSize}
               fullscreen={app.fullscreen}
@@ -146,8 +197,8 @@ export const Desktop = forwardRef((props: Props, ref: React.Ref<Handler>) => {
               key={app.id}
               zIndex={app.zIndex + 1000}
               onClose={() => handler.apps.close(app.id)}
-              minWidth={300}
-              minHeight={300}
+              minWidth={app.fullscreen ? 0 : 300}
+              minHeight={app.fullscreen ? 0 : 300}
               padding={app.padding}
             >
               {app.render}
