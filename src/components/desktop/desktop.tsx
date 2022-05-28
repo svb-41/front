@@ -7,6 +7,7 @@ import {
   createContext,
   forwardRef,
 } from 'react'
+import { useTransition, animated, config } from 'react-spring'
 import { Column, Row } from '@/components/flex'
 import { App } from './app'
 import * as Movable from '../movable'
@@ -73,6 +74,8 @@ const AppBar = (props: AppBarProps) => {
   )
 }
 
+const Window = animated(Movable.Movable)
+
 export type Handler = {
   apps: {
     get: () => App[]
@@ -113,6 +116,13 @@ export const Desktop = forwardRef((props: Props, ref: React.Ref<Handler>) => {
       })
     })
   }
+  const transitions = useTransition(apps, {
+    keys: app => app.id,
+    from: { opacity: 1 },
+    enter: { opacity: 1 },
+    leave: { opacity: 0 },
+    config: { duration: 150 },
+  })
   return (
     <Context.Provider value={handler}>
       <Column flex={1} overflow="hidden" background="var(--eee)">
@@ -126,8 +136,9 @@ export const Desktop = forwardRef((props: Props, ref: React.Ref<Handler>) => {
         </div>
         <div style={{ position: 'relative', flex: 1 }}>
           <div className={styles.wallpaper} />
-          {apps.map(app => (
-            <Movable.Movable
+          {transitions(({ opacity }, app) => (
+            <Window
+              opacity={opacity}
               initialSize={app.initialSize}
               fullscreen={app.fullscreen}
               onMouseDown={() => focusApp(app.id)}
@@ -140,7 +151,7 @@ export const Desktop = forwardRef((props: Props, ref: React.Ref<Handler>) => {
               padding={app.padding}
             >
               {app.render}
-            </Movable.Movable>
+            </Window>
           ))}
         </div>
       </Column>

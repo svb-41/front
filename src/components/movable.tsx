@@ -278,6 +278,7 @@ const Buttons = ({ win, onClose }: ButtonsProps) => {
 }
 
 export type Props = {
+  opacity?: number
   title?: string
   zIndex?: number
   onClose?: () => void
@@ -293,7 +294,13 @@ export const Movable = (props: Props) => {
   const win = useWindow(props)
   const zIndex = props.zIndex ?? 1e10
   const cursor = props.fullscreen ? 'auto' : undefined
-  const style: any = { position: 'fixed', zIndex, ...win.style, cursor }
+  const style: any = {
+    position: 'fixed',
+    zIndex,
+    ...win.style,
+    cursor,
+    opacity: props.opacity ?? 1,
+  }
   const maxHeight = win.isMaximized || props.fullscreen ? 'unset' : undefined
   return (
     <div
