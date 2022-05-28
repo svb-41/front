@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import * as react from 'react'
+import { useSpring, animated } from 'react-spring'
 import * as Flex from '@/components/flex'
 import * as lib from '@/lib'
 import { Dimensions } from '@/lib/window'
@@ -63,6 +64,20 @@ const useSize = (props: Props) => {
   }, [props.fullscreen])
   const ref = useRef<HTMLDivElement>(null)
   // The two refs are present to avoid adding and removing eventListeners.
+  const [dimensions, api] = useSpring<Dimensions>(() => ({
+    height: -1,
+    width: -1,
+  }))
+  const dims = useRef<Dimensions | null>(null)
+  const setDimensions = (
+    cb: (dims_?: Dimensions) => Dimensions | undefined
+  ) => {
+    const val = dims.current ? cb(dims.current) : cb()
+    if (val) {
+      dims.current = val
+      api.set(val)
+    }
+  }
   const width_ = useRef<number>()
   const height_ = useRef<number>()
   const set = (fun: (size?: Dimensions) => Dimensions | undefined) => {
@@ -75,7 +90,6 @@ const useSize = (props: Props) => {
       }
     })
   }
-  const [dimensions, setDimensions] = useState<Dimensions>()
   react.useLayoutEffect(() => {
     if (!ref.current) return
     const dims = computeInitialSize(props, ref)
@@ -93,11 +107,13 @@ const useSize = (props: Props) => {
 const useWindow = (props: Props) => {
   const init = computeInitialPosition(props)
   /// Control absolute position and size of window.
-  const [position, setPosition] = useState(init)
+  const [position, api] = useSpring(() => init)
   const pos = useRef(init)
-  useEffect(() => {
-    pos.current = { ...position }
-  }, [position.top, position.left])
+  const setPosition = (cb: (position: Position) => Position) => {
+    const newVal = cb(pos.current)
+    pos.current = newVal
+    api.set(newVal)
+  }
   const size = useSize(props)
   /// Saved initial popup position on drag and drop.
   const origin = useRef<Origin | null>(null)
@@ -151,7 +167,7 @@ const useWindow = (props: Props) => {
         const minLeft = window.innerWidth - size.width
         const top = Math.min(Math.max(TOP_SPACE, bottom_), minTop)
         const left = Math.min(Math.max(0, left_), minLeft)
-        setPosition({ top, left })
+        setPosition(() => ({ top, left }))
       }
       if (resize.current) {
         size.set(size => {
@@ -192,8 +208,8 @@ const useWindow = (props: Props) => {
     origin.current = {
       x: event.clientX,
       y: event.clientY,
-      originX: event.clientX - position.left,
-      originY: event.clientY - position.top,
+      originX: event.clientX - pos.current.left,
+      originY: event.clientY - pos.current.top,
     }
   }
 
@@ -214,7 +230,7 @@ const useWindow = (props: Props) => {
     setAdditionalStyle({ transition: 'all 300ms' })
     setTimeout(() => {
       if (dims) size.set(() => dims)
-      setPosition(position)
+      setPosition(() => position)
       setTimeout(() => setAdditionalStyle(pos), 300)
     }, 100)
   }
@@ -225,17 +241,20 @@ const useWindow = (props: Props) => {
       const { size, position } = oldSize.current
       const { height, width } = size
       setAdditionalStyle({ transition: 'all 300ms', width, height })
-      setPosition(position)
+      setPosition(() => position)
       oldSize.current = null
       setTimeout(() => setAdditionalStyle({}), 300)
     } else {
       if (size.width && size.height) {
         const { width, height } = size
-        oldSize.current = { position, size: { width, height } }
+        oldSize.current = {
+          position: { ...pos.current },
+          size: { width, height },
+        }
         setAdditionalStyle({ transition: 'all 300ms' })
         setTimeout(() => {
           const pos = { width: '100vw', height: '100vh' }
-          setPosition({ top: 0, left: 0 })
+          setPosition(() => ({ top: 0, left: 0 }))
           setAdditionalStyle({ transition: 'all 300ms', ...pos })
           setTimeout(() => setAdditionalStyle(pos), 300)
         }, 100)
@@ -253,7 +272,10 @@ const useWindow = (props: Props) => {
   }, [props.fullscreen])
 
   /// Styles to apply to movable wrapper.
-  const base = { display: 'flex', flexDirection: 'column' }
+  const base: { display: 'flex'; flexDirection: 'column' } = {
+    display: 'flex',
+    flexDirection: 'column',
+  }
   const style = { ...base, ...position, ...size.dimensions, ...additionalStyle }
 
   return { style, onMouseDown, onResize, maximize, ref: size.ref, isMaximized }
@@ -294,18 +316,17 @@ export const Movable = (props: Props) => {
   const win = useWindow(props)
   const zIndex = props.zIndex ?? 1e10
   const cursor = props.fullscreen ? 'auto' : undefined
-  const style: any = {
-    position: 'fixed',
-    zIndex,
-    ...win.style,
-    cursor,
-    opacity: props.opacity ?? 1,
-  }
   const maxHeight = win.isMaximized || props.fullscreen ? 'unset' : undefined
   return (
-    <div
+    <animated.div
       ref={win.ref}
-      style={style}
+      style={{
+        position: 'fixed',
+        zIndex,
+        ...win.style,
+        cursor,
+        opacity: props.opacity ?? 1,
+      }}
       className={styles.movableWrapper}
       onMouseDown={event => {
         if (props.onMouseDown) props.onMouseDown()
@@ -348,6 +369,6 @@ export const Movable = (props: Props) => {
           {props.children}
         </Flex.Column>
       </Flex.Column>
-    </div>
+    </animated.div>
   )
 }
