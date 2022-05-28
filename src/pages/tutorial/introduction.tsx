@@ -88,16 +88,15 @@ const Explanations = (
         <div>{s.explanations.illShowYou}</div>
         {props.displayed > 0 && <div>{s.explanations.whatDoYouThink}</div>}
       </Column>
-      {!props.fightStarted && (
-        <Row style={{ paddingTop: 'var(--l)' }} justify="flex-end">
-          <Button
-            small
-            primary
-            text={s.explanations.startFight}
-            onClick={props.onClick}
-          />
-        </Row>
-      )}
+      <Row style={{ paddingTop: 'var(--l)' }} justify="flex-end">
+        <Button
+          small
+          primary
+          disabled={props.displayed !== 0}
+          text={props.displayed === 0 ? s.explanations.startFight : s.continue}
+          onClick={props.onClick}
+        />
+      </Row>
     </Column>
   )
 }
