@@ -25,6 +25,7 @@ const classesNames = (values: Classes) => {
 }
 
 export type Props = {
+  id?: string
   gap?: Size
   padding?: Size
   background?: string
@@ -53,6 +54,7 @@ export type Props = {
 const Flex = (r: { row: boolean; col: boolean; name: string }) => {
   const fun = (props: Props) => {
     const {
+      id,
       children,
       tag = 'div',
       onClick,
@@ -89,7 +91,15 @@ const Flex = (r: { row: boolean; col: boolean; name: string }) => {
     }
     return createElement(
       tag,
-      { className, style, onClick, onSubmit, onMouseDown, onDoubleClick },
+      {
+        className,
+        id,
+        style,
+        onClick,
+        onSubmit,
+        onMouseDown,
+        onDoubleClick,
+      },
       children
     )
   }

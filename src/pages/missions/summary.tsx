@@ -148,14 +148,17 @@ export type Props = {
   replay: () => void
   back: () => void
   mission: Mission
+  team?: string
 }
-export const Summary = ({ engine, restart, mission, replay, back }: Props) => {
+export const Summary = (props: Props) => {
+  const { engine, restart, mission, replay, back } = props
   const playerData = useSelector(selector.userData)
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const state = engine.state
   const credit = outOfCredits(mission, engine.state, playerData.color)
-  const playerWin = winnerTeam(engine, mission.size) === playerData.color
+  const playerWin =
+    winnerTeam(engine, mission.size) === (props.team ?? playerData.color)
   useEffect(() => {
     if (mission.rewards && playerWin) {
       const action = unlockRewards(mission.rewards)

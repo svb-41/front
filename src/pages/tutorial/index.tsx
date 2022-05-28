@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback, useMemo, useEffect } from 'react'
+import { assault } from '@/default-controllers/assets.json'
 import { Column, Row } from '@/components/flex'
 import * as Flex from '@/components/flex'
 import * as Movable from '@/components/movable'
@@ -6,6 +7,7 @@ import { Introduction } from './introduction'
 import { Button } from '@/components/button'
 import { Checkbox } from '@/components/checkbox'
 import { Fight } from '@/components/fight'
+import { Title, SubTitle } from '@/components/title'
 import * as Monaco from '@/components/monaco'
 import * as store from '@/store'
 import { Dimensions, dimensions, useResize } from '@/lib/window'
@@ -47,8 +49,40 @@ const onResize = (force: boolean) => {
   }
 }
 
-const onStartFight = (ais_: AI[], desktop: Desktop.Handler) => {
-  const ai = ais_[0]
+const BrilliantVictory = ({ onClick }: { onClick: () => void }) => {
+  const [cont, setContinue] = useState(false)
+  const desktop = useDesktop()
+  useEffect(() => {
+    setTimeout(() => {
+      setContinue(true)
+    }, 1000)
+  }, [])
+  return (
+    <Column flex={1} align="center" justify="center" gap="l">
+      <Column gap="l">
+        <Column>
+          <Title content="WHAT A FUCKING BRILLIANT VICTORY" />
+          <SubTitle content="Soon, you'll be able to do the same, cadet." />
+        </Column>
+        <Column align="flex-end">
+          <Button
+            text="Click to continue…"
+            small
+            primary
+            style={{ transition: 'all .2s', opacity: cont ? 1 : 0 }}
+            onClick={() => {
+              desktop.apps.close('Fight')
+              onClick()
+            }}
+          />
+        </Column>
+      </Column>
+    </Column>
+  )
+}
+
+const onStartFight = (desktop: Desktop.Handler) => {
+  const ai = lib.ai.fromDefault('strong', 'fastAssault')
   const width = window.innerWidth - 400 - 12 - 12 - 12
   const height = window.innerHeight - Movable.TOP_SPACE - 24
   const left = window.innerWidth - width - 12
@@ -59,22 +93,25 @@ const onStartFight = (ais_: AI[], desktop: Desktop.Handler) => {
   const ships = [{ shipClass, id: 'meh', x: 50, y: 300, rotation: 90 }]
   const ais = [{ aid: ai.id, sid: 'meh' }]
   const enemy = getMissionEnemy(mission, 'yellow')
-  desktop.apps.add({
-    name: 'Fight',
-    id: 'Fight',
-    zIndex: 1,
-    fullscreen: { position, size },
-    render: (
-      <Fight
-        team="green"
-        enemy={enemy}
-        fleet={{ ships, ais }}
-        mission={mission}
-        ais={ais_}
-        onEnd={() => console.log('=> [Tutorial] Ended')}
-        onStart={() => console.log('=> [Tutorial] Started')}
-      />
-    ),
+  return new Promise<void>(resolve => {
+    desktop.apps.add({
+      name: 'Fight',
+      id: 'Fight',
+      zIndex: 1,
+      fullscreen: { position, size },
+      render: (
+        <Fight
+          team="green"
+          enemy={enemy}
+          fleet={{ ships, ais }}
+          mission={mission}
+          ais={[ai]}
+          onEnd={() => console.log('=> [Tutorial] Ended')}
+          onStart={() => console.log('=> [Tutorial] Started')}
+          Ended={<BrilliantVictory onClick={() => resolve()} />}
+        />
+      ),
+    })
   })
 }
 
@@ -193,10 +230,9 @@ const AiEditor = ({ aid }: { aid: string }) => {
 
 const Intro = () => {
   const desktop = useDesktop()
-  const ais = store.useSelector(store.selectors.ais)
   return (
     <Introduction
-      onStartFight={() => onStartEditing(ais.ais[0], desktop)}
+      onStartFight={() => onStartFight(desktop)}
       onNext={() => {
         const dims = dimensions()
         const apps = desktop.apps.get()
@@ -223,7 +259,6 @@ export const Tutorial = () => {
       apps={{
         name: 'Tutorial',
         id: 'Tutorial',
-        padding: 'l',
         zIndex: 1,
         fullscreen: true,
         render: <Intro />,

@@ -77,6 +77,7 @@ export type Handler = {
   apps: {
     get: () => App[]
     add: (app: App) => void
+    close: (id: string) => void
     replace: (apps: App[]) => void
   }
 }
@@ -90,6 +91,7 @@ export const Desktop = forwardRef((props: Props, ref: React.Ref<Handler>) => {
   })
   const appBarRef = useRef<HTMLDivElement>(null)
   const handler = useMemo(() => {
+    const close = (id: string) => setApps(a => a.filter(app => app.id !== id))
     const get = () => apps
     const add = (app: App) =>
       setApps(apps => {
@@ -97,7 +99,7 @@ export const Desktop = forwardRef((props: Props, ref: React.Ref<Handler>) => {
         return [...apps, newA]
       })
     const replace = (apps: App[]) => setApps(apps)
-    const apps_ = { get, add, replace }
+    const apps_ = { get, add, replace, close }
     return { apps: apps_ }
   }, [apps])
   useImperativeHandle(ref, () => handler, [handler])
@@ -132,7 +134,7 @@ export const Desktop = forwardRef((props: Props, ref: React.Ref<Handler>) => {
               title={app.name}
               key={app.id}
               zIndex={app.zIndex + 1000}
-              onClose={() => setApps(a => a.filter(({ id }) => app.id !== id))}
+              onClose={() => handler.apps.close(app.id)}
               minWidth={300}
               minHeight={300}
               padding={app.padding}
