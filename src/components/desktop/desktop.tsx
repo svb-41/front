@@ -139,11 +139,10 @@ export const Desktop = forwardRef((props: Props, ref: React.Ref<Handler>) => {
     }
     const close = (id: string) => setApps(a => a.filter(app => app.id !== id))
     const get = () => apps
-    const add = (app: App) =>
-      setApps(apps => {
-        const newA = { ...app, zIndex: app.zIndex + apps.length + 2 }
-        return [...apps, newA]
-      })
+    const add = (app: App) => {
+      setApps(apps => [...apps, { ...app, zIndex: app.zIndex + apps.length }])
+      setActiveApp(app.id)
+    }
     const replace = (apps: App[]) => setApps(apps)
     const apps_ = { get, add, replace, close, minimize }
     return { apps: apps_ }
@@ -152,8 +151,9 @@ export const Desktop = forwardRef((props: Props, ref: React.Ref<Handler>) => {
   const focusApp = (id: string) => {
     setActiveApp(id)
     setApps(a => {
+      const maxInt = a.reduce((acc, val) => Math.max(acc, val.zIndex), 0)
       return a.map(app => {
-        if (app.id === id) return { ...app, zIndex: a.length + 1 }
+        if (app.id === id) return { ...app, zIndex: maxInt }
         const zIndex = app.zIndex - 1
         return { ...app, zIndex }
       })
