@@ -14,6 +14,11 @@ export const sprites: Array<Sprite> = [
   { name: 'explosion5', url: '/assets/Tiles/tile_0008.png' },
   { name: 'mine', url: '/assets/Tiles/tile_0016.png' },
   { name: 'background', url: '/assets/Backgrounds/blue.png' },
+  { name: 'base-blue', url: '/assets/Tiles/base-blue.png' },
+  { name: 'base-green', url: '/assets/Tiles/base-green.png' },
+  { name: 'base-red', url: '/assets/Tiles/base-red.png' },
+  { name: 'base-yellow', url: '/assets/Tiles/base-yellow.png' },
+  { name: 'base-white', url: '/assets/Tiles/base-white.png' },
 ]
 
 export const getBulletSprite = (size: number): string => {
@@ -58,6 +63,8 @@ export const shipSprite = ({ ship, team = 'white' }: ShipSprite): string => {
       return `bomber-${team}`
     case SHIP_CLASS.SCOUT:
       return `scout-${team}`
+    case SHIP_CLASS.BASE:
+      return `base-${team}`
     default:
       return `support-${team}`
   }

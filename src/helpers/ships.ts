@@ -13,7 +13,8 @@ let shipsLoad: any = {}
 
 const preload = () => {
   const colors = Object.values(Color)
-  ships.forEach(ship => {
+  const allShips = [...ships, 'base']
+  allShips.forEach(ship => {
     colors.forEach(color => {
       const shipName = `${ship.toLowerCase()}-${color}`
       const path = require(`../../public/assets/Tiles/${shipName}.png`)
