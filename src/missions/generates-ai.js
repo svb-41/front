@@ -13,7 +13,7 @@ const main = async () => {
       const name = p
       const uid = 'test-to-delete'
       const body = JSON.stringify({ code, name, uid })
-      const res = await fetch.default('http://localhost:3333', {
+      const res = await fetch.default('http://localhost:3333/compile', {
         method: 'POST',
         body,
       })

@@ -29,6 +29,10 @@ enum Type {
 
 const selectTexture = (app: PIXI.Application, type: Type, sprite: Info) => {
   if (type === Type.SHIP && sprite) {
+    if (sprite.shipClass === engine.ship.SHIP_CLASS.BASE)
+      return app.loader.resources[
+        shipSprite({ ship: sprite.shipClass!, team: sprite.team })
+      ].texture
     return app.loader.resources[colorSprite(sprite.team!)].textures![
       shipSprite({ ship: sprite.shipClass!, team: sprite.team })
     ]

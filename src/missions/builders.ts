@@ -12,6 +12,7 @@ const {
   buildCruiser,
   buildBomber,
   buildScout,
+  buildBase,
 } = engine.config.builder
 
 const builders: Array<{
@@ -24,6 +25,7 @@ const builders: Array<{
   { id: SHIP_CLASS.CRUISER, builder: buildCruiser },
   { id: SHIP_CLASS.BOMBER, builder: buildBomber },
   { id: SHIP_CLASS.SCOUT, builder: buildScout },
+  { id: SHIP_CLASS.BASE, builder: buildBase },
 ]
 
 export const findBuilder = (id: string) =>
