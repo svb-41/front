@@ -1779,10 +1779,10 @@
     ejs "^2.6.1"
     magic-string "^0.25.0"
 
-"@svb-41/core@^0.14.0":
-  version "0.14.0"
-  resolved "https://registry.yarnpkg.com/@svb-41/core/-/core-0.14.0.tgz#00e99614e60a08807465cf610d54ba13b569d924"
-  integrity sha512-BFeROnWV0ZUWjDDmxQFrOAh+3vhGKlNy9R+44P+3C8esC+tCrlhkpUxjGLgUwqSPHxzp1HWHrbfaVsnQwc11SQ==
+"@svb-41/core@^0.15.0":
+  version "0.15.0"
+  resolved "https://registry.yarnpkg.com/@svb-41/core/-/core-0.15.0.tgz#6d56f0fea0bce6302d92dc7fb0b9260f76bea1c1"
+  integrity sha512-TO91rbkW5ONE+BgI2M5lyMODijrQhet+3d6tQbK+RC6vWDy/mZXuCdnRgUccpLBzmTnxcf2xiN7Cz7ffKbUu5A==
 
 "@svb-41/engine@^0.13.0":
   version "0.13.0"
