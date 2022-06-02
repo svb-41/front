@@ -4,8 +4,8 @@
   "subtitle": "This is not a dish",
   "description": "Be careful of the torpedos.",
   "credit": 20000,
-  "size": { "height": 4000, "width": 10000 },
-  "start": { "x": 0, "y": 1000 },
+  "size": { "height": 4000, "width": 6000 },
+  "start": { "x": 1000, "y": 0 },
   "rewards": {
     "ships": ["stealth"],
     "missions": []
@@ -17,7 +17,7 @@
       "position": {
         "direction": 3.141592653589793,
         "speed": 0,
-        "pos": { "x": 10000, "y": 2000 }
+        "pos": { "x": 6000, "y": 2000 }
       }
     }
   ]
