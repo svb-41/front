@@ -9,6 +9,7 @@ import { replaceUser } from '@/services/accounts'
 import * as ai from '@/store/actions/ai'
 import * as local from '@/services/localStorage'
 import * as skirmishes from '@/services/skirmishes'
+import { loadInventory } from '@/store/actions/inventory'
 
 export const UPDATE_USER_ID = 'user/LOAD_ID'
 export const UPDATE_USER = 'user/LOAD_USER'
@@ -107,6 +108,7 @@ export const login = (
       if (shouldSync) await result
       dispatch({ type: LOGIN, idToken, accessToken, username })
       await dispatch(sync)
+      dispatch(loadInventory(accessToken))
     }
   }
 }

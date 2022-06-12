@@ -29,3 +29,27 @@
   99% { transform: rotate(270deg); }
   100% { transform: rotate(360deg); }
 }
+
+.inventory {
+  justify-content: center;
+  padding: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.stuff {
+  padding: 1rem;
+  width: 10rem;
+  height: 10rem;
+  background: var(--ddd);
+  border-radius: 6px;
+}
+
+.type {
+  font-size: 24px;
+}
+
+.category {
+  font-size: 18px;
+}

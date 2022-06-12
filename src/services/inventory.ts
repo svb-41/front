@@ -1,10 +1,11 @@
 import { URL } from '../envs'
+import { Stuff } from '@/store/reducers/inventory'
 
 export type InventoryParams = { token: string }
 export type Inventory = {
   items: string[]
   favoritesItems: string[]
-  inventory: any[]
+  inventory: Stuff[]
 }
 export const getInventory = async (
   params: InventoryParams

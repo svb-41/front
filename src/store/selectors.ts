@@ -34,3 +34,7 @@ export const connected = (state: State) => {
   const connected = Boolean(id)
   return { connected, onboarded }
 }
+
+export const inventory = (state: State) => state.inventory.items
+export const favoritesInventory = (state: State) =>
+  state.inventory.favoritesItems

@@ -8,6 +8,7 @@ import { Row, Column } from '@/components/flex'
 import { Title, Caption } from '@/components/title'
 import { Button } from '@/components/button'
 import refresh from './refresh.svg'
+import Inventory from '@/pages/account/inventory'
 import styles from './account.module.css'
 import { URL } from '@/envs'
 import s from '@/strings.json'
@@ -56,6 +57,7 @@ export const Details = () => {
         </Row>
         <Button secondary text="Disconnect" onClick={auth.logout} />
       </Column>
+      <Inventory />
     </Main>
   )
 }
