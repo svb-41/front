@@ -28,3 +28,7 @@ export const tags = (state: State) => {
   )
   return { tags, textColors }
 }
+
+export const inventory = (state: State) => state.inventory.items
+export const favoritesInventory = (state: State) =>
+  state.inventory.favoritesItems

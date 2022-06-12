@@ -4,6 +4,7 @@ import { composeWithDevTools } from 'redux-devtools-extension'
 import thunk from 'redux-thunk'
 import * as user from '@/store/reducers/user'
 import * as ai from '@/store/reducers/ai'
+import * as inventory from '@/store/reducers/inventory'
 import * as skirmishes from '@/store/reducers/skirmishes'
 import * as cross from '@/store/reducers/cross'
 import * as Types from '@/store/types'
@@ -13,6 +14,7 @@ const reducer = combineReducers({
   user: user.reducer,
   ai: ai.reducer,
   skirmishes: skirmishes.reducer,
+  inventory: inventory.reducer,
 })
 
 const crossReducer: Reducer<Types.State, Types.Action> = (state, action) => {
