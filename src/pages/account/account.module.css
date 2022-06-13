@@ -52,4 +52,9 @@
 
 .category {
   font-size: 18px;
+  color: var(--grey);
+}
+
+.stack {
+  font-size: 18px;
 }
