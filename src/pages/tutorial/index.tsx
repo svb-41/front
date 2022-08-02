@@ -3,7 +3,7 @@ import { assault } from '@/default-controllers/assets.json'
 import { Column, Row } from '@/components/flex'
 import * as Flex from '@/components/flex'
 import * as Movable from '@/components/movable'
-import { Introduction } from './introduction'
+import { Conversation } from './conversation'
 import { Button } from '@/components/button'
 import { Checkbox } from '@/components/checkbox'
 import { Fight } from '@/components/fight'
@@ -23,6 +23,7 @@ import loader from '@/assets/icons/loader.gif'
 import valid from '@/assets/icons/valid.svg'
 import error from '@/assets/icons/error.svg'
 import styles from './tutorial.module.css'
+import { lessons } from './lesson'
 import s from '@/strings.json'
 
 export type Page = 'introduction' | 'start'
@@ -93,7 +94,7 @@ const onStartFight = (desktop: Desktop.Handler) => {
   const ships = [{ shipClass, id: 'meh', x: 50, y: 300, rotation: 90 }]
   const ais = [{ aid: ai.id, sid: 'meh' }]
   const enemy = getMissionEnemy(mission, 'yellow')
-  return new Promise<void>(resolve => {
+  return new Promise<boolean>(resolve => {
     desktop.apps.add({
       name: 'Fight',
       id: 'Fight',
@@ -108,7 +109,7 @@ const onStartFight = (desktop: Desktop.Handler) => {
           ais={[ai]}
           onEnd={() => console.log('=> [Tutorial] Ended')}
           onStart={() => console.log('=> [Tutorial] Started')}
-          Ended={<BrilliantVictory onClick={() => resolve()} />}
+          Ended={<BrilliantVictory onClick={() => resolve(true)} />}
         />
       ),
     })
@@ -125,7 +126,7 @@ const onStartEditing = (ai: AI, desktop: Desktop.Handler) => {
     name: `Editor — ${ai.file.path}`,
     id: 'Editor',
     zIndex: 1,
-    initialSize: { position, size },
+    // fullscreen: { position, size },
     render: <AiEditor aid={ai.id} />,
   })
 }
@@ -230,10 +231,16 @@ const AiEditor = ({ aid }: { aid: string }) => {
 
 const Intro = () => {
   const desktop = useDesktop()
+  // const ais = store.useSelector(store.selectors.ais)
+  const [lastMission, setLastMission] = useState(0)
+  if (!lessons[lastMission]) return null
   return (
-    <Introduction
-      onStartFight={() => onStartFight(desktop)}
+    <Conversation
+      key={lastMission}
+      lesson={lessons[lastMission]}
+      onStartFight={async () => onStartFight(desktop)}
       onNext={() => {
+        setLastMission(l => l + 1)
         const dims = dimensions()
         const apps = desktop.apps.get()
         const newApps = onResize(true)(dims, apps)

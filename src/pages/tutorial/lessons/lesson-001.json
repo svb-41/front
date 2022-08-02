@@ -1,0 +1,27 @@
+{
+  "title": "OK bluesaille, let's start!",
+  "content": [
+    {
+      "type": "explanations",
+      "content": "Welcome on board on SVB-41. Splendid ship right? I hope you’ll love it because you’ll spend a lot of time on it! On an other topic, We got a signal here on the presence of an ennemy.\n\nWe should not let Gemini Twins win the fight, and the area! That place is and should remain under control of Centauri.\nEveryone at their post, soldiers! Let’s fight to death!"
+    },
+    {
+      "type": "scenario",
+      "ais": ["fastAssault"],
+      "mission": "0",
+      "ships": [
+        {
+          "shipClass": "FIGHTER",
+          "id": "0",
+          "x": 50,
+          "y": 300,
+          "rotation": 90
+        }
+      ]
+    },
+    {
+      "type": "explanations",
+      "content": "What do you think of the performance, cadet? Pretty cool right? Next, we'll start the real explanations. It will be up to you now, to become the greatest soldier here. I hope you're ready."
+    }
+  ]
+}
