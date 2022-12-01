@@ -32,7 +32,7 @@ export const tags = (state: State) => {
 export const connected = (state: State) => {
   const { id, onboarded } = state.user
   const connected = Boolean(id)
-  return { connected, onboarded }
+  return { connected, onboarded: true }
 }
 
 export const inventory = (state: State) => state.inventory.items

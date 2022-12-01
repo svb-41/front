@@ -17,7 +17,7 @@ const preload = () => {
   allShips.forEach(ship => {
     colors.forEach(color => {
       const shipName = `${ship.toLowerCase()}-${color}`
-      const path = require(`../../public/assets/Tiles/${shipName}.png`)
+      const path = require(`../../assets/Tiles/${shipName}.png`)
       const file = path.default
       shipsLoad[shipName] = file
     })

@@ -1,6 +1,7 @@
 import { v4 } from 'uuid'
 import { AI } from '@/lib/ai'
 import { Color } from '@/lib/color'
+import * as inventory from '@/store/reducers/inventory'
 
 const AI_KEY = 'svb41.ai'
 const UID_KEY = 'svb41.uid'
@@ -18,6 +19,7 @@ export type StoredData = {
   skirmishes: any
   preferedFleet?: string
   onboarded: boolean
+  inventory: inventory.State
 }
 
 export const getUid = (): string | null => {

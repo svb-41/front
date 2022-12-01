@@ -35,7 +35,7 @@ const init: State = {
   unlockedMissions: ['0'],
   color: Color.GREEN,
   fleetConfigs: {},
-  onboarded: false,
+  onboarded: true,
   user: null,
 }
 

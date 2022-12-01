@@ -19,7 +19,7 @@ await Promise.all(
         const shipName = `${ship.toLowerCase()}-${color}`
         const path = await import(
           /* @vite-ignore */
-          `../../public/assets/Tiles/${shipName}.png`
+          `../../assets/Tiles/${shipName}.png`
         )
         const file = path.default
         const img = new Image()
