@@ -25,7 +25,6 @@ const crossReducer: Reducer<Types.State, Types.Action> = (state, action) => {
 const saveLocal = (store: any) => (next: any) => (action: any) => {
   const value = next(action)
   const state: Types.State = store.getState()
-  console.log(state.inventory)
   local.setUser(state.user.id!, {
     missions: state.user.unlockedMissions,
     ships: state.user.unlockedShips,
