@@ -32,7 +32,7 @@ const Inventory = () => {
   return (
     <div className={styles.inventory}>
       {stackArray.map(stack => (
-        <StackedItem stack={stack} />
+        <StackedItem stack={stack} key={stack.category} />
       ))}
       {notStacked.map(s => (
         <Item stuff={s} key={s.id} />
