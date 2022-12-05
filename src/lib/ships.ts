@@ -10,10 +10,12 @@ export const ships = [
   'destroyer',
 ]
 
+export const enemyShips = ['base']
+
 const shipsLoad: any = {}
 const colors = Object.values(Color)
 await Promise.all(
-  ships.map(ship => {
+  [...ships, ...enemyShips].map(ship => {
     return Promise.all(
       colors.map(async color => {
         const shipName = `${ship.toLowerCase()}-${color}`
