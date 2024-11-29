@@ -38,8 +38,8 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "craco start",
-    "build": "CI=;craco build",
+    "start": "export SET NODE_OPTIONS=--openssl-legacy-provider && craco start",
+    "build": "export SET NODE_OPTIONS=--openssl-legacy-provider && CI=;craco build",
     "test": "craco test",
     "eject": "craco eject",
     "documentation": "node scripts/documentation.mjs"
